@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.views.generic import TemplateView
 
-# Create your views here.
+from common.mixins import TitleMixin
+
+
+class IndexView(TitleMixin, TemplateView):
+    template_name = "core/index.html"
+    title = "Index"
