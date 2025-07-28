@@ -1,10 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="address=no" />
+    <meta name="PalmComputingPlatform" content="true" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+    <title>{% block title %}{{ title }}{% endblock %}</title>
 
-</body>
-</html>
+    <meta name='robots' content='max-image-preview:large' />
+    <link rel='dns-prefetch' href='//fonts.googleapis.com' />
+    <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel='stylesheet' id='oswald-sans-css' href='https://fonts.googleapis.com/css2?family=Oswald%3Awght%40500%3B600&#038;display=swap&#038;ver=2.7' type='text/css' media='all' />
+    <link rel='stylesheet' id='montserrat-sans-css' href='https://fonts.googleapis.com/css2?family=Montserrat%3Aital%2Cwght%400%2C300%3B0%2C400%3B0%2C500%3B0%2C600%3B0%2C700%3B1%2C300%3B1%2C400%3B1%2C500%3B1%2C600%3B1%2C700&#038;display=swap&#038;ver=2.7' type='text/css' media='all' />
+    <link rel="stylesheet" href="{% static 'css/style.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/classic-themes.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/global-styles.css' %}">
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery/script.min.js?ver=3.7.1' id='jquery-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-ui/script.min.js?ver=1.14.0' id='jquery-ui-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-forms/script.min.js?ver=3.51' id='jquery-forms-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-cook/script.min.js?ver=0.1' id='jquery-cookie-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-clipboard/script.min.js?ver=2.0.11' id='jquery-clipboard-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-window/script.min.js?ver=0.9' id='jquery-window-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-changeinput/script.min.js?ver=0.1' id='jquery-changeinput-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-select/script.min.js?ver=0.7' id='jquery select-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-table/script.min.js?ver=0.5' id='jquery-table-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-checkbox/script.min.js?ver=0.2' id='jquery-checkbox-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/js/site.js?ver=2.7' id='jquery-site-js-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/plugins/premiumbox/premium/js/jquery-timer/script.min.js?ver=0.3' id='jquery js timer-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/js/swiper/swiper-bundle.min.js?ver=1.0' id='swiper-bundle-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/js/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js?ver=1.0' id='mCustomScrollbar-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/js/jquery.countdown.js?ver=1.1' id='jquery-countdown-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/js/wow.min.js?ver=1.0' id='wow-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/js/scripts.js?ver=3.2' id='scripts-js-js'></script>
+    <script type='text/javascript' src='https://crypto-chicken.co/premium_script.js?lang=ru&#038;ver=1753715991' id='jquery-premium-js-js'></script>
+    <link rel="shortcut icon" href="https://crypto-chicken.co/wp-content/uploads/logo-chicken.png" type="image/png" />
+    <link rel="icon" href="https://crypto-chicken.co/wp-content/uploads/logo-chicken.png" type="image/png" />
+</head>
+
+    {% block content %}{% endblock %}
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer__inner">
+            <div class="footer__left">
+                <div class="footer__tt title">График работы: 24/7</div>
+                <div class="footer__cm">
+                    <div class="footer__contacts">
+                        <div class="footer__contacts-label">График работы поддержки:</div>
+                        <div class="footer__contacts-val">
+                            пн-cб с 9:00 до 19:00 UTC+3 </div>
+                        <div class="footer__buttons footer__social social">
+                            <a href="https://t.me/CryptoChickenOfficial" class="social__item" target="_blank"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/social/tg.svg" alt=""></a> <a href="https://www.instagram.com/cryptochickennews/" class="social__item" target="_blank"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/social/insta.svg" alt=""></a> <a href="javascript:void(0)" class="social__item btn--chat"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/social/message.svg" alt=""></a>
+                            <a href="/cdn-cgi/l/email-protection#046d6a626b4467767d74706b29676c6d676f616a2a676b" class="social__item" target="_blank"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/social/mail.svg" alt=""></a> </div>
+                    </div>
+                    <div class="footer__menu">
+                        <ul id="menu-nizhnee-menyu-footer-menu" class="hmenu">
+                            <li id="menu-item-1087" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1087"><a href="https://crypto-chicken.co/aml/"><span>AML правила</span></a></li>
+                            <li id="menu-item-1201" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1201"><a href="https://crypto-chicken.co/raffle/"><span>Розыгрыш</span></a></li>
+                            <li id="menu-item-1088" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1088"><a href="https://crypto-chicken.co/cashback/"><span>Kэшбэк</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer__partners">
+                <div class="footer__partners-item">
+                    <a href="https://www.bestchange.ru/cryptochicken-exchanger.html" rel="nofollow noreferrer noopener" target="_blank"> <img src="https://crypto-chicken.co/wp-content/uploads/best-change.png" alt="Bestchange.ru">
+                    </a> </div>
+                <div class="footer__partners-item">
+                    <a href="https://exchangesumo.com/exchanger/1123/Crypto-chicken/" rel="nofollow noreferrer noopener" target="_blank"> <img src="https://crypto-chicken.co/wp-content/uploads/exchange-1.png" alt="Exchangesumo.com">
+                    </a> </div>
+                <div class="footer__partners-item">
+                    <a href="https://e-mon.cc/" rel="nofollow noreferrer noopener" target="_blank"> <img src="https://crypto-chicken.co/wp-content/uploads/emon.png" alt="e-mon">
+                    </a> </div>
+                <div class="footer__partners-item">
+                    <a href="https://kurs.expert/ru/obmennik/crypto-chicken-co/feedbacks.html" rel="nofollow noreferrer noopener" target="_blank"> <img src="https://crypto-chicken.co/wp-content/uploads/kurs.png" alt="Kurs.expert">
+                    </a> </div>
+                <div class="footer__partners-item">
+                    <a href="https://crypto-control.org/" rel="nofollow noreferrer noopener" target="_blank"> <img src="https://crypto-chicken.co/wp-content/uploads/crypto-control.png" alt="Cryptocontrol">
+                    </a> </div>
+                <div class="footer__partners-item">
+                    <a href="https://bits.media/exchanger/crypto-chicken-co" rel="nofollow noreferrer noopener" target="_blank"> <img src="https://crypto-chicken.co/wp-content/uploads/bits.png" alt="">
+                    </a> </div>
+                <div class="footer__partners-item">
+                    <a href="https://kursoff.biz/ru/exchangers/cryptochicken" rel="nofollow noreferrer noopener" target="_blank"> <img src="https://crypto-chicken.co/wp-content/uploads/kursoff.png" alt="Kursoff">
+                    </a> </div>
+            </div>
+        </div>
+
+        <div class="footer__bottom">
+            <p>Сервис обмена электронных валют.</p>
+        </div>
+    </div>
+</footer>
+

@@ -1,0 +1,1269 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<body>
+
+    <div class="wrapper">
+
+        <header class="header">
+            <div class="container">
+                <div class="header__inner">
+                    <div class="header__sname">
+                        <a href="https://crypto-chicken.co/" class="header__logo"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/logo.svg" alt=""></a>
+                        <div class="header__name"><a href="https://crypto-chicken.co/">CryptoChicken</a></div>
+                    </div>
+
+                    <div class="header__right">
+                        <div class="header__top">
+                            <a href="https://t.me/CryptoChicken_bot" class="btn header__contacts-support" target="_blank"><span>Support</span><svg class="icon icon--fill">
+                                    <use xlink:href="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/sprite.svg#tg"></use>
+                                </svg></a>
+                            <div class="header__lang js-lang">
+                                <div class="header__lang-current">
+                                    <span>RU</span>
+                                    <button class="header__lang-open js-lang-open"></button>
+                                </div>
+                                <div class="header__lang-drop js-lang-drop">
+                                    <ul>
+                                        <li class="current"><a href="">RU</a></li>
+
+                                        <li><a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" rel="nofollow">EN</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="header__bottom">
+                            <div class="header__nav">
+                                <ul id="menu-verhnee-menyu" class="hmenu">
+                                    <li id="menu-item-1101" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="https://crypto-chicken.co/aml/"><span>AML правила</span></a></li>
+                                    <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="https://crypto-chicken.co/raffle/"><span>Розыгрыш</span></a></li>
+                                    <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="https://crypto-chicken.co/cashback-info/"><span>Kэшбэк</span></a></li>
+                                    <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="https://crypto-chicken.co/deposits/"><span>Депозиты</span></a></li>
+                                </ul>
+                            </div>
+                            <div class="header__profile">
+                                <div class="header__lg">
+                                    <button class="btn btn--md btn--bd btn--bdg" data-open-login="reg"><span>Регистрация</span></button>
+                                </div>
+                                <button class="btn btn--md btn--pdsm header__btnlog" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in.svg" alt=""><span>Войти</span></button>
+                            </div>
+                            <button class="header__login" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in-color.svg" alt=""></button>
+
+                            <button class="btn btn--md header__burger js-open-nav">
+                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/burger.svg" class="hide-tablet-sm" alt="">
+                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/closed.svg" class="icon-close hide-tablet-sm" alt="">
+                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/menu_open.svg" class="show-tablet-sm" alt="">
+                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/menu_closed.svg" class="icon-close show-tablet-sm" alt="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="accmenu js-menu-acc">
+                </div>
+
+                <div class="pauth box" data-popup="login">
+                    <button class="pauth__close js-pauth-close"></button>
+                    <div class="login__popup">
+                        <div class="section__head text--center">
+                            <div class="title text--white">Авторизация</div>
+                        </div>
+                        <form class="ajax_post_form" action="https://crypto-chicken.co/premium_site_action-loginform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru" method="post">
+                            <input type="hidden" name="return_url" value="" />
+                            <div class="form__input">
+                                <input type="text" name="logmail" class="input input--nbd" placeholder="Login/E-mail">
+                                <div class="input__bg"></div>
+                            </div>
+                            <div class="form__input">
+                                <input type="password" name="pass" class="input input--nbd" placeholder="Пароль" autocomplete="off">
+                                <div class="input__bg"></div>
+                            </div>
+
+                            <div class="form__submit">
+                                <button class="btn btn--wall"><span>Войти</span></button>
+                            </div>
+                            <div class="form__submit">
+                                <button class="btn btn--bd btn--bdg btn--wall" type="button" data-open-login="reg"><span>Регистрация</span></button>
+                            </div>
+                            <div class="pauth__links">
+                                <a href="https://crypto-chicken.co/lostpass/" class="pauth__link">Забыли пароль?</a>
+                            </div>
+                            <div class="resultgo"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="pauth box" data-popup="reg">
+                    <button class="pauth__close js-pauth-close"></button>
+                    <div class="register__popup">
+                        <div class="section__head text--center">
+                            <div class="title text--white">Регистрация</div>
+                        </div>
+                        <form class="ajax_post_form" action="https://crypto-chicken.co/premium_site_action-registerform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru" method="post">
+                            <input type="hidden" name="return_url" value="" />
+                            <div class="form__input">
+                                <input type="text" name="login" class="input input--nbd" placeholder="Логин*">
+                                <div class="input__bg"></div>
+                            </div>
+                            <div class="form__input">
+                                <input type="text" name="email" class="input input--nbd" placeholder="E-mail*">
+                                <div class="input__bg"></div>
+                            </div>
+                            <div class="form__input">
+                                <input type="password" name="pass" class="input input--nbd" placeholder="Пароль*" autocomplete="off">
+                                <div class="input__bg"></div>
+                            </div>
+                            <div class="form__input">
+                                <input type="password" name="pass2" class="input input--nbd" placeholder="Пароль еще раз*" autocomplete="off">
+                                <div class="input__bg"></div>
+                            </div>
+                            <label class="form__policy">
+                                <input type="checkbox" name="check_rule" value="1">
+                                <span class="form__policy-sq"></span>
+                                <span class="form__policy-t">С <a href="/tos/" target="_blank" rel="noreferrer noopener">правилами сервиса</a> ознакомлен и согласен</span>
+                            </label>
+                            <div class="form__submit">
+                                <button class="btn btn--wall"><span>Регистрация</span></button>
+                            </div>
+                            <div class="pauth__enter">
+                                <div class="pauth__enter-t">У вас есть аккаунт?</div>
+                                <button class="btn btn--bd btn--bdg" type="button" data-open-login="login"><span>Войти</span></button>
+                            </div>
+                            <div class="resultgo"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="navfix js-navfix">
+                <div class="container">
+                    <div class="navfix__nav">
+                        <ul id="menu-verhnee-menyu-1" class="hmenu">
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="https://crypto-chicken.co/aml/"><span>AML правила</span></a></li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="https://crypto-chicken.co/raffle/"><span>Розыгрыш</span></a></li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="https://crypto-chicken.co/cashback-info/"><span>Kэшбэк</span></a></li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="https://crypto-chicken.co/deposits/"><span>Депозиты</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div class="navfix__contacts">
+                        <a href="/cdn-cgi/l/email-protection#3950575f56795a4b40494d56145a51505a525c57175a56" class="navfix__contacts-val"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/mail.svg" alt=""><span><span class="__cf_email__" data-cfemail="6900070f06290a1b10191d06440a01000a020c07470a06">[email&#160;protected]</span></span></a>
+                        <br>
+                        <a href="tg://resolve?domain=CryptoChicken_bot" class="navfix__contacts-val"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/tg.svg" alt=""><span>@CryptoChicken_bot</span></a> <br>
+                    </div>
+
+                    <div class="navfix__lang">
+                        <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2F" class="navfix__lang-item active"><span>RU</span></a>
+                        <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" class="navfix__lang-item"><span>EN</span></a></div>
+                    <div class="navfix__buttons">
+                        <button class="btn btn--bd btn--md btn--chat"><span>Онлайн чат</span></button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content__wrapper">
+            <!--	    -->
+            <section class="calc">
+                <div class="container">
+
+                    <form method="post" class="ajax_post_bids" action="https://crypto-chicken.co/premium_site_action-create_bid.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+                        <div class="exch_ajax_wrap">
+                            <div class="exch_ajax_wrap_abs"></div>
+                            <div id="exch_html" class="calc__cols"> <input type="hidden" name="direction_id" class="js_direction_id" value="1977" />
+                                <div class="calc__left">
+                                    <div class="calc__col js-calc-col js-calc-col-1">
+                                        <div class="calc__col-head">
+                                            <div class="calc__col-title title">Отдаете</div>
+                                        </div>
+                                        <div class="calc__body">
+                                            <div class="form__input calc__irow">
+
+                                                <div class="hexch_curs_input js_wrap_error "><input type="text" name="sum1" cash-id="sum" data-decimal="10" class="js_sum_val js_decimal js_sum1 cache_data input input--nbd js-sum-val" autocomplete="off" value="500" />
+                                                    <div class="input__bg"></div>
+                                                    <div class="calc__iicon">
+                                                        <img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" class="js-sum-icon" alt="">
+                                                        <span class="calc__iicon-name js-sum-name">Tether TRC20 USDT</span>
+                                                        <button class="calc__iicon-toggle  js-calc-table-toggle"></button>
+                                                    </div>
+                                                    <div class="js_error js_sum1_error"></div>
+                                                </div>
+
+                                            </div>
+                                            <div class="calc__amount">
+                                                <a href="javascript:void(0)" class="calc__amount-val js_min1_val" data-id="sum1" data-min1="500" data-val="500">Min:&nbsp;500</a>
+                                                <a href="javascript:void(0)" class="calc__amount-val js_max1_val" data-id="sum1" data-max1="15000" data-val="15000">Max:&nbsp;15000</a>
+                                            </div>
+                                            <div class="calc__tags">
+                                                <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
+                                                <div class="calc__tags-sep"></div>
+                                            </div>
+                                            <div class="calc__table js-calc-table">
+                                                <div class="calc__search">
+                                                    <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
+                                                </div>
+                                                <div class="calc__items js-content-scroll">
+
+                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
+                                                        <option value="368" selected='selected' data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" data-logo="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" data-logo-next="">Tether TRC20 USDT</option>
+                                                        <option value="367" data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/USDT-ETH-2.png" data-logo="https://crypto-chicken.co/wp-content/uploads/USDT-ETH-2.png" data-logo-next="">Tether ERC20 USDT</option>
+                                                        <option value="598" data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/TON.png" data-logo="https://crypto-chicken.co/wp-content/uploads/TON.png" data-logo-next="">Tether TON USDT</option>
+                                                        <option value="597" data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/Property-1ARB.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Property-1ARB.png" data-logo-next="">Tether Arbitrum USDT</option>
+                                                        <option value="371" data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/USDC-ETH.png" data-logo="https://crypto-chicken.co/wp-content/uploads/USDC-ETH.png" data-logo-next="">USDCoin ERC20 USDC</option>
+                                                        <option value="376" data-ctypes="crypto" data-img="/wp-content/uploads/60-Dai.png" data-logo="/wp-content/uploads/60-Dai.png" data-logo-next="">Dai DAI</option>
+                                                        <option value="361" data-ctypes="crypto" data-img="/wp-content/uploads/Monero.png" data-logo="/wp-content/uploads/Monero.png" data-logo-next="">Monero XMR</option>
+                                                        <option value="348" data-ctypes="crypto" data-img="/wp-content/uploads/Bitcoin.png" data-logo="/wp-content/uploads/Bitcoin.png" data-logo-next="">Bitcoin BTC</option>
+                                                        <option value="359" data-ctypes="crypto" data-img="/wp-content/uploads/Litecoin.png" data-logo="/wp-content/uploads/Litecoin.png" data-logo-next="">Litecoin LTC</option>
+                                                        <option value="385" data-ctypes="crypto" data-img="/wp-content/uploads/26-TRON.png" data-logo="/wp-content/uploads/26-TRON.png" data-logo-next="">TRON TRX</option>
+                                                        <option value="355" data-ctypes="crypto" data-img="/wp-content/uploads/Ether.png" data-logo="/wp-content/uploads/Ether.png" data-logo-next="">Ethereum ETH</option>
+                                                        <option value="404" data-ctypes="crypto" data-img="/wp-content/uploads/31-Solana.png" data-logo="/wp-content/uploads/31-Solana.png" data-logo-next="">Solana SOL</option>
+                                                        <option value="352" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/bitcoin-cash-1.png" data-logo="https://crypto-chicken.co/wp-content/uploads/bitcoin-cash-1.png" data-logo-next="">Bitcoin Cash BCH</option>
+                                                        <option value="416" data-ctypes="crypto" data-img="/wp-content/uploads/27-Toncoin.png" data-logo="/wp-content/uploads/27-Toncoin.png" data-logo-next="">Toncoin TON</option>
+                                                        <option value="592" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/Screenshot-49-photoaidcom-cropped.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Screenshot-49-photoaidcom-cropped.png" data-logo-next="">Official Trump TRUMP</option>
+                                                        <option value="590" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-4.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-4.png" data-logo-next="">Arbitrum ARB</option>
+                                                        <option value="362" data-ctypes="crypto" data-img="/wp-content/uploads/Dogecoin.png" data-logo="/wp-content/uploads/Dogecoin.png" data-logo-next="">Dogecoin DOGE</option>
+                                                        <option value="409" data-ctypes="crypto" data-img="/wp-content/uploads/51-Maker.png" data-logo="/wp-content/uploads/51-Maker.png" data-logo-next="">Maker MKR</option>
+                                                        <option value="383" data-ctypes="crypto" data-img="/wp-content/uploads/Cardano.png" data-logo="/wp-content/uploads/Cardano.png" data-logo-next="">Cardano ADA</option>
+                                                        <option value="358" data-ctypes="crypto" data-img="/wp-content/uploads/Ether-classic.png" data-logo="/wp-content/uploads/Ether-classic.png" data-logo-next="">Ether Classic ETC</option>
+                                                        <option value="591" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-1-1.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-1-1.png" data-logo-next="">Optimism OP</option>
+                                                        <option value="360" data-ctypes="crypto" data-img="/wp-content/uploads/Ripple.png" data-logo="/wp-content/uploads/Ripple.png" data-logo-next="">Ripple XRP</option>
+                                                        <option value="401" data-ctypes="crypto" data-img="/wp-content/uploads/38-Polkadot.png" data-logo="/wp-content/uploads/38-Polkadot.png" data-logo-next="">Polkadot DOT</option>
+                                                        <option value="364" data-ctypes="crypto" data-img="/wp-content/uploads/Dash.png" data-logo="/wp-content/uploads/Dash.png" data-logo-next="">Dash DASH</option>
+                                                        <option value="589" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-3.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-3.png" data-logo-next="">Aptos APT</option>
+                                                        <option value="595" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/image-1.png" data-logo="https://crypto-chicken.co/wp-content/uploads/image-1.png" data-logo-next="">Sui SUI</option>
+                                                        <option value="410" data-ctypes="crypto" data-img="/wp-content/uploads/71-Avalanche.png" data-logo="/wp-content/uploads/71-Avalanche.png" data-logo-next="">Avalanche C-CHAIN AVAX</option>
+                                                        <option value="596" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/image-2.png" data-logo="https://crypto-chicken.co/wp-content/uploads/image-2.png" data-logo-next="">0x Protocol ZRX</option>
+                                                        <option value="392" data-ctypes="crypto" data-img="/wp-content/uploads/56-ICON.png" data-logo="/wp-content/uploads/56-ICON.png" data-logo-next="">ICON ICX</option>
+                                                        <option value="400" data-ctypes="crypto" data-img="/wp-content/uploads/28-Tezos.png" data-logo="/wp-content/uploads/28-Tezos.png" data-logo-next="">Tezos XTZ</option>
+                                                        <option value="406" data-ctypes="crypto" data-img="/wp-content/uploads/32-Shiba.png" data-logo="/wp-content/uploads/32-Shiba.png" data-logo-next="">Shiba ERC20 SHIB</option>
+                                                        <option value="402" data-ctypes="crypto" data-img="/wp-content/uploads/24-Uniswap.png" data-logo="/wp-content/uploads/24-Uniswap.png" data-logo-next="">Uniswap ERC20 UNI</option>
+                                                        <option value="399" data-ctypes="crypto" data-img="/wp-content/uploads/63-Cosmos.png" data-logo="/wp-content/uploads/63-Cosmos.png" data-logo-next="">Cosmos ATOM</option>
+                                                        <option value="405" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-6.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-6.png" data-logo-next="">VeChain VET</option>
+                                                        <option value="384" data-ctypes="crypto" data-img="/wp-content/uploads/Stellar.png" data-logo="/wp-content/uploads/Stellar.png" data-logo-next="">Stellar XLM</option>
+                                                        <option value="363" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/POLYGON.png" data-logo="https://crypto-chicken.co/wp-content/uploads/POLYGON.png" data-logo-next="">Polygon POL</option>
+                                                        <option value="568" data-ctypes="cash" data-img="https://crypto-chicken.co/wp-content/uploads/Screenshot-38-round.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Screenshot-38-round.png" data-logo-next="">Наличные USD</option>
+                                                        <option value="570" data-ctypes="cash" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-4-1.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-4-1.png" data-logo-next="">Наличные EUR</option>
+                                                        <option value="571" data-ctypes="cash" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-5.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-5.png" data-logo-next="">Наличные UAH</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button class="calc__reverse js-calc-reverse"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/reverse.svg" alt=""></button>
+                                    <!-- Right side -->
+                                    <div class="calc__col js-calc-col js-calc-col-2">
+                                        <div class="calc__col-head">
+                                            <div class="calc__col-title title">Получите</div>
+                                            <div class="calc__course">Курс: <span class="js_course_html">327.62268 USDT = 1 XMR</span></div>
+                                        </div>
+                                        <div class="calc__body">
+                                            <div class="form__input calc__irow">
+
+                                                <div class="hexch_curs_input js_wrap_error "><input type="text" name="" data-decimal="10" class="js_sum_val js_decimal js_sum2c input input--nbd js-sum-val" autocomplete="off" value="1.52114587" />
+                                                    <div class="input__bg"></div>
+                                                    <div class="calc__iicon">
+                                                        <img src="/wp-content/uploads/Monero.png" class="js-sum-icon" alt="">
+                                                        <span class="calc__iicon-name js-sum-name">Monero XMR</span>
+                                                        <button class="calc__iicon-toggle  js-calc-table-toggle"></button>
+                                                    </div>
+                                                    <div class="js_error js_sum2_error"></div>
+                                                </div>
+
+                                            </div>
+                                            <div class="calc__amount">
+                                                <a href="javascript:void(0)" class="calc__amount-val js_min2_val" data-id="sum2" data-min1="1.52614587" data-val="1.52614587">Min:&nbsp;1.52614587</a>
+                                                <a href="javascript:void(0)" class="calc__amount-val js_max2_val" data-id="sum2" data-max1="45.7843761" data-val="45.7843761">Max:&nbsp;45.7843761</a>
+                                            </div>
+                                            <div class="calc__tags">
+                                                <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
+                                                <div class="calc__tags-sep"></div>
+                                            </div>
+                                            <div class="calc__table js-calc-table">
+                                                <div class="calc__search">
+                                                    <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
+                                                </div>
+                                                <div class="calc__items js-content-scroll">
+
+                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_get">
+                                                        <option value="367" data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/USDT-ETH-2.png" data-logo="https://crypto-chicken.co/wp-content/uploads/USDT-ETH-2.png" data-logo-next="">Tether ERC20 USDT</option>
+                                                        <option value="598" data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/TON.png" data-logo="https://crypto-chicken.co/wp-content/uploads/TON.png" data-logo-next="">Tether TON USDT</option>
+                                                        <option value="597" data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/Property-1ARB.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Property-1ARB.png" data-logo-next="">Tether Arbitrum USDT</option>
+                                                        <option value="371" data-ctypes="stable" data-img="https://crypto-chicken.co/wp-content/uploads/USDC-ETH.png" data-logo="https://crypto-chicken.co/wp-content/uploads/USDC-ETH.png" data-logo-next="">USDCoin ERC20 USDC</option>
+                                                        <option value="376" data-ctypes="crypto" data-img="/wp-content/uploads/60-Dai.png" data-logo="/wp-content/uploads/60-Dai.png" data-logo-next="">Dai DAI</option>
+                                                        <option value="361" selected='selected' data-ctypes="crypto" data-img="/wp-content/uploads/Monero.png" data-logo="/wp-content/uploads/Monero.png" data-logo-next="">Monero XMR</option>
+                                                        <option value="359" data-ctypes="crypto" data-img="/wp-content/uploads/Litecoin.png" data-logo="/wp-content/uploads/Litecoin.png" data-logo-next="">Litecoin LTC</option>
+                                                        <option value="385" data-ctypes="crypto" data-img="/wp-content/uploads/26-TRON.png" data-logo="/wp-content/uploads/26-TRON.png" data-logo-next="">TRON TRX</option>
+                                                        <option value="348" data-ctypes="crypto" data-img="/wp-content/uploads/Bitcoin.png" data-logo="/wp-content/uploads/Bitcoin.png" data-logo-next="">Bitcoin BTC</option>
+                                                        <option value="355" data-ctypes="crypto" data-img="/wp-content/uploads/Ether.png" data-logo="/wp-content/uploads/Ether.png" data-logo-next="">Ethereum ETH</option>
+                                                        <option value="404" data-ctypes="crypto" data-img="/wp-content/uploads/31-Solana.png" data-logo="/wp-content/uploads/31-Solana.png" data-logo-next="">Solana SOL</option>
+                                                        <option value="352" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/bitcoin-cash-1.png" data-logo="https://crypto-chicken.co/wp-content/uploads/bitcoin-cash-1.png" data-logo-next="">Bitcoin Cash BCH</option>
+                                                        <option value="416" data-ctypes="crypto" data-img="/wp-content/uploads/27-Toncoin.png" data-logo="/wp-content/uploads/27-Toncoin.png" data-logo-next="">Toncoin TON</option>
+                                                        <option value="592" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/Screenshot-49-photoaidcom-cropped.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Screenshot-49-photoaidcom-cropped.png" data-logo-next="">Official Trump TRUMP</option>
+                                                        <option value="590" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-4.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-4.png" data-logo-next="">Arbitrum ARB</option>
+                                                        <option value="362" data-ctypes="crypto" data-img="/wp-content/uploads/Dogecoin.png" data-logo="/wp-content/uploads/Dogecoin.png" data-logo-next="">Dogecoin DOGE</option>
+                                                        <option value="409" data-ctypes="crypto" data-img="/wp-content/uploads/51-Maker.png" data-logo="/wp-content/uploads/51-Maker.png" data-logo-next="">Maker MKR</option>
+                                                        <option value="383" data-ctypes="crypto" data-img="/wp-content/uploads/Cardano.png" data-logo="/wp-content/uploads/Cardano.png" data-logo-next="">Cardano ADA</option>
+                                                        <option value="358" data-ctypes="crypto" data-img="/wp-content/uploads/Ether-classic.png" data-logo="/wp-content/uploads/Ether-classic.png" data-logo-next="">Ether Classic ETC</option>
+                                                        <option value="591" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-1-1.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-1-1.png" data-logo-next="">Optimism OP</option>
+                                                        <option value="360" data-ctypes="crypto" data-img="/wp-content/uploads/Ripple.png" data-logo="/wp-content/uploads/Ripple.png" data-logo-next="">Ripple XRP</option>
+                                                        <option value="401" data-ctypes="crypto" data-img="/wp-content/uploads/38-Polkadot.png" data-logo="/wp-content/uploads/38-Polkadot.png" data-logo-next="">Polkadot DOT</option>
+                                                        <option value="364" data-ctypes="crypto" data-img="/wp-content/uploads/Dash.png" data-logo="/wp-content/uploads/Dash.png" data-logo-next="">Dash DASH</option>
+                                                        <option value="589" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-3.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-3.png" data-logo-next="">Aptos APT</option>
+                                                        <option value="595" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/image-1.png" data-logo="https://crypto-chicken.co/wp-content/uploads/image-1.png" data-logo-next="">Sui SUI</option>
+                                                        <option value="410" data-ctypes="crypto" data-img="/wp-content/uploads/71-Avalanche.png" data-logo="/wp-content/uploads/71-Avalanche.png" data-logo-next="">Avalanche C-CHAIN AVAX</option>
+                                                        <option value="596" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/image-2.png" data-logo="https://crypto-chicken.co/wp-content/uploads/image-2.png" data-logo-next="">0x Protocol ZRX</option>
+                                                        <option value="392" data-ctypes="crypto" data-img="/wp-content/uploads/56-ICON.png" data-logo="/wp-content/uploads/56-ICON.png" data-logo-next="">ICON ICX</option>
+                                                        <option value="400" data-ctypes="crypto" data-img="/wp-content/uploads/28-Tezos.png" data-logo="/wp-content/uploads/28-Tezos.png" data-logo-next="">Tezos XTZ</option>
+                                                        <option value="406" data-ctypes="crypto" data-img="/wp-content/uploads/32-Shiba.png" data-logo="/wp-content/uploads/32-Shiba.png" data-logo-next="">Shiba ERC20 SHIB</option>
+                                                        <option value="402" data-ctypes="crypto" data-img="/wp-content/uploads/24-Uniswap.png" data-logo="/wp-content/uploads/24-Uniswap.png" data-logo-next="">Uniswap ERC20 UNI</option>
+                                                        <option value="399" data-ctypes="crypto" data-img="/wp-content/uploads/63-Cosmos.png" data-logo="/wp-content/uploads/63-Cosmos.png" data-logo-next="">Cosmos ATOM</option>
+                                                        <option value="405" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-6.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-6.png" data-logo-next="">VeChain VET</option>
+                                                        <option value="384" data-ctypes="crypto" data-img="/wp-content/uploads/Stellar.png" data-logo="/wp-content/uploads/Stellar.png" data-logo-next="">Stellar XLM</option>
+                                                        <option value="363" data-ctypes="crypto" data-img="https://crypto-chicken.co/wp-content/uploads/POLYGON.png" data-logo="https://crypto-chicken.co/wp-content/uploads/POLYGON.png" data-logo-next="">Polygon POL</option>
+                                                        <option value="555" data-ctypes="bank" data-img="https://crypto-chicken.co/wp-content/uploads/Screenshot-35-round.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Screenshot-35-round.png" data-logo-next="">Revolut EUR</option>
+                                                        <option value="582" data-ctypes="bank" data-img="https://crypto-chicken.co/wp-content/uploads/Screenshot-34-round.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Screenshot-34-round.png" data-logo-next="">Wise EUR</option>
+                                                        <option value="451" data-ctypes="bank" data-img="https://crypto-chicken.co/wp-content/uploads/Screenshot-33-round.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Screenshot-33-round.png" data-logo-next="">PaySera EUR</option>
+                                                        <option value="550" data-ctypes="bank" data-img="https://crypto-chicken.co/wp-content/uploads/Screenshot-37-round.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Screenshot-37-round.png" data-logo-next="">Sepa EUR</option>
+                                                        <option value="568" data-ctypes="cash" data-img="https://crypto-chicken.co/wp-content/uploads/Screenshot-38-round.png" data-logo="https://crypto-chicken.co/wp-content/uploads/Screenshot-38-round.png" data-logo-next="">Наличные USD</option>
+                                                        <option value="570" data-ctypes="cash" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-4-1.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-4-1.png" data-logo-next="">Наличные EUR</option>
+                                                        <option value="571" data-ctypes="cash" data-img="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-5.png" data-logo="https://crypto-chicken.co/wp-content/uploads/11zon-cropped-5.png" data-logo-next="">Наличные UAH</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- direction fields -->
+                                <div class="calc__form">
+                                    <div class="calc__form-tt">Персональные данные</div>
+
+
+                                    <div class="xchange_curs_line js_line_wrapper ">
+                                        <div class="xchange_curs_line_ins">
+                                            <div class="xchange_curs_label">
+                                                <div class="xchange_curs_label_ins">
+                                                    <label for="account2"><span class="xchange_label">Кошелек<span class="req">*</span>: </span></label>
+                                                </div>
+                                            </div>
+                                            <div class="xchange_curs_input js_wrap_error js_window_wrap">
+                                                <div class="form__input"><input name="account2" type="text" cash-id="account361" id="account2" autocomplete="off" value="" class="js_account2 cache_data check_cache input" placeholder="Кошелек*" />
+                                                    <div class="input__bg"></div>
+                                                </div>
+                                                <div class="js_error js_account2_error"></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="xchange_pers">
+                                        <div class="xchange_pers_ins">
+                                            <div class="xchange_pers_title">
+                                                <div class="xchange_pers_title_ins">
+                                                    <span>Персональные данные</span>
+                                                </div>
+                                            </div>
+                                            <div class="xchange_pers_div">
+                                                <div class="xchange_pers_div_ins">
+                                                    <div class="xchange_pers_line js_line_wrapper ">
+                                                        <div class="xchange_pers_line_ins">
+                                                            <div class="xchange_pers_label">
+                                                                <div class="xchange_pers_label_ins">
+                                                                    <label for="cf6"><span class="xchange_label">E-mail<span class="req">*</span>: <span class="help_tooltip_label"></span></span></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="xchange_pers_input js_wrap_error js_window_wrap">
+                                                                <div class="form__input"><input name="cf6" cash-id="cf6" id="cf6" autocomplete="off" type="text" value="" class="js_cf6 cache_data check_cache input" placeholder="E-mail*" title="Введите ваш действующий e-mail.
+Все корректировки по заявке принимаются только с вашей почты." />
+                                                                    <div class="input__bg"></div>
+                                                                </div>
+                                                                <div class="info_window js_window">
+                                                                    <div class="info_window_ins">
+                                                                        <div class="info_window_abs"></div>
+                                                                        <p>Введите ваш действующий e-mail.<br />
+                                                                            Все корректировки по заявке принимаются только с вашей почты.</p>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="js_error js_cf6_error"></div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="notice_message">
+                                        <div class="notice_message_ins">
+                                            <div class="notice_message_abs"></div>
+                                            <div class="notice_message_close"></div>
+                                            <div class="notice_message_text">
+                                                <div class="notice_message_text_ins">
+                                                    <div class="text">
+                                                        <p>Данная операция производится в автоматическом режиме.<br />
+                                                            В целях противодействия легализации доходов, полученных преступным путем, проводится <strong> AML-проверка</strong>.<br />
+                                                            Курс фиксируется при достижении 20 подтверждений в сети и покупке монет на бирже.</p>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="calc__form-policy">
+
+                                        <div class="hexch_checkdata_div">
+                                            <label class="form__policy">
+                                                <input type="checkbox" name="check_rule" autocomplete="off" value="1" /><span class="form__policy-sq"></span> <span class="form__policy-t">Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a></span>
+                                            </label>
+                                        </div>
+                                        <div class="exchange_checkpersdata">
+                                            <label class="form__policy"><input type="checkbox" name="add_rules" autocomplete="off" value="1" /><span class="form__policy-sq"></span> <span class="form__policy-t">Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a></span></label>
+                                        </div>
+
+
+                                        <div class="hexch_checkdata_div">
+                                            <label class="form__policy"><input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" /><span class="form__policy-sq"></span> <span class="form__policy-t">Не запоминать введенные данные<span></span></label>
+                                        </div>
+
+
+                                        <div class="captcha_div">
+                                            <div class="captcha_title">
+                                                Введите ответ
+                                            </div>
+                                            <div class="captcha_body">
+                                                <div class="captcha_divimg">
+                                                    <img src="https://crypto-chicken.co/wp-content/pn_uploads/captcha/omLOW3Zn.png" class="captcha1" alt="" />
+                                                </div>
+                                                <div class="captcha_divznak">
+                                                    <span class="captcha_sym">x</span>
+                                                </div>
+                                                <div class="captcha_divimg">
+                                                    <img src="https://crypto-chicken.co/wp-content/pn_uploads/captcha/x2B4P4v3.png" class="captcha2" alt="" />
+                                                </div>
+                                                <div class="captcha_divznak">
+                                                    =
+                                                </div>
+                                                <div class="form__input">
+                                                    <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" />
+                                                    <div class="input__bg"></div>
+                                                </div>
+                                                <a href="#" class="captcha_reload" title="заменить задачу"></a>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="calc__form-submit">
+                                        <button class="btn btn--wall"><span>Обменять сейчас</span></button>
+                                    </div>
+                                    <div class="ajax_post_bids_res"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="raffle section__mg">
+                <div class="container">
+                    <div class="section__head h-cols">
+                        <h2 class="section__title">Участвуй в розыгрыше</h2>
+                        <div class="section__action hide-tablet-sm">
+                            <a href="https://crypto-chicken.co/raffle/" target="_blank" class="btn btn--bd hide-desktop"><span>Подробнее о розыгрыше</span></a>
+                        </div>
+                    </div>
+
+                    <div class="raffle__cols--mobile">
+                        <div class="raffle__box--mobile box">
+                            <div class="raffle__item-title">
+                                <div class="title">Соверши обмен на нашем сайте и участвуй в розыгрыше!</div>
+                            </div>
+                            <div class="raffle__item-text">
+                                Каждый пользователь, совершая обмен на CryptoChicken, автоматически становится участником розыгрыша и имеет шанс получить денежное вознаграждение
+                            </div>
+                            <div class="raffle__item-img">
+                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/raffle-icon-2.svg" alt="">
+                            </div>
+
+                            <div class="raffle__boxes--mobile">
+                                <div class="raffle__box--mobile">
+                                    <div class="raffle__box-text raffle__box-title title">Победители июня</div>
+                                    <div class="raffle__box-winners">
+                                        <div class="raffle__winners-list">
+                                            <div class="raffle__winner-item"><span class="raffle__winner-name">fueg****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                            <div class="raffle__winner-item"><span class="raffle__winner-name">sups****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                            <div class="raffle__winner-item"><span class="raffle__winner-name">tr20****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                            <div class="raffle__winner-item"><span class="raffle__winner-name">fina****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                            <div class="raffle__winner-item"><span class="raffle__winner-name">supr****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="raffle__box--mobile">
+                                    <div class="raffle__box-val">
+                                        <span>369.11<img class="raffle__fund-icon" src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt=""></span>
+                                    </div>
+                                    <div class="raffle__box-text">Банк розыгрыша</div>
+                                </div>
+                                <div class="raffle__box--mobile raffle__timer--mobile">
+                                    <div class="raffle__box-text raffle__box-title title">До розыгрыша осталось:</div>
+                                    <div class="raffle__timer">
+                                        <div class="js-countdown" id="countdown-mobile" data-to="2025-08-01" data-locale="ru_RU"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="raffle__item-buttons">
+                                <a href="https://crypto-chicken.co/raffle/" class="btn btn--bd btn--bdg btn--wall">
+                                    <span>Подробнее о розыгрыше</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hide-mobile">
+                        <div class="raffle__boxes">
+                            <div class="raffle__box box raffle__timer fadeInUp wow" data-wow-delay="0.3s">
+                                <div class="js-countdown" id="countdown" data-to="2025-08-01" data-locale="ru_RU"></div>
+                            </div>
+                            <div class="raffle__box box fadeInUp wow" data-wow-delay="0.5s">
+                                <div class="raffle__box-val">
+                                    <span>369.11<img class="raffle__fund-icon" src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt=""></span>
+                                </div>
+                                <div class="raffle__box-text">Банк розыгрыша</div>
+                            </div>
+                            <div class="raffle__box box fadeInUp wow" data-wow-delay="0.7s">
+                                <div class="raffle__box-title title">Победители июня</div>
+                                <div class="raffle__box-winners">
+                                    <div class="raffle__winners-list">
+                                        <div class="raffle__winner-item"><span class="raffle__winner-name">fueg****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                        <div class="raffle__winner-item"><span class="raffle__winner-name">sups****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                        <div class="raffle__winner-item"><span class="raffle__winner-name">tr20****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                        <div class="raffle__winner-item"><span class="raffle__winner-name">fina****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                        <div class="raffle__winner-item"><span class="raffle__winner-name">supr****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="raffle__items box fadeInUp wow" data-wow-delay="0.1s">
+                            <div class="raffle__item">
+                                <div class="raffle__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/raffle-icon-2.svg" alt=""></div>
+                                <div class="raffle__item-title title">Создай заявку</div>
+                                <div class="raffle__item-text">Создай заявку на любую сумму</div>
+                            </div>
+                            <div class="raffle__item">
+                                <div class="raffle__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/raffle-icon-1.svg" alt=""></div>
+                                <div class="raffle__item-title title">Соверши обмен</div>
+                                <div class="raffle__item-text">Соверши обмен валюты на нашем сайте</div>
+                            </div>
+                            <div class="raffle__item">
+                                <div class="raffle__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/raffle-icon-3.svg" alt=""></div>
+                                <div class="raffle__item-title title">Участвуй в розыгрыше</div>
+                                <div class="raffle__item-text">Розыгрыш проводится в последний день месяца автоматически по ID заявки</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <section class="cash section__mg">
+                <div class="container">
+                    <div class="cash__cols">
+                        <div class="cash__col fadeInUp wow" data-wow-delay="0.1s">
+                            <div class="section__head">
+                                <h2 class="section__title">Получи кэшбэк</h2>
+                            </div>
+                            <div class="cash__item box">
+                                <div class="cash__item-title">
+                                    <div class="title">Соверши обмен на нашем сайте и получи кэшбэк с каждой операции!</div>
+                                </div>
+                                <div class="cash__item-text">
+                                    Каждый авторизованный пользователь, совершая обмен на нашем сайте CryptoChicken, получает кэшбек 0,03% от суммы обмена на свой партнерский аккаунт. </div>
+                                <div class="cash__item-buttons">
+                                    <a href="https://crypto-chicken.co/cashback-info/" class="btn btn--bd btn--bdg btn--wall">
+                                        <span>Подробнее о программе</span>
+                                    </a>
+                                </div>
+                                <div class="cash__item-img">
+                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/cash-img-1.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cash__col fadeInUp wow" data-wow-delay="0.3s">
+                            <div class="section__head">
+                                <h2 class="section__title">Проверь кошелек</h2>
+                            </div>
+                            <div class="cash__item box">
+                                <div class="cash__item-title">
+                                    <div class="title">Проверь свой кошелек перед отправкой средств!</div>
+                                </div>
+                                <div class="cash__item-text">
+                                    По результатам проверки на основании сигналов кошелька придут данные шкалы риска, и ответ из службы поддержки биржи. </div>
+                                <div class="cash__item-buttons">
+                                    <a href="https://crypto-chicken.co/aml-check/" class="btn btn--bd btn--bdg btn--wall">
+                                        <span>Подробнее об AML проверке</span>
+                                    </a>
+                                </div>
+                                <div class="cash__item-img">
+                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/cash-img-2.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="advant section__mg">
+                <div class="container">
+                    <div class="section__head">
+                        <h2 class="section__title">Преимущества</h2>
+                        <div class="section__intro">обмена с CryptoСhicken</div>
+                    </div>
+
+                    <div class="advant__items">
+                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.1s">
+                            <div class="advant__item-head">
+                                <div class="advant__item-title title">Быстрые операции</div>
+                                <div class="advant__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/advant/icon-1.svg" alt=""></div>
+                            </div>
+                            <div class="advant__item-text">Мы обеспечиваем мгновенные электронные транзакции, которые позволяют легко и быстро приобретать или реализовывать криптовалюту прямо из дома.</div>
+                        </div>
+                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.3s">
+                            <div class="advant__item-head">
+                                <div class="advant__item-title title">Простота использования</div>
+                                <div class="advant__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/advant/icon-2.svg" alt=""></div>
+                            </div>
+                            <div class="advant__item-text">Сайт обладает интуитивно понятным интерфейсом, который позволяет пользователям мгновенно создавать аккаунты и безопасно проводить операции обмена, получая криптовалюту на свои кошельки.</div>
+                        </div>
+                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.35s">
+                            <div class="advant__item-head">
+                                <div class="advant__item-title title">Высокий уровень безопасности</div>
+                                <div class="advant__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/advant/icon-3.svg" alt=""></div>
+                            </div>
+                            <div class="advant__item-text">Сайт защищен технологиями шифрования, поэтому обеспечивает конфиденциальность личной информации (пароли, номера, карты) пользователей, а так же мы не храним данные на наших серверах.</div>
+                        </div>
+                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.1s">
+                            <div class="advant__item-head">
+                                <div class="advant__item-title title">Выгодный <br> обменный курс</div>
+                                <div class="advant__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/advant/icon-4.svg" alt=""></div>
+                            </div>
+                            <div class="advant__item-text">У нас всегда предлагается наиболее выгодный обменный курс для криптовалюты, обеспечивая максимальные выгоды для наших клиентов.</div>
+                        </div>
+                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.3s">
+                            <div class="advant__item-head">
+                                <div class="advant__item-title title">Компетентная поддержка</div>
+                                <div class="advant__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/advant/icon-5.svg" alt=""></div>
+                            </div>
+                            <div class="advant__item-text">Наша команда готова быстро и эффективно решать все вопросы и проблемы, с которыми сталкиваются наши пользователи. Нам важно, чтобы ни одно обращение не осталось без внимания.</div>
+                        </div>
+                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.7s">
+                            <div class="advant__item-head">
+                                <div class="advant__item-title title">Широкий выбор направлений обмена</div>
+                                <div class="advant__item-icon"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/advant/icon-6.svg" alt=""></div>
+                            </div>
+                            <div class="advant__item-text">На нашей платформе представлено широкое разнообразие направлений для обмена большинства известных криптовалют, включая Bitcoin, Ethereum, Litecoin и многие другие.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reviews section__mg">
+                <div class="container">
+                    <div class="section__head h-cols">
+                        <h2 class="section__title">Отзывы клиентов</h2>
+                        <div class="section__action hide-tablet-sm">
+                            <a href="https://www.bestchange.ru/cryptochicken-exchanger.html" target="_blank" class="btn"><span>Оставить отзыв</span></a>
+                            <a href="https://www.bestchange.ru/cryptochicken-exchanger.html" target="_blank" class="btn btn--bd hide-desktop"><span>Читать все отзывы</span></a>
+                        </div>
+                    </div>
+
+                    <div class="reviews__carousel swiper js-reviews-carousel">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.1s">
+                                <div class="reviews__item-head">
+                                    <div class="reviews__item-photo"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/rev-w.svg" alt=""></div>
+                                    <div class="reviews__item-nw">
+                                        <div class="reviews__item-name">Анастасия</div>
+                                        <div class="reviews__item-work">BestChange</div>
+                                    </div>
+                                </div>
+                                <div class="reviews__item-text">Достаточно быстрый обменник с приятным курсом, благодарю, советую.</div>
+                                <div class="reviews__item-date">15 мая 2024 12:30</div>
+                            </div>
+                            <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.3s">
+                                <div class="reviews__item-head">
+                                    <div class="reviews__item-photo"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/rev-m.svg" alt=""></div>
+                                    <div class="reviews__item-nw">
+                                        <div class="reviews__item-name">Алекс</div>
+                                        <div class="reviews__item-work">BestChange</div>
+                                    </div>
+                                </div>
+                                <div class="reviews__item-text">Все быстро и чётко. Оказался самый удобный из всех чем пользовался в последнее время.</div>
+                                <div class="reviews__item-date">13 мая 2024 21:08</div>
+                            </div>
+                            <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.5s">
+                                <div class="reviews__item-head">
+                                    <div class="reviews__item-photo"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/rev-m-2.svg" alt=""></div>
+                                    <div class="reviews__item-nw">
+                                        <div class="reviews__item-name">Максим</div>
+                                        <div class="reviews__item-work">BestChange</div>
+                                    </div>
+                                </div>
+                                <div class="reviews__item-text">Всё прошло оперативно, без задержек. Благодарю. Обращался к поддержке за уточнением нескольких вопросов — ответили быстро и по делу. Спасибо.</div>
+                                <div class="reviews__item-date">7 мая 2024 12:53</div>
+                            </div>
+                            <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.7s">
+                                <div class="reviews__item-head">
+                                    <div class="reviews__item-photo"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/rev-w-2.svg" alt=""></div>
+                                    <div class="reviews__item-nw">
+                                        <div class="reviews__item-name">Ar4i</div>
+                                        <div class="reviews__item-work">BestChange</div>
+                                    </div>
+                                </div>
+                                <div class="reviews__item-text">Все отлично. Быстрый перевод, без скрытых комиссий.</div>
+                                <div class="reviews__item-date">9 марта 2024 19:34</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section__buttons show-tablet-sm">
+                        <a href="https://www.bestchange.com/cryptochicken-exchanger.html" class="btn btn--wmob" target="_blank"><span>Оставить отзыв</span></a>
+                    </div>
+                </div>
+            </section>
+
+            <!--</div>-->
+            <!--</section>-->
+        </main>
+        <!--content__wrapper-->
+
+    </div>
+
+    <div class="popup " data-popup="call">
+        <div class="popup__content">
+            <div class="popup__bg popup-close"></div>
+            <div class="popup__container">
+                <a href="#" class="popup__close popup-close"></a>
+                <div class="popup__body">
+                    <div class="popup__head">
+                        <div class="popup__title"></div>
+                        <div class="popup__intro"></div>
+                    </div>
+
+                </div>
+            </div>
+            <!--popup__container-->
+        </div>
+    </div>
+
+    <div class="popup " data-popup="thank">
+        <div class="popup__content">
+            <div href="" class="popup__bg popup-close"></div>
+            <div class="popup__container">
+                <a href="#" class="popup__close popup-close"></a>
+                <div class="popup__body">
+                    <div class="popup__head">
+                        <div class="popup__title"></div>
+                        <div class="popup__intro"></div>
+                    </div>
+
+                </div>
+            </div>
+            <!--popup__container-->
+        </div>
+    </div>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LW8KXMZ9C5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'G-LW8KXMZ9C5');
+    </script>
+
+    <div class="userwalletsform_box_html" style="display: none;">
+
+        <div class="form_field_line rb_line type_select field_name_currency_id has_title">
+            <div class="form_field_label rb_label"><label for="form_field_id-1-currency_id"><span class="form_field_label_ins">Платежная система <span class="req">*</span>:</span></label></div>
+            <div class="form_field_ins form__input rb_line_ins">
+
+                <select id="form_field_id-1-currency_id" class="userwalletsform_currency_id rb_select" autocomplete="off" name="currency_id">
+                    <option value="0">--выберите валюту--</option>
+                    <option value="596">0x Protocol ZRX</option>
+                    <option value="434">Advanced Cash EUR</option>
+                    <option value="436">Advanced Cash KZT</option>
+                    <option value="433">Advanced Cash RUB</option>
+                    <option value="437">Advanced Cash TRY</option>
+                    <option value="435">Advanced Cash UAH</option>
+                    <option value="432">Advanced Cash USD</option>
+                    <option value="408">Algorand ALGO</option>
+                    <option value="458">Alipay CNY</option>
+                    <option value="593">ApeCoin APE</option>
+                    <option value="589">Aptos APT</option>
+                    <option value="410">Avalanche C-CHAIN AVAX</option>
+                    <option value="395">BAT ERC20 BAT</option>
+                    <option value="377">Binance USD BUSD</option>
+                    <option value="390">BinanceCoin BEP2 BNB</option>
+                    <option value="391">BinanceCoin BEP20 BNB</option>
+                    <option value="394">BitTorrent BTTC</option>
+                    <option value="350">Bitcoin BEP20 BTCB</option>
+                    <option value="348">Bitcoin BTC</option>
+                    <option value="352">Bitcoin Cash BCH</option>
+                    <option value="354">Bitcoin Gold BTG</option>
+                    <option value="353">Bitcoin SV BSV</option>
+                    <option value="446">Capitalist EUR</option>
+                    <option value="447">Capitalist RUB</option>
+                    <option value="445">Capitalist USD</option>
+                    <option value="383">Cardano ADA</option>
+                    <option value="398">Chainlink LINK</option>
+                    <option value="561">Contact RUB</option>
+                    <option value="560">Contact USD</option>
+                    <option value="399">Cosmos ATOM</option>
+                    <option value="415">Cronos CRO</option>
+                    <option value="376">Dai DAI</option>
+                    <option value="364">Dash DASH</option>
+                    <option value="412">Decentraland MANA</option>
+                    <option value="362">Dogecoin DOGE</option>
+                    <option value="381">EOS EOS</option>
+                    <option value="457">Epay EUR</option>
+                    <option value="456">Epay USD</option>
+                    <option value="358">Ether Classic ETC</option>
+                    <option value="356">Ethereum BEP20 ETH</option>
+                    <option value="355">Ethereum ETH</option>
+                    <option value="508">ForteBank KZT</option>
+                    <option value="506">HalykBank KZT</option>
+                    <option value="392">ICON ICX</option>
+                    <option value="382">IOTA MIOTA</option>
+                    <option value="443">Idram AMD</option>
+                    <option value="510">Jusan Bank KZT</option>
+                    <option value="509">Kaspi Bank KZT</option>
+                    <option value="393">Komodo KMD</option>
+                    <option value="359">Litecoin LTC</option>
+                    <option value="409">Maker MKR</option>
+                    <option value="361">Monero XMR</option>
+                    <option value="559">MoneyGram EUR</option>
+                    <option value="558">MoneyGram USD</option>
+                    <option value="502">Monobank UAH</option>
+                    <option value="414">NEAR Protocol NEAR</option>
+                    <option value="379">NEM XEM</option>
+                    <option value="380">NEO N3 NEO</option>
+                    <option value="449">Neteller EUR</option>
+                    <option value="448">Neteller USD</option>
+                    <option value="454">NixMoney EUR</option>
+                    <option value="453">NixMoney USD</option>
+                    <option value="387">OMG Network OMG</option>
+                    <option value="592">Official Trump TRUMP</option>
+                    <option value="396">Ontology ONT</option>
+                    <option value="591">Optimism OP</option>
+                    <option value="499">Oschadbank UAH</option>
+                    <option value="424">PM e-Voucher USD</option>
+                    <option value="501">PUMB UAH</option>
+                    <option value="375">Pax Dollar USDP</option>
+                    <option value="444">Paxum USD</option>
+                    <option value="430">PayPal EUR</option>
+                    <option value="431">PayPal GBP</option>
+                    <option value="429">PayPal RUB</option>
+                    <option value="428">PayPal USD</option>
+                    <option value="451">PaySera EUR</option>
+                    <option value="450">PaySera USD</option>
+                    <option value="440">Payeer EUR</option>
+                    <option value="439">Payeer RUB</option>
+                    <option value="438">Payeer USD</option>
+                    <option value="420">Paymer USD</option>
+                    <option value="459">Payoneer USD</option>
+                    <option value="423">Perfect Money BTC</option>
+                    <option value="422">Perfect Money EUR</option>
+                    <option value="421">Perfect Money USD</option>
+                    <option value="401">Polkadot DOT</option>
+                    <option value="363">Polygon POL</option>
+                    <option value="497">Privat 24 UAH</option>
+                    <option value="496">Privat 24 USD</option>
+                    <option value="427">QIWI KZT</option>
+                    <option value="426">QIWI RUB</option>
+                    <option value="397">Qtum QTUM</option>
+                    <option value="488">Raiffeisen Bank Aval RUB</option>
+                    <option value="498">Raiffeisen Bank Aval UAH</option>
+                    <option value="403">Ravencoin RVN</option>
+                    <option value="555">Revolut EUR</option>
+                    <option value="554">Revolut USD</option>
+                    <option value="567">Ria EUR</option>
+                    <option value="566">Ria USD</option>
+                    <option value="360">Ripple XRP</option>
+                    <option value="550">Sepa EUR</option>
+                    <option value="407">Shiba BEP20 SHIB</option>
+                    <option value="406">Shiba ERC20 SHIB</option>
+                    <option value="442">Skrill EUR</option>
+                    <option value="441">Skrill USD</option>
+                    <option value="404">Solana SOL</option>
+                    <option value="384">Stellar XLM</option>
+                    <option value="595">Sui SUI</option>
+                    <option value="385">TRON TRX</option>
+                    <option value="413">Terra LUNA</option>
+                    <option value="378">TerraUSD UST</option>
+                    <option value="597">Tether Arbitrum USDT</option>
+                    <option value="369">Tether BEP20 USDT</option>
+                    <option value="367">Tether ERC20 USDT</option>
+                    <option value="366">Tether Omni USDT</option>
+                    <option value="370">Tether SOL USDT</option>
+                    <option value="598">Tether TON USDT</option>
+                    <option value="368">Tether TRC20 USDT</option>
+                    <option value="400">Tezos XTZ</option>
+                    <option value="416">Toncoin TON</option>
+                    <option value="374">TrueUSD TUSD</option>
+                    <option value="371">USDCoin ERC20 USDC</option>
+                    <option value="373">USDCoin SOL USDC</option>
+                    <option value="372">USDCoin TRC20 USDC</option>
+                    <option value="402">Uniswap ERC20 UNI</option>
+                    <option value="405">VeChain VET</option>
+                    <option value="388">Verge XVG</option>
+                    <option value="520">Visa/MasterCard AMD</option>
+                    <option value="515">Visa/MasterCard BYN</option>
+                    <option value="522">Visa/MasterCard CNY</option>
+                    <option value="577">Visa/MasterCard CZK</option>
+                    <option value="513">Visa/MasterCard EUR</option>
+                    <option value="521">Visa/MasterCard GBP</option>
+                    <option value="516">Visa/MasterCard KZT</option>
+                    <option value="578">Visa/MasterCard MDL</option>
+                    <option value="579">Visa/MasterCard PLN</option>
+                    <option value="512">Visa/MasterCard RUB</option>
+                    <option value="580">Visa/MasterCard SEK</option>
+                    <option value="523">Visa/MasterCard TRY</option>
+                    <option value="514">Visa/MasterCard UAH</option>
+                    <option value="511">Visa/MasterCard USD</option>
+                    <option value="557">WU EUR</option>
+                    <option value="556">WU USD</option>
+                    <option value="386">Waves WAVES</option>
+                    <option value="418">WebMoney WME</option>
+                    <option value="419">WebMoney WMX</option>
+                    <option value="417">WebMoney WMZ</option>
+                    <option value="365">Zcash ZEC</option>
+                    <option value="484">Авангард RUB</option>
+                    <option value="477">Альфа cash-in RUB</option>
+                    <option value="476">Альфа cash-in USD</option>
+                    <option value="475">Альфа-Банк RUB</option>
+                    <option value="504">Альфа-Банк UAH</option>
+                    <option value="505">Беларусбанк BYN</option>
+                    <option value="482">ВТБ RUB</option>
+                    <option value="486">Газпромбанк RUB</option>
+                    <option value="563">ЗК RUB</option>
+                    <option value="562">ЗК USD</option>
+                    <option value="533">Карта HUMO UZS</option>
+                    <option value="532">Карта UZCARD UZS</option>
+                    <option value="531">Карта UnionPay CNY</option>
+                    <option value="530">Карта Мир RUB</option>
+                    <option value="487">Кукуруза RUB</option>
+                    <option value="538">Любой банк BYN</option>
+                    <option value="542">Любой банк CNY</option>
+                    <option value="536">Любой банк EUR</option>
+                    <option value="539">Любой банк KZT</option>
+                    <option value="535">Любой банк RUB</option>
+                    <option value="543">Любой банк TRY</option>
+                    <option value="537">Любой банк UAH</option>
+                    <option value="534">Любой банк USD</option>
+                    <option value="494">МТС Банк RUB</option>
+                    <option value="575">Наличные AED</option>
+                    <option value="572">Наличные BYN</option>
+                    <option value="570">Наличные EUR</option>
+                    <option value="573">Наличные KZT</option>
+                    <option value="569">Наличные RUB</option>
+                    <option value="576">Наличные TRY</option>
+                    <option value="571">Наличные UAH</option>
+                    <option value="568">Наличные USD</option>
+                    <option value="490">Открытие RUB</option>
+                    <option value="491">Почта Банк RUB</option>
+                    <option value="485">Промсвязьбанк RUB</option>
+                    <option value="489">РНКБ RUB</option>
+                    <option value="493">Росбанк RUB</option>
+                    <option value="492">Россельхозбанк RUB</option>
+                    <option value="483">Русский Стандарт RUB</option>
+                    <option value="552">СБП RUB</option>
+                    <option value="507">Сбербанк KZT</option>
+                    <option value="474">Сбербанк QR RUB</option>
+                    <option value="473">Сбербанк RUB</option>
+                    <option value="460">Счет телефона RUB</option>
+                    <option value="461">Счет телефона UAH</option>
+                    <option value="481">Тинькофф QR RUB</option>
+                    <option value="479">Тинькофф RUB</option>
+                    <option value="478">Тинькофф USD</option>
+                    <option value="480">Тинькофф cash-in RUB</option>
+                    <option value="500">УкрСиббанк UAH</option>
+                    <option value="495">Хоум Кредит RUB</option>
+                    <option value="425">ЮMoney RUB</option>
+                </select>
+
+
+                <div class="form_field_errors">
+                    <div class="form_field_errors_ins"></div>
+                </div>
+            </div>
+            <div class="form_field_clear rb_line_clear"></div>
+        </div>
+
+        <div class="form_field_line rb_line type_input field_name_account has_title">
+            <div class="form_field_label rb_label"><label for="form_field_id-1-account"><span class="form_field_label_ins">Номер счета <span class="req">*</span>:</span></label></div>
+            <div class="form_field_ins form__input rb_line_ins">
+
+                <input type="text" id="form_field_id-1-account" class="userwalletsform_account rb_input input input--nbd" autocomplete="off" name="account" value="" />
+                <div class="input__bg"></div>
+
+                <div class="form_field_errors">
+                    <div class="form_field_errors_ins"></div>
+                </div>
+            </div>
+            <div class="form_field_clear rb_line_clear"></div>
+        </div>
+
+        <div class="rb_line"><input type="submit" formtarget="_top" name="submit" class="rb_submit" value="Добавить счет" /></div>
+        <div class="resultgo"></div>
+    </div>
+    <form method="post" class="ajax_post_form" action="https://crypto-chicken.co/premium_site_action-userwalletsform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+        <input type="hidden" name="redir" id="userwalletsform_redir" value="" />
+
+        <div class="userwalletsform_box"></div>
+    </form>
+
+    <div class="walletsverify_box"></div>
+    <script type="text/javascript">
+        jQuery(function($) {
+
+            var auto_load = 1;
+
+            function globalajax_timer() {
+                if (auto_load == 1) {
+                    auto_load = 0;
+
+                    var param = 'set=1';
+
+                    $('.globalajax_ind').addClass('active');
+                    $.ajax({
+                        type: "POST",
+                        url: "https://crypto-chicken.co/premium_site_action-globalajax_action.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                        dataType: 'json',
+                        data: param,
+                        error: function(res, res2, res3) {
+                            for (key in res) {
+                                console.log(key + ' = ' + res[key]);
+                            }
+                        },
+                        beforeSend: function(res, res2, res3) {},
+                        success: function(res) {
+
+                            if (res['status'] == 'success') {
+                                auto_load = 1;
+                            }
+                            $('.globalajax_ind').removeClass('active');
+                        }
+                    });
+                }
+            }
+
+            setInterval(globalajax_timer, 60000);
+
+        });
+    </script>
+
+    <!-- Put online chat code or another code here / Razmestite kod onlajn chata ili drugoi kod vmesto jetogo teksta !-->
+    <script type="text/javascript" id="zsiqchat">
+        var $zoho = $zoho || {};
+        $zoho.salesiq = $zoho.salesiq || {
+            widgetcode: "siq14ec188a69152de55496ad9420108121ae55121ac1f6b0f636027b7e1192cf77",
+            values: {},
+            ready: function() {}
+        };
+        var d = document;
+        s = d.createElement("script");
+        s.type = "text/javascript";
+        s.id = "zsiqscript";
+        s.defer = true;
+        s.src = "https://salesiq.zoho.eu/widget";
+        t = d.getElementsByTagName("script")[0];
+        t.parentNode.insertBefore(s, t);
+    </script>
+
+    <script>
+        if (typeof gtag === 'function') {
+            gtag('config', 'AW-16948843742');
+        } else {
+            // Full Google Tag if gtag is missing
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16948843742';
+            document.head.appendChild(script);
+
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'AW-16948843742');
+        }
+    </script>
+    <div style="display: none;">
+        <form method="post" class="upload_hf_form" enctype="multipart/form-data" action="https://crypto-chicken.co/premium_site_action-hf_upload.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+            <input type="hidden" name="formid" id="upload_hf_form_id" value="" />
+            <input type="hidden" name="type" id="upload_hf_form_type" value="" />
+            <input type="hidden" name="id" id="upload_hf_form_valid" value="" />
+            <input type="hidden" name="redir" id="upload_hf_form_redir" value="" />
+            <div id="upload_hf_form_file"></div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        jQuery(function($) {
+
+            $(document).on('change', '.js_hf_input', function() {
+
+                var thet = $(this);
+                var type = thet.parents('.form_hf').attr('data-type');
+                var redir = thet.parents('.form_hf').attr('data-redir');
+                var id = thet.parents('.form_hf').attr('data-id');
+                var form_id = thet.parents('.form_hf').attr('id');
+                var input_now = thet.parents('.js_hf_input_linewrap').html();
+                var ccn = thet[0].files.length;
+                if (ccn > 0) {
+                    var fileInput = thet[0];
+                    var bitec = fileInput.files[0].size;
+                    if (bitec > 2097152) {
+                        alert('Макс. 2 МБ !');
+                        thet.val('');
+                    } else {
+                        $('#upload_hf_form_type').val(type);
+                        $('#upload_hf_form_valid').val(id);
+                        $('#upload_hf_form_redir').val(redir);
+                        $('#upload_hf_form_id').val(form_id);
+
+                        $("#upload_hf_form_file").html('');
+
+                        let dt = new DataTransfer();
+                        dt.items.add(this.files[0]);
+
+                        let n_input = $('<input>', {
+                            type: 'file',
+                            name: thet.attr('name'),
+                            class: thet.attr('class'),
+                            id: thet.attr('id'),
+                            accept: thet.attr('accept'),
+                            multiple: thet.prop('multiple'),
+                            required: thet.prop('required'),
+                        })[0];
+                        n_input.files = dt.files;
+
+                        $("#upload_hf_form_file").append(n_input);
+
+                        /* thet.clone().appendTo("#upload_hf_form_file"); */
+
+                        $('.upload_hf_form').submit();
+                    }
+                }
+
+            });
+
+            $('.upload_hf_form').ajaxForm({
+                dataType: 'json',
+                beforeSubmit: function(a, f, o) {
+
+                    var form_id = $('#upload_hf_form_id').val();
+                    $('#' + form_id).addClass('uploading');
+
+                    $('.form_hf input').prop('disabled', true);
+                    $('.form_hf').find('.js_hf_bar').show();
+                    $('.form_hf').find('.js_hf_bar_abs').width('0px');
+                    $('.js_hf_response').html('');
+
+                },
+                error: function(res, res2, res3) {
+                    for (key in res) {
+                        console.log(key + ' = ' + res[key]);
+                    }
+                },
+                uploadProgress: function(event, position, total, percentComplete) {
+
+                    var form_id = $('#upload_hf_form_id').val();
+                    var percentVal = percentComplete + '%';
+                    $('#' + form_id).find('.js_hf_bar_abs').width(percentVal);
+
+                },
+                success: function(res) {
+
+                    var form_id = $('#upload_hf_form_id').val();
+
+                    if (res['status'] == 'success') {
+                        $('#' + form_id).find('.js_hf_files').html(res['response']);
+                    }
+
+                    if (res['status'] == 'error') {
+                        $('#' + form_id + '_hf_response').html('<div class="resultfalse">' + res['status_text'] + '</div>');
+                    }
+
+                    if (res['url']) {
+                        window.location.href = res['url'];
+                    }
+
+                    $('.js_hf_input').val('');
+                    $('.form_hf').find('.ustbl_bar').hide();
+                    $('.form_hf input').prop('disabled', false);
+                    $('#' + form_id).removeClass('uploading');
+
+                }
+            });
+
+            $(document).on('click', '.js_hf_del', function() {
+
+                var id = $(this).attr('data-id');
+                var insert_html = $(this).parents('.js_hf_files');
+                var thet = $(this);
+                $('.js_hf_response').html('');
+                if (!thet.hasClass('act')) {
+                    if (confirm("Вы уверены что хотите удалить этот файл?")) {
+                        thet.addClass('act');
+                        var param = 'id=' + id;
+                        $.ajax({
+                            type: "POST",
+                            url: "https://crypto-chicken.co/premium_site_action-hf_delete.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                            dataType: 'json',
+                            data: param,
+                            error: function(res, res2, res3) {
+                                for (key in res) {
+                                    console.log(key + ' = ' + res[key]);
+                                }
+                            },
+                            success: function(res) {
+                                if (res['status'] == 'success') {
+                                    insert_html.html(res['response']);
+                                }
+
+                                if (res['status'] == 'error') {
+                                    for (key in res) {
+                                        console.log(key + ' = ' + res[key]);
+                                    }
+                                }
+
+                                if (res['url']) {
+                                    window.location.href = res['url'];
+                                }
+
+                                thet.removeClass('act');
+                            }
+                        });
+                    }
+                }
+
+                return false;
+            });
+
+        });
+    </script>
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"c9541608bc38455c9e1936cbc59a8538","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+{% endblock %}
