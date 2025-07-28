@@ -1,19 +1,18 @@
-[project]
+[tool.poetry]
 name = "crypto-exchange"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "f1zzye",email = "kosenko2401@gmail.com"}
-]
+authors = ["sauberr <sauberr10@gmail.com>, f1zzye <kosenko2401@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "django (==5.2)",
-    "black (>=25.1.0,<26.0.0)",
-    "flake8 (>=7.3.0,<8.0.0)"
-]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "5.2"
+black = "^25.1.0"
+flake8 = "^7.3.0"
+pillow = "^11.3.0"
 
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
