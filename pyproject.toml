@@ -1,0 +1,17 @@
+[project]
+name = "crypto-exchange"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "f1zzye",email = "kosenko2401@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django (==5.2)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
