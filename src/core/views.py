@@ -5,4 +5,4 @@ from common.mixins import TitleMixin
 
 class IndexView(TitleMixin, TemplateView):
     template_name = "core/index.html"
-    title = "Index"
+    title = "Online cryptocurrency exchange (cash cards) - profitable exchanger crypto-chicken.co"
