@@ -4,5 +4,11 @@ from common.mixins import TitleMixin
 
 
 class IndexView(TitleMixin, TemplateView):
-    template_name = "index.html"
-    title = "Online cryptocurrency exchange - CryptoChicken"
+    template_name: str = "core/index.html"
+    title: str = "Online cryptocurrency exchange - CryptoChicken"
+
+
+
+class AMLRulesView(TitleMixin, TemplateView):
+    template_name: str = "core/aml.html"
+    title: str = "AML rules - CryptoChicken"
