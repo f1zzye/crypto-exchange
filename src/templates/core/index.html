@@ -6,166 +6,10 @@
 
     <div class="wrapper">
 
-        <header class="header">
-            <div class="container">
-                <div class="header__inner">
-                    <div class="header__sname">
-                        <a href="https://crypto-chicken.co/" class="header__logo"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/logo.svg" alt=""></a>
-                        <div class="header__name"><a href="https://crypto-chicken.co/">CryptoChicken</a></div>
-                    </div>
+        {% include 'partials/header.html' %}
 
-                    <div class="header__right">
-                        <div class="header__top">
-                            <a href="https://t.me/CryptoChicken_bot" class="btn header__contacts-support" target="_blank"><span>Support</span><svg class="icon icon--fill">
-                                    <use xlink:href="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/sprite.svg#tg"></use>
-                                </svg></a>
-                            <div class="header__lang js-lang">
-                                <div class="header__lang-current">
-                                    <span>RU</span>
-                                    <button class="header__lang-open js-lang-open"></button>
-                                </div>
-                                <div class="header__lang-drop js-lang-drop">
-                                    <ul>
-                                        <li class="current"><a href="">RU</a></li>
-
-                                        <li><a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" rel="nofollow">EN</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="header__bottom">
-                            <div class="header__nav">
-                                <ul id="menu-verhnee-menyu" class="hmenu">
-                                    <li id="menu-item-1101" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="https://crypto-chicken.co/aml/"><span>AML правила</span></a></li>
-                                    <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="https://crypto-chicken.co/raffle/"><span>Розыгрыш</span></a></li>
-                                    <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="https://crypto-chicken.co/cashback-info/"><span>Kэшбэк</span></a></li>
-                                    <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="https://crypto-chicken.co/deposits/"><span>Депозиты</span></a></li>
-                                </ul>
-                            </div>
-                            <div class="header__profile">
-                                <div class="header__lg">
-                                    <button class="btn btn--md btn--bd btn--bdg" data-open-login="reg"><span>Регистрация</span></button>
-                                </div>
-                                <button class="btn btn--md btn--pdsm header__btnlog" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in.svg" alt=""><span>Войти</span></button>
-                            </div>
-                            <button class="header__login" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in-color.svg" alt=""></button>
-
-                            <button class="btn btn--md header__burger js-open-nav">
-                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/burger.svg" class="hide-tablet-sm" alt="">
-                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/closed.svg" class="icon-close hide-tablet-sm" alt="">
-                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/menu_open.svg" class="show-tablet-sm" alt="">
-                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/menu_closed.svg" class="icon-close show-tablet-sm" alt="">
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="accmenu js-menu-acc">
-                </div>
-
-                <div class="pauth box" data-popup="login">
-                    <button class="pauth__close js-pauth-close"></button>
-                    <div class="login__popup">
-                        <div class="section__head text--center">
-                            <div class="title text--white">Авторизация</div>
-                        </div>
-                        <form class="ajax_post_form" action="https://crypto-chicken.co/premium_site_action-loginform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru" method="post">
-                            <input type="hidden" name="return_url" value="" />
-                            <div class="form__input">
-                                <input type="text" name="logmail" class="input input--nbd" placeholder="Login/E-mail">
-                                <div class="input__bg"></div>
-                            </div>
-                            <div class="form__input">
-                                <input type="password" name="pass" class="input input--nbd" placeholder="Пароль" autocomplete="off">
-                                <div class="input__bg"></div>
-                            </div>
-
-                            <div class="form__submit">
-                                <button class="btn btn--wall"><span>Войти</span></button>
-                            </div>
-                            <div class="form__submit">
-                                <button class="btn btn--bd btn--bdg btn--wall" type="button" data-open-login="reg"><span>Регистрация</span></button>
-                            </div>
-                            <div class="pauth__links">
-                                <a href="https://crypto-chicken.co/lostpass/" class="pauth__link">Забыли пароль?</a>
-                            </div>
-                            <div class="resultgo"></div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="pauth box" data-popup="reg">
-                    <button class="pauth__close js-pauth-close"></button>
-                    <div class="register__popup">
-                        <div class="section__head text--center">
-                            <div class="title text--white">Регистрация</div>
-                        </div>
-                        <form class="ajax_post_form" action="https://crypto-chicken.co/premium_site_action-registerform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru" method="post">
-                            <input type="hidden" name="return_url" value="" />
-                            <div class="form__input">
-                                <input type="text" name="login" class="input input--nbd" placeholder="Логин*">
-                                <div class="input__bg"></div>
-                            </div>
-                            <div class="form__input">
-                                <input type="text" name="email" class="input input--nbd" placeholder="E-mail*">
-                                <div class="input__bg"></div>
-                            </div>
-                            <div class="form__input">
-                                <input type="password" name="pass" class="input input--nbd" placeholder="Пароль*" autocomplete="off">
-                                <div class="input__bg"></div>
-                            </div>
-                            <div class="form__input">
-                                <input type="password" name="pass2" class="input input--nbd" placeholder="Пароль еще раз*" autocomplete="off">
-                                <div class="input__bg"></div>
-                            </div>
-                            <label class="form__policy">
-                                <input type="checkbox" name="check_rule" value="1">
-                                <span class="form__policy-sq"></span>
-                                <span class="form__policy-t">С <a href="/tos/" target="_blank" rel="noreferrer noopener">правилами сервиса</a> ознакомлен и согласен</span>
-                            </label>
-                            <div class="form__submit">
-                                <button class="btn btn--wall"><span>Регистрация</span></button>
-                            </div>
-                            <div class="pauth__enter">
-                                <div class="pauth__enter-t">У вас есть аккаунт?</div>
-                                <button class="btn btn--bd btn--bdg" type="button" data-open-login="login"><span>Войти</span></button>
-                            </div>
-                            <div class="resultgo"></div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="navfix js-navfix">
-                <div class="container">
-                    <div class="navfix__nav">
-                        <ul id="menu-verhnee-menyu-1" class="hmenu">
-                            <li class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="https://crypto-chicken.co/aml/"><span>AML правила</span></a></li>
-                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="https://crypto-chicken.co/raffle/"><span>Розыгрыш</span></a></li>
-                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="https://crypto-chicken.co/cashback-info/"><span>Kэшбэк</span></a></li>
-                            <li class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="https://crypto-chicken.co/deposits/"><span>Депозиты</span></a></li>
-                        </ul>
-                    </div>
-
-                    <div class="navfix__contacts">
-                        <a href="/cdn-cgi/l/email-protection#3950575f56795a4b40494d56145a51505a525c57175a56" class="navfix__contacts-val"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/mail.svg" alt=""><span><span class="__cf_email__" data-cfemail="6900070f06290a1b10191d06440a01000a020c07470a06">[email&#160;protected]</span></span></a>
-                        <br>
-                        <a href="tg://resolve?domain=CryptoChicken_bot" class="navfix__contacts-val"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/tg.svg" alt=""><span>@CryptoChicken_bot</span></a> <br>
-                    </div>
-
-                    <div class="navfix__lang">
-                        <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2F" class="navfix__lang-item active"><span>RU</span></a>
-                        <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" class="navfix__lang-item"><span>EN</span></a></div>
-                    <div class="navfix__buttons">
-                        <button class="btn btn--bd btn--md btn--chat"><span>Онлайн чат</span></button>
-                    </div>
-                </div>
-            </div>
-        </header>
 
         <main class="content__wrapper">
-            <!--	    -->
             <section class="calc">
                 <div class="container">
 
@@ -1033,7 +877,11 @@
         <div class="userwalletsform_box"></div>
     </form>
 
+
     <div class="walletsverify_box"></div>
+
+    {% include 'partials/footer.html' %}
+
     <script type="text/javascript">
         jQuery(function($) {
 
