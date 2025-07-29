@@ -1,0 +1,775 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<body>
+<div class="wrapper">
+
+    {% include 'partials/header.html' %}
+
+    <main class="content__wrapper">
+        <!--	    -->
+        <div class="breadcrumbs">
+            <div class="container">
+                <ul class="breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
+                    <li class="breadcrumbs__item" itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem">
+                        <a href="https://crypto-chicken.co/" itemprop="item" class="breadcrumbs__link">
+                            <span itemprop="name">Главная</span>
+                        </a>
+                        <meta itemprop="position" content="1"/>
+                    </li>
+
+                    <li class="breadcrumbs__item" itemprop="itemListElement" itemscope
+                        itemtype="https://schema.org/ListItem">
+                        <span itemprop="name" class="breadcrumbs__current">AML правила</span>
+                        <meta itemprop="position" content="2"/>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <section class="page">
+            <div class="container">
+                <div class="page_wrap box box--cont aml anonymous post-616 page type-page status-publish hentry">
+                    <div class="section__head">
+                        <h1 class="title">
+                            AML правила </h1>
+                    </div>
+
+
+                    <div class="text">
+
+                        <div class="content__text">
+                            <h3>1. Введение</h3>
+                            <p>Политика противодействия легализации доходов, добытых преступных путем и “Знай своего
+                                клиента” (далее — «AML / Политика KYC») предназначена для предотвращения и снижения
+                                возможных рисков CryptoChicken быть вовлеченным в какую-либо незаконную
+                                деятельность.</p>
+                            <h3>2. Цель внутреннего регулирования</h3>
+                            <p>Сервис CryptoChicken придерживается практик и мер, в области противодействия легализации
+                                (отмыванию) доходов, полученных преступным путём и финансированию терроризма (AML).
+                                Целью данных мер является демонстрация того, что CryptoChicken относится серьёзно к
+                                любым попыткам использовать свой сервис в незаконных целях.</p>
+                            <h3>3. Предостережение</h3>
+                            <p>Сервис CryptoChicken предостерегает пользователей от попыток использования сервиса
+                                CryptoChicken для легализации денежных средств, полученных преступным путём,
+                                финансирование терроризма, мошенничества любого рода, а также от использования сервиса
+                                для покупки запрещённых товаров и услуг.</p>
+                            <p>Сервис CryptoChicken, его администрация, сотрудники и владельцы домена не несут
+                                ответственности за неправомерное использование сервиса третьими лицами, действия
+                                злоумышленников и возможный ущерб, связанный с использованием сервиса CryptoChicken.</p>
+                            <h3>4. Требования</h3>
+                            <p>Для предотвращения операций незаконного характера сервис CryptoChicken устанавливает
+                                определенные требования ко всем Заявкам, создаваемым Пользователем:</p>
+                            <p>4.1. Отправителем и получателем Платежа по Заявке должно быть одно и то же лицо. С
+                                использованием услуг Сервиса категорически запрещены переводы в пользу третьих лиц.</p>
+                            <p>4.2. Все контактные данные, заносимые Пользователем в Заявку, а также иные персональные
+                                данные, передаваемые Пользователем Сервису, должны быть актуальными и полностью
+                                достоверными.</p>
+                            <p>4.3. Категорически запрещено создание Заявок Пользователем с использованием анонимных
+                                прокси-серверов, VPN, Tor или каких-либо других анонимных подключений к Интернет.</p>
+                            <h3>5. Процедуры Верификации</h3>
+                            <p>Одним из международных стандартов предотвращения незаконной деятельности является
+                                надлежащая проверка клиентов (далее – Проверка). С этой целью CryptoChicken внедряет
+                                свои собственные процедуры проверки в строгих стандартах противодействия легализации
+                                доходов, добытых преступных путем и процедуру «Знай своего клиента».</p>
+                            <p>5.1. Сервис CryptoChicken может требовать, чтобы Пользователь предоставил Сервису
+                                CryptoChicken надежные, независимые исходные документы, данные или информацию, для
+                                прохождения верификации и подтверждения источников происхождения средств. В числе
+                                требуемого могут быть:</p>
+                            <ul>
+                                <li>Фотография с паспортом, в развернутом виде, где четко видны фотография и ФИО;</li>
+                                <li>Скан или фотография паспорта (первая, вторая страницы и страница с пропиской в
+                                    хорошем качестве);
+                                </li>
+                                <li>Подтверждение источников происхождения средств (фото, скриншоты, выписки);</li>
+                                <li>Видео, на котором человек, отправивший средства, с паспортом в руках в развернутом
+                                    виде (где четко видны фотография, ФИО), говорит, что он создал заявку ID (номер
+                                    заявки) на обменном пункте CryptoChicken, отправленные средства являются моими
+                                    личными и я несу полную юридическую ответственность за данную криптовалюту, так же
+                                    на видео необходимо упомянуть источник происхождения средств;
+                                </li>
+                                <li>Записать видео, снятое с платформы откуда были отправлены средства, на видео мы
+                                    должны увидеть хеш, адрес отправителя и получателя, сумму с тикером и дату
+                                    совершения транзакции. Длительность видео должна быть не менее 10 секунд.
+                                </li>
+                            </ul>
+                            <p>5.2. В случае блокировок, из-за высокого риска или официального расследования, средства
+                                будут удержаны до момента прохождения верификации или окончания расследования. Для таких
+                                целей Сервис CryptoChicken оставляет за собой право собирать идентификационную
+                                информацию Пользователя для целей соблюдения Политики AML/KYC.</p>
+                            <p>5.3. Сервис Crypto Chicken предпримет шаги для подтверждения подлинности документов и
+                                информации, предоставленной Пользователями. Все юридические методы для двойной проверки
+                                идентификационной информации будут использоваться, и Сервис CryptoChicken оставляет за
+                                собой право расследовать случаи определенных Пользователей, личности которых были
+                                определены как опасные или подозрительные.</p>
+                            <p>5.4. Сервис CryptoChicken оставляет за собой право проверять личность Пользователя на
+                                постоянной основе, особенно, когда его идентификационная информация была изменена или
+                                его деятельность показалась подозрительной (необычной для конкретного Пользователя).
+                                Кроме того, Сервис CryptoChicken оставляет за собой право запрашивать у Пользователей
+                                актуальные документы, даже если они прошли проверку подлинности в прошлом.</p>
+                            <p>5.5. Информация об идентификации пользователя будет собираться, храниться, совместно
+                                использоваться и защищаться строго в соответствии с Политикой конфиденциальности Сервиса
+                                CryptoChicken и соответствующими правилами.</p>
+                            <p>5.6. После подтверждения личности пользователя Сервис CryptoChicken может отказаться от
+                                предоставления услуг Пользователю в ситуации, когда услуги Сервиса CryptoChicken
+                                используются для ведения незаконной деятельности.</p>
+                            <p>5.7. Пользователи, которые намерены использовать платежные карты с целью потребления
+                                услуг, должны пройти проверку карты в соответствии с инструкциями, доступными на сайте
+                                CryptoChicken.</p>
+                            <p>5.8. Сервис CryptoChicken имеет нормативные требования по проверке источника финансовых
+                                средств или криптовалюты, чтобы знать, что источники средств, которые Пользователи
+                                используют для торговли, являются законными.</p>
+                            <p>5.9. Заявки старше 30 дней- архивируются. Для дальнейшей работы с данными заявки и
+                                коммуникацией между отделами обменного пункта, привлекаются дополнительные ресурсы. По
+                                таким заявкам взымается комиссия 10% от суммы заявки.</p>
+                            <h3>6. Ответственное Должностное Лицо</h3>
+                            <p>Лицом, ответственным за соблюдение норм AML, является лицо, надлежащим образом
+                                уполномоченное Сервисом CryptoChicken, чья обязанность заключается в обеспечении
+                                эффективного внедрения и обеспечения соблюдения политики AML/KYC.</p>
+                            <p>6.1. Обязанностью такого должностного лица является контроль за всеми аспектами
+                                деятельности CryptoChicken по противодействию легализации доходов, добытых преступным
+                                путем, включая отмывание денег и финансирование терроризма, включая, но не ограничиваясь
+                                нижеследующими методами:</p>
+                            <ul>
+                                <li>сбор идентификационной информации пользователей;</li>
+                                <li>создание и обновление внутренних политик и процедур для завершения, рассмотрения,
+                                    представления и хранения всех отчетов и записей, требуемых в соответствии с
+                                    применимыми законами и правилами;
+                                </li>
+                                <li>мониторинг транзакций и исследование любых существенных отклонений от нормальной
+                                    деятельности;
+                                </li>
+                                <li>внедрение системы управления записями для соответствующего хранения и поиска
+                                    документов, файлов, форм и журналов;
+                                </li>
+                                <li>регулярное обновление оценки риска;</li>
+                                <li>предоставление правоохранительным органам информации, необходимой в соответствии с
+                                    применимыми законами и правилами.
+                                </li>
+                            </ul>
+                            <p>6.2. Должностное лицо, ответственное за соблюдение норм AML, имеет право
+                                взаимодействовать с правоохранительными органами, которые участвуют в предотвращении
+                                отмывания денег, финансирования терроризма и другой незаконной деятельности.</p>
+                            <h3>7. Системные функции</h3>
+                            <p>Сервис CryptoChicken выполняет множество задач, связанных с соблюдением норм, включая
+                                сбор данных, фильтрацию, ведение записей, управление расследованием и отчетность.
+                                Системные функции включают:</p>
+                            <ul>
+                                <li>ежедневная проверка Пользователей на существование признанных «черных списков»
+                                    (например, OFAC), агрегирование передач по нескольким точкам данных, размещение
+                                    пользователей в списках наблюдения и отказа в оказании услуг, открытие дел для
+                                    расследования там, где это необходимо, отправка внутренних сообщений и заполнение
+                                    обязательных отчетов, если это применимо;
+                                </li>
+                                <li>управление делами и документами.</li>
+                            </ul>
+                            <h3>8. Анализ поведения</h3>
+                            <p>Сервис CryptoChicken проверяет Пользователей не только путем проверки их личности, но,
+                                что более важно, путем анализа их поведения в транзакциях. Поэтому СервисCrypto
+                                полагается на анализ данных как инструмент оценки риска и обнаружения подозрений.</p>
+                            <h3>9. Оценки рисков</h3>
+                            <p>Crypto Chicken в соответствии с международными требованиями, применяет практику, оценки
+                                риска для борьбы с отмыванием денег и финансированием терроризма. Применяя практику
+                                оценки риска для борьбы с отмыванием денег, CryptoChicken обеспечивает соизмеримость мер
+                                по предотвращению или уменьшению отмывания денег и финансирования терроризма с
+                                выявленными рисками.</p>
+                            <p>Дробление средств, создание нескольких заявок (3 и больше) с одними реквизитами в
+                                короткий срок времени, может расцениваться как подозрительная активность. В таком случае
+                                может потребоваться верификация пользователя.</p>
+                            <p>Сервис CryptoChicken не взаимодействует со следующими санкционными биржами, площадками,
+                                платформами: Garantex, Tornado Cash, Hydra, Lazarus Group, Genesis Market, Hydra.io,
+                                ChipMixer, Shinbad, Commex, Capitalist, Rapira, BitPapa и другими.</p>
+                            <h3>10. Выполнение проверок клиентов</h3>
+                            <p>При возникновении обоснованных подозрений у администрации сервиса CryptoChicken в том,
+                                что пользователь пытается воспользоваться услугами Сервиса для отмывания денег или с
+                                целью проведения любых других незаконных операций, администрация имеет право:</p>
+                            <ul>
+                                <li>приостановить выполнение обменной операции пользователя;</li>
+                                <li>запрашивать у Пользователя документы идентифицирующие личность;</li>
+                                <li>запрашивать у Пользователя любую дополнительную информацию и документы в случае
+                                    осуществления ими подозрительных транзакций;
+                                </li>
+                                <li>обеспечить, чтобы сообщения о подозрительном характере сделок передавались
+                                    надлежащим правоохранительным органам через должностное лицо, ответственное за
+                                    соблюдение норм AML.
+                                </li>
+                            </ul>
+                            <h3>11. Конфиденциальность</h3>
+                            <p>Сервис CryptoChicken гарантирует конфиденциальность клиента в соответствии с политикой
+                                конфиденциальности сервиса.</p>
+                            <p>11.1. Сервис CryptoChicken и его сотрудники обязуются сохранять конфиденциальность в
+                                отношении любых фактов, выявленных в связи с любой сомнительной сделкой. Это
+                                обязательство также распространяется на пользователей Сервиса и на лиц третьей стороны,
+                                которым была передана информация по сделке.</p>
+                            <p>11.2. Возложенное на работников Сервиса CryptoChicken обязательство по обеспечению
+                                конфиденциальности, остается в силе после прекращения их работы или любых других
+                                договорных отношений с Сервисом CryptoChicken, а также при переводе таких сотрудников на
+                                другое рабочее место. Раскрытие такой информации государственным, правоохранительным
+                                органам и другим субъектам в случаях, которые определенны законом, не является
+                                нарушением обязательства конфиденциальности.</p>
+                            <p>11.3. Обязательство по обеспечению конфиденциальности, при условии, что использование
+                                раскрываемой информации ограничивается предотвращением легитимизации доходов от
+                                преступлений и финансирования терроризма, не может применяться к раскрытию информации
+                                между финансовыми учреждениями, образующими консолидированную группу, которая
+                                сотрудничает с Сервисом CryptoChicken.</p>
+                            <h3>12. Заключение</h3>
+                            <p>В связи с вышеизложенным, сервис CryptoChicken не несёт никакой юридической
+                                ответственности за использование его в целях легализации денежных средств, полученных
+                                преступным путём, финансирования терроризма либо покупки запрещённых товаров и услуг, но
+                                обязуется предпринять все возможные и доступные действия для предотвращения попыток
+                                использования Сервиса CryptoChicken в целях легализации денежных средств, полученных
+                                преступным путём, финансирования терроризма либо покупки запрещённых товаров и
+                                услуг.</p>
+                            <p>Совершая обмен, Пользователь согласно пунктов действующих на CryptoChicken правил обмена
+                                соглашается со всеми условиями данных политик и обязуется их выполнять.</p>
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+
+
+                </div>
+            </div>
+        </section>
+        <!--</div>-->
+        <!--</section>-->
+    </main><!--content__wrapper-->
+
+    {% include 'partials/footer.html' %}
+
+</div>
+
+<div class="popup " data-popup="call">
+    <div class="popup__content">
+        <div class="popup__bg popup-close"></div>
+        <div class="popup__container">
+            <a href="#" class="popup__close popup-close"></a>
+            <div class="popup__body">
+                <div class="popup__head">
+                    <div class="popup__title"></div>
+                    <div class="popup__intro"></div>
+                </div>
+
+            </div>
+        </div><!--popup__container-->
+    </div>
+</div>
+
+<div class="popup " data-popup="thank">
+    <div class="popup__content">
+        <div href="" class="popup__bg popup-close"></div>
+        <div class="popup__container">
+            <a href="#" class="popup__close popup-close"></a>
+            <div class="popup__body">
+                <div class="popup__head">
+                    <div class="popup__title"></div>
+                    <div class="popup__intro"></div>
+                </div>
+
+            </div>
+        </div><!--popup__container-->
+    </div>
+</div>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LW8KXMZ9C5"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'G-LW8KXMZ9C5');
+</script>
+
+<div class="userwalletsform_box_html" style="display: none;">
+
+    <div class="form_field_line rb_line type_select field_name_currency_id has_title">
+        <div class="form_field_label rb_label"><label for="form_field_id-1-currency_id"><span
+                class="form_field_label_ins">Платежная система <span class="req">*</span>:</span></label></div>
+        <div class="form_field_ins form__input rb_line_ins">
+
+            <select id="form_field_id-1-currency_id" class="userwalletsform_currency_id rb_select" autocomplete="off"
+                    name="currency_id">
+                <option value="0">--выберите валюту--</option>
+                <option value="596">0x Protocol ZRX</option>
+                <option value="434">Advanced Cash EUR</option>
+                <option value="436">Advanced Cash KZT</option>
+                <option value="433">Advanced Cash RUB</option>
+                <option value="437">Advanced Cash TRY</option>
+                <option value="435">Advanced Cash UAH</option>
+                <option value="432">Advanced Cash USD</option>
+                <option value="408">Algorand ALGO</option>
+                <option value="458">Alipay CNY</option>
+                <option value="593">ApeCoin APE</option>
+                <option value="589">Aptos APT</option>
+                <option value="410">Avalanche C-CHAIN AVAX</option>
+                <option value="395">BAT ERC20 BAT</option>
+                <option value="377">Binance USD BUSD</option>
+                <option value="390">BinanceCoin BEP2 BNB</option>
+                <option value="391">BinanceCoin BEP20 BNB</option>
+                <option value="394">BitTorrent BTTC</option>
+                <option value="350">Bitcoin BEP20 BTCB</option>
+                <option value="348">Bitcoin BTC</option>
+                <option value="352">Bitcoin Cash BCH</option>
+                <option value="354">Bitcoin Gold BTG</option>
+                <option value="353">Bitcoin SV BSV</option>
+                <option value="446">Capitalist EUR</option>
+                <option value="447">Capitalist RUB</option>
+                <option value="445">Capitalist USD</option>
+                <option value="383">Cardano ADA</option>
+                <option value="398">Chainlink LINK</option>
+                <option value="561">Contact RUB</option>
+                <option value="560">Contact USD</option>
+                <option value="399">Cosmos ATOM</option>
+                <option value="415">Cronos CRO</option>
+                <option value="376">Dai DAI</option>
+                <option value="364">Dash DASH</option>
+                <option value="412">Decentraland MANA</option>
+                <option value="362">Dogecoin DOGE</option>
+                <option value="381">EOS EOS</option>
+                <option value="457">Epay EUR</option>
+                <option value="456">Epay USD</option>
+                <option value="358">Ether Classic ETC</option>
+                <option value="356">Ethereum BEP20 ETH</option>
+                <option value="355">Ethereum ETH</option>
+                <option value="508">ForteBank KZT</option>
+                <option value="506">HalykBank KZT</option>
+                <option value="392">ICON ICX</option>
+                <option value="382">IOTA MIOTA</option>
+                <option value="443">Idram AMD</option>
+                <option value="510">Jusan Bank KZT</option>
+                <option value="509">Kaspi Bank KZT</option>
+                <option value="393">Komodo KMD</option>
+                <option value="359">Litecoin LTC</option>
+                <option value="409">Maker MKR</option>
+                <option value="361">Monero XMR</option>
+                <option value="559">MoneyGram EUR</option>
+                <option value="558">MoneyGram USD</option>
+                <option value="502">Monobank UAH</option>
+                <option value="414">NEAR Protocol NEAR</option>
+                <option value="379">NEM XEM</option>
+                <option value="380">NEO N3 NEO</option>
+                <option value="449">Neteller EUR</option>
+                <option value="448">Neteller USD</option>
+                <option value="454">NixMoney EUR</option>
+                <option value="453">NixMoney USD</option>
+                <option value="387">OMG Network OMG</option>
+                <option value="592">Official Trump TRUMP</option>
+                <option value="396">Ontology ONT</option>
+                <option value="591">Optimism OP</option>
+                <option value="499">Oschadbank UAH</option>
+                <option value="424">PM e-Voucher USD</option>
+                <option value="501">PUMB UAH</option>
+                <option value="375">Pax Dollar USDP</option>
+                <option value="444">Paxum USD</option>
+                <option value="430">PayPal EUR</option>
+                <option value="431">PayPal GBP</option>
+                <option value="429">PayPal RUB</option>
+                <option value="428">PayPal USD</option>
+                <option value="451">PaySera EUR</option>
+                <option value="450">PaySera USD</option>
+                <option value="440">Payeer EUR</option>
+                <option value="439">Payeer RUB</option>
+                <option value="438">Payeer USD</option>
+                <option value="420">Paymer USD</option>
+                <option value="459">Payoneer USD</option>
+                <option value="423">Perfect Money BTC</option>
+                <option value="422">Perfect Money EUR</option>
+                <option value="421">Perfect Money USD</option>
+                <option value="401">Polkadot DOT</option>
+                <option value="363">Polygon POL</option>
+                <option value="497">Privat 24 UAH</option>
+                <option value="496">Privat 24 USD</option>
+                <option value="427">QIWI KZT</option>
+                <option value="426">QIWI RUB</option>
+                <option value="397">Qtum QTUM</option>
+                <option value="488">Raiffeisen Bank Aval RUB</option>
+                <option value="498">Raiffeisen Bank Aval UAH</option>
+                <option value="403">Ravencoin RVN</option>
+                <option value="555">Revolut EUR</option>
+                <option value="554">Revolut USD</option>
+                <option value="567">Ria EUR</option>
+                <option value="566">Ria USD</option>
+                <option value="360">Ripple XRP</option>
+                <option value="550">Sepa EUR</option>
+                <option value="407">Shiba BEP20 SHIB</option>
+                <option value="406">Shiba ERC20 SHIB</option>
+                <option value="442">Skrill EUR</option>
+                <option value="441">Skrill USD</option>
+                <option value="404">Solana SOL</option>
+                <option value="384">Stellar XLM</option>
+                <option value="595">Sui SUI</option>
+                <option value="385">TRON TRX</option>
+                <option value="413">Terra LUNA</option>
+                <option value="378">TerraUSD UST</option>
+                <option value="597">Tether Arbitrum USDT</option>
+                <option value="369">Tether BEP20 USDT</option>
+                <option value="367">Tether ERC20 USDT</option>
+                <option value="366">Tether Omni USDT</option>
+                <option value="370">Tether SOL USDT</option>
+                <option value="598">Tether TON USDT</option>
+                <option value="368">Tether TRC20 USDT</option>
+                <option value="400">Tezos XTZ</option>
+                <option value="416">Toncoin TON</option>
+                <option value="374">TrueUSD TUSD</option>
+                <option value="371">USDCoin ERC20 USDC</option>
+                <option value="373">USDCoin SOL USDC</option>
+                <option value="372">USDCoin TRC20 USDC</option>
+                <option value="402">Uniswap ERC20 UNI</option>
+                <option value="405">VeChain VET</option>
+                <option value="388">Verge XVG</option>
+                <option value="520">Visa/MasterCard AMD</option>
+                <option value="515">Visa/MasterCard BYN</option>
+                <option value="522">Visa/MasterCard CNY</option>
+                <option value="577">Visa/MasterCard CZK</option>
+                <option value="513">Visa/MasterCard EUR</option>
+                <option value="521">Visa/MasterCard GBP</option>
+                <option value="516">Visa/MasterCard KZT</option>
+                <option value="578">Visa/MasterCard MDL</option>
+                <option value="579">Visa/MasterCard PLN</option>
+                <option value="512">Visa/MasterCard RUB</option>
+                <option value="580">Visa/MasterCard SEK</option>
+                <option value="523">Visa/MasterCard TRY</option>
+                <option value="514">Visa/MasterCard UAH</option>
+                <option value="511">Visa/MasterCard USD</option>
+                <option value="557">WU EUR</option>
+                <option value="556">WU USD</option>
+                <option value="386">Waves WAVES</option>
+                <option value="418">WebMoney WME</option>
+                <option value="419">WebMoney WMX</option>
+                <option value="417">WebMoney WMZ</option>
+                <option value="365">Zcash ZEC</option>
+                <option value="484">Авангард RUB</option>
+                <option value="477">Альфа cash-in RUB</option>
+                <option value="476">Альфа cash-in USD</option>
+                <option value="475">Альфа-Банк RUB</option>
+                <option value="504">Альфа-Банк UAH</option>
+                <option value="505">Беларусбанк BYN</option>
+                <option value="482">ВТБ RUB</option>
+                <option value="486">Газпромбанк RUB</option>
+                <option value="563">ЗК RUB</option>
+                <option value="562">ЗК USD</option>
+                <option value="533">Карта HUMO UZS</option>
+                <option value="532">Карта UZCARD UZS</option>
+                <option value="531">Карта UnionPay CNY</option>
+                <option value="530">Карта Мир RUB</option>
+                <option value="487">Кукуруза RUB</option>
+                <option value="538">Любой банк BYN</option>
+                <option value="542">Любой банк CNY</option>
+                <option value="536">Любой банк EUR</option>
+                <option value="539">Любой банк KZT</option>
+                <option value="535">Любой банк RUB</option>
+                <option value="543">Любой банк TRY</option>
+                <option value="537">Любой банк UAH</option>
+                <option value="534">Любой банк USD</option>
+                <option value="494">МТС Банк RUB</option>
+                <option value="575">Наличные AED</option>
+                <option value="572">Наличные BYN</option>
+                <option value="570">Наличные EUR</option>
+                <option value="573">Наличные KZT</option>
+                <option value="569">Наличные RUB</option>
+                <option value="576">Наличные TRY</option>
+                <option value="571">Наличные UAH</option>
+                <option value="571">Наличные UAH</option>
+                <option value="568">Наличные USD</option>
+                <option value="490">Открытие RUB</option>
+                <option value="491">Почта Банк RUB</option>
+                <option value="485">Промсвязьбанк RUB</option>
+                <option value="489">РНКБ RUB</option>
+                <option value="493">Росбанк RUB</option>
+                <option value="492">Россельхозбанк RUB</option>
+                <option value="483">Русский Стандарт RUB</option>
+                <option value="552">СБП RUB</option>
+                <option value="507">Сбербанк KZT</option>
+                <option value="474">Сбербанк QR RUB</option>
+                <option value="473">Сбербанк RUB</option>
+                <option value="460">Счет телефона RUB</option>
+                <option value="461">Счет телефона UAH</option>
+                <option value="481">Тинькофф QR RUB</option>
+                <option value="479">Тинькофф RUB</option>
+                <option value="478">Тинькофф USD</option>
+                <option value="480">Тинькофф cash-in RUB</option>
+                <option value="500">УкрСиббанк UAH</option>
+                <option value="495">Хоум Кредит RUB</option>
+                <option value="425">ЮMoney RUB</option>
+            </select>
+
+
+            <div class="form_field_errors">
+                <div class="form_field_errors_ins"></div>
+            </div>
+        </div>
+        <div class="form_field_clear rb_line_clear"></div>
+    </div>
+
+    <div class="form_field_line rb_line type_input field_name_account has_title">
+        <div class="form_field_label rb_label"><label for="form_field_id-1-account"><span class="form_field_label_ins">Номер счета <span
+                class="req">*</span>:</span></label></div>
+        <div class="form_field_ins form__input rb_line_ins">
+
+            <input type="text" id="form_field_id-1-account" class="userwalletsform_account rb_input input input--nbd"
+                   autocomplete="off" name="account" value=""/>
+            <div class="input__bg"></div>
+
+            <div class="form_field_errors">
+                <div class="form_field_errors_ins"></div>
+            </div>
+        </div>
+        <div class="form_field_clear rb_line_clear"></div>
+    </div>
+
+    <div class="rb_line"><input type="submit" formtarget="_top" name="submit" class="rb_submit" value="Добавить счет"/>
+    </div>
+    <div class="resultgo"></div>
+</div>
+<form method="post" class="ajax_post_form"
+      action="https://crypto-chicken.co/premium_site_action-userwalletsform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+    <input type="hidden" name="redir" id="userwalletsform_redir" value=""/>
+
+    <div class="userwalletsform_box"></div>
+</form>
+
+<div class="walletsverify_box"></div>
+<script type="text/javascript">
+    jQuery(function ($) {
+
+        var auto_load = 1;
+
+        function globalajax_timer() {
+            if (auto_load == 1) {
+                auto_load = 0;
+
+                var param = 'set=1';
+
+                $('.globalajax_ind').addClass('active');
+                $.ajax({
+                    type: "POST",
+                    url: "https://crypto-chicken.co/premium_site_action-globalajax_action.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                    dataType: 'json',
+                    data: param,
+                    error: function (res, res2, res3) {
+                        for (key in res) {
+                            console.log(key + ' = ' + res[key]);
+                        }
+                    },
+                    beforeSend: function (res, res2, res3) {
+                    },
+                    success: function (res) {
+
+                        if (res['status'] == 'success') {
+                            auto_load = 1;
+                        }
+                        $('.globalajax_ind').removeClass('active');
+                    }
+                });
+            }
+        }
+
+        setInterval(globalajax_timer, 60000);
+
+    });
+</script>
+
+<!-- Put online chat code or another code here / Razmestite kod onlajn chata ili drugoi kod vmesto jetogo teksta !-->
+<script type="text/javascript" id="zsiqchat">var $zoho = $zoho || {};
+$zoho.salesiq = $zoho.salesiq || {
+    widgetcode: "siq14ec188a69152de55496ad9420108121ae55121ac1f6b0f636027b7e1192cf77",
+    values: {},
+    ready: function () {
+    }
+};
+var d = document;
+s = d.createElement("script");
+s.type = "text/javascript";
+s.id = "zsiqscript";
+s.defer = true;
+s.src = "https://salesiq.zoho.eu/widget";
+t = d.getElementsByTagName("script")[0];
+t.parentNode.insertBefore(s, t);</script>
+
+<script>
+    if (typeof gtag === 'function') {
+        gtag('config', 'AW-16948843742');
+    } else {
+        // Full Google Tag if gtag is missing
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16948843742';
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'AW-16948843742');
+    }
+</script>
+<div style="display: none;">
+    <form method="post" class="upload_hf_form" enctype="multipart/form-data"
+          action="https://crypto-chicken.co/premium_site_action-hf_upload.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+        <input type="hidden" name="formid" id="upload_hf_form_id" value=""/>
+        <input type="hidden" name="type" id="upload_hf_form_type" value=""/>
+        <input type="hidden" name="id" id="upload_hf_form_valid" value=""/>
+        <input type="hidden" name="redir" id="upload_hf_form_redir" value=""/>
+        <div id="upload_hf_form_file"></div>
+    </form>
+</div>
+<script type="text/javascript">
+    jQuery(function ($) {
+
+        $(document).on('change', '.js_hf_input', function () {
+
+            var thet = $(this);
+            var type = thet.parents('.form_hf').attr('data-type');
+            var redir = thet.parents('.form_hf').attr('data-redir');
+            var id = thet.parents('.form_hf').attr('data-id');
+            var form_id = thet.parents('.form_hf').attr('id');
+            var input_now = thet.parents('.js_hf_input_linewrap').html();
+            var ccn = thet[0].files.length;
+            if (ccn > 0) {
+                var fileInput = thet[0];
+                var bitec = fileInput.files[0].size;
+                if (bitec > 2097152) {
+                    alert('Макс. 2 МБ !');
+                    thet.val('');
+                } else {
+                    $('#upload_hf_form_type').val(type);
+                    $('#upload_hf_form_valid').val(id);
+                    $('#upload_hf_form_redir').val(redir);
+                    $('#upload_hf_form_id').val(form_id);
+
+                    $("#upload_hf_form_file").html('');
+
+                    let dt = new DataTransfer();
+                    dt.items.add(this.files[0]);
+
+                    let n_input = $('<input>', {
+                        type: 'file',
+                        name: thet.attr('name'),
+                        class: thet.attr('class'),
+                        id: thet.attr('id'),
+                        accept: thet.attr('accept'),
+                        multiple: thet.prop('multiple'),
+                        required: thet.prop('required'),
+                    })[0];
+                    n_input.files = dt.files;
+
+                    $("#upload_hf_form_file").append(n_input);
+
+                    /* thet.clone().appendTo("#upload_hf_form_file"); */
+
+                    $('.upload_hf_form').submit();
+                }
+            }
+
+        });
+
+        $('.upload_hf_form').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (a, f, o) {
+
+                var form_id = $('#upload_hf_form_id').val();
+                $('#' + form_id).addClass('uploading');
+
+                $('.form_hf input').prop('disabled', true);
+                $('.form_hf').find('.js_hf_bar').show();
+                $('.form_hf').find('.js_hf_bar_abs').width('0px');
+                $('.js_hf_response').html('');
+
+            },
+            error: function (res, res2, res3) {
+                for (key in res) {
+                    console.log(key + ' = ' + res[key]);
+                }
+            },
+            uploadProgress: function (event, position, total, percentComplete) {
+
+                var form_id = $('#upload_hf_form_id').val();
+                var percentVal = percentComplete + '%';
+                $('#' + form_id).find('.js_hf_bar_abs').width(percentVal);
+
+            },
+            success: function (res) {
+
+                var form_id = $('#upload_hf_form_id').val();
+
+                if (res['status'] == 'success') {
+                    $('#' + form_id).find('.js_hf_files').html(res['response']);
+                }
+
+                if (res['status'] == 'error') {
+                    $('#' + form_id + '_hf_response').html('<div class="resultfalse">' + res['status_text'] + '</div>');
+                }
+
+                if (res['url']) {
+                    window.location.href = res['url'];
+                }
+
+                $('.js_hf_input').val('');
+                $('.form_hf').find('.ustbl_bar').hide();
+                $('.form_hf input').prop('disabled', false);
+                $('#' + form_id).removeClass('uploading');
+
+            }
+        });
+
+        $(document).on('click', '.js_hf_del', function () {
+
+            var id = $(this).attr('data-id');
+            var insert_html = $(this).parents('.js_hf_files');
+            var thet = $(this);
+            $('.js_hf_response').html('');
+            if (!thet.hasClass('act')) {
+                if (confirm("Вы уверены что хотите удалить этот файл?")) {
+                    thet.addClass('act');
+                    var param = 'id=' + id;
+                    $.ajax({
+                        type: "POST",
+                        url: "https://crypto-chicken.co/premium_site_action-hf_delete.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                        dataType: 'json',
+                        data: param,
+                        error: function (res, res2, res3) {
+                            for (key in res) {
+                                console.log(key + ' = ' + res[key]);
+                            }
+                        },
+                        success: function (res) {
+                            if (res['status'] == 'success') {
+                                insert_html.html(res['response']);
+                            }
+
+                            if (res['status'] == 'error') {
+                                for (key in res) {
+                                    console.log(key + ' = ' + res[key]);
+                                }
+                            }
+
+                            if (res['url']) {
+                                window.location.href = res['url'];
+                            }
+
+                            thet.removeClass('act');
+                        }
+                    });
+                }
+            }
+
+            return false;
+        });
+
+    });
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015"
+        integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ=="
+        data-cf-beacon='{"version":"2024.11.0","token":"c9541608bc38455c9e1936cbc59a8538","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
+        crossorigin="anonymous"></script>
+</body>
+</body>
+{% endblock %}
