@@ -1872,7 +1872,7 @@ header
     right: 28px;
     width: 25px;
     height: 25px;
-    background: url(images/icons/close.svg) no-repeat center;
+    background: url("/static/img/close.svg") no-repeat center;
     background-size: 100%;
     border: none;
     outline: 0;
