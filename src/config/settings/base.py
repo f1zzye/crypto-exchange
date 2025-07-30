@@ -19,11 +19,10 @@ INSTALLED_APPS: list[str] = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     # Custom apps
-
     # My apps
     "core",
+    "accounts",
 ]
 
 MIDDLEWARE: list[str] = [
@@ -100,3 +99,14 @@ STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
+
+AUTH_USER_MODEL = "accounts.User"
+
+LOGIN_URL = "accounts:sign-in"
+
+LOGIN_REDIRECT_URL = "core:index"
+LOGOUT_REDIRECT_URL = "core:index"
+
+SESSION_COOKIE_AGE = 86400

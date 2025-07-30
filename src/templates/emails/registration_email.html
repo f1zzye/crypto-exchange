@@ -1,0 +1,41 @@
+<td style="padding-left:15px;padding-right:15px">
+    <div style="text-align: center;">
+        <table id="m_1019556042704892048recin58956630" class="m_1019556042704892048r" style="margin:0 auto;background-color:#ffffff;border-spacing:0;width:600px" align="center">
+            <tbody>
+                <tr>
+                    <td style="padding-top:0px;padding-bottom:15px;padding-left:0;padding-right:0">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:left;padding:24px 30px 0;background-color:#ffffff">
+                                        <a style="text-decoration:none;color:#444444" target="_blank">
+                                            <div style="margin-right:auto;font-weight:normal;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;color:#444444;font-size:22px">Welcome to CryptoChicken, {{ user.username }} !</div>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;padding:11px 30px 0;background-color:#ffffff">
+                                        <div style="margin-right:auto;font-weight:normal;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;color:#707070;font-size:16px">
+                                            Thank you for joining CryptoChicken! To get started and secure your account, please confirm your email address by clicking the button below.<br><br>
+                                            <a style="display:inline-block;text-decoration:none;padding:15px 30px;font-size:15px;text-align:center;font-weight:bold;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;width:auto;color:#000;border:2px solid #000;background-color:#fff;border-radius:3px;transition:all 0.3s ease;"
+                                                href="http://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}"
+                                                target="_blank"
+                                                onmouseover="this.style.backgroundColor='#000';this.style.color='#fff';"
+                                                onmouseout="this.style.backgroundColor='#fff';this.style.color='#000';">
+                                                <span class="il">Confirm</span> email
+                                            </a><br><br>
+                                            <strong>Your Email:</strong> <br><a target="_blank">{{ user.email }}</a><br><br>Please save this email so that you can refer to it later.<br><br>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height:30px;background-color:#ffffff"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</td>

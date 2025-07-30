@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 
 from common.mixins import TitleMixin
@@ -56,7 +56,6 @@ class IndexView(TitleMixin, TemplateView):
             return render(request, self.template_name, context)
 
         return redirect('core:aml')
-
 
 
 class AMLRulesView(TitleMixin, TemplateView):

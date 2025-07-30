@@ -104,20 +104,6 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
-name = "django-unfold"
-version = "0.63.0"
-description = "Modern Django admin theme for seamless interface development"
-optional = false
-python-versions = ">=3.9"
-files = [
-    {file = "django_unfold-0.63.0-py3-none-any.whl", hash = "sha256:9bab010edc95965d1811aeca2ed1b7621aa5b5483e1c673146dc2d7b3b388ea4"},
-    {file = "django_unfold-0.63.0.tar.gz", hash = "sha256:a32bb7c4a860a2e95a597778ce4f50f1d1a809a6ac06f6551dd0ebd371611cdf"},
-]
-
-[package.dependencies]
-django = ">=4.2"
-
-[[package]]
 name = "flake8"
 version = "7.3.0"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -368,4 +354,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "e2d35f8a3a3d1d7f78ed6a1e320b894a047365f4ae78ebbca42972ecba8eb422"
+content-hash = "884a94fee685e4f36719fc5d60bbc89e1dfd19837700978452a4bb90818436fe"
