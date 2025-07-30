@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from unfold.admin import ModelAdmin
+
 from .models import Profile
 from django.utils.translation import gettext_lazy as _
 
@@ -11,7 +13,7 @@ class ProfileAdmin(admin.StackedInline):
 
 
 @admin.register(get_user_model())
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(ModelAdmin):
     inlines = [ProfileAdmin]
     list_display = (
         "email",
