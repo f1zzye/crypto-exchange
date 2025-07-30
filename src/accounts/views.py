@@ -8,7 +8,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-
+from django.http import JsonResponse, Http404
 from .forms import UserRegisterForm
 from common.mixins import TitleMixin
 
@@ -24,6 +24,11 @@ class UserRegisterView(TitleMixin, SuccessMessageMixin, CreateView):
     form_class = UserRegisterForm
     success_url = reverse_lazy("core:index")
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.headers.get("x-requested-with") == "XMLHttpRequest":
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.is_active = False
@@ -32,12 +37,15 @@ class UserRegisterView(TitleMixin, SuccessMessageMixin, CreateView):
         send_confirmation_email(self.request, self.object)
 
         username = form.cleaned_data.get("username")
-        messages.success(
-            self.request,
-            f"Account created for {username}! Please check your email to activate your account.",
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f"Account created for {username}! Please check your email to activate your account.",
+            }
         )
 
-        return redirect(self.success_url)
+    def form_invalid(self, form):
+        return JsonResponse({"success": False, "errors": form.errors})
 
 
 def activate_account_view(request, uidb64, token):

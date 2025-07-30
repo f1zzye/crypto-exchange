@@ -9,6 +9,7 @@ class ProfileAdmin(admin.StackedInline):
     can_delete = False
     verbose_name_plural = "Profiles"
 
+
 @admin.register(get_user_model())
 class UserAdmin(admin.ModelAdmin):
     inlines = [ProfileAdmin]
