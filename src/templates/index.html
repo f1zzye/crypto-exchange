@@ -97,7 +97,6 @@
                                     </div>
 
                                     <button class="calc__reverse js-calc-reverse"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/reverse.svg" alt=""></button>
-                                    <!-- Right side -->
                                     <div class="calc__col js-calc-col js-calc-col-2">
                                         <div class="calc__col-head">
                                             <div class="calc__col-title title">Получите</div>
@@ -180,7 +179,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- direction fields -->
                                 <div class="calc__form">
                                     <div class="calc__form-tt">Персональные данные</div>
 
@@ -261,53 +259,79 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="calc__form-policy">
+                                  <div class="calc__form-policy">
+    <div class="hexch_checkdata_div">
+        <label class="form__policy">
+            <input type="checkbox" name="check_rule" autocomplete="off" value="1" />
+            <span class="form__policy-sq"></span>
+            <span class="form__policy-t">
+                Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a>
+            </span>
+        </label>
+    </div>
+    <div class="exchange_checkpersdata">
+        <label class="form__policy">
+            <input type="checkbox" name="add_rules" autocomplete="off" value="1" />
+            <span class="form__policy-sq"></span>
+            <span class="form__policy-t">
+                Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a>
+            </span>
+        </label>
+    </div>
+    <div class="hexch_checkdata_div">
+        <label class="form__policy">
+            <input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" />
+            <span class="form__policy-sq"></span>
+            <span class="form__policy-t">
+                Не запоминать введенные данные<span></span>
+            </span>
+        </label>
+    </div>
 
-                                        <div class="hexch_checkdata_div">
-                                            <label class="form__policy">
-                                                <input type="checkbox" name="check_rule" autocomplete="off" value="1" /><span class="form__policy-sq"></span> <span class="form__policy-t">Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a></span>
-                                            </label>
-                                        </div>
-                                        <div class="exchange_checkpersdata">
-                                            <label class="form__policy"><input type="checkbox" name="add_rules" autocomplete="off" value="1" /><span class="form__policy-sq"></span> <span class="form__policy-t">Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a></span></label>
-                                        </div>
+<div class="captcha_div">
+    <div class="captcha_title">Введите ответ</div>
 
-
-                                        <div class="hexch_checkdata_div">
-                                            <label class="form__policy"><input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" /><span class="form__policy-sq"></span> <span class="form__policy-t">Не запоминать введенные данные<span></span></label>
-                                        </div>
-
-
-                                        <div class="captcha_div">
-                                            <div class="captcha_title">
-                                                Введите ответ
-                                            </div>
-                                            <div class="captcha_body">
-                                                <div class="captcha_divimg">
-                                                    <img src="https://crypto-chicken.co/wp-content/pn_uploads/captcha/omLOW3Zn.png" class="captcha1" alt="" />
-                                                </div>
-                                                <div class="captcha_divznak">
-                                                    <span class="captcha_sym">x</span>
-                                                </div>
-                                                <div class="captcha_divimg">
-                                                    <img src="https://crypto-chicken.co/wp-content/pn_uploads/captcha/x2B4P4v3.png" class="captcha2" alt="" />
-                                                </div>
-                                                <div class="captcha_divznak">
-                                                    =
-                                                </div>
-                                                <div class="form__input">
-                                                    <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" />
-                                                    <div class="input__bg"></div>
-                                                </div>
-                                                <a href="#" class="captcha_reload" title="заменить задачу"></a>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="calc__form-submit">
-                                        <button class="btn btn--wall"><span>Обменять сейчас</span></button>
-                                    </div>
+    <div class="captcha_body" style="display: flex; align-items: center;">
+        <div class="captcha_divimg">
+            <img src="{{ captcha.img1 }}" class="captcha1" alt="" />
+        </div>
+        <div class="captcha_divznak">
+            <span class="captcha_sym">{{ captcha.operation }}</span>
+        </div>
+        <div class="captcha_divimg">
+            <img src="{{ captcha.img2 }}" class="captcha2" alt="" />
+        </div>
+        <div class="captcha_divznak">
+            =
+        </div>
+        <div class="form__input" style="position: relative;">
+            <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" />
+            <div class="input__bg"></div>
+            <button type="button"
+                    class="captcha_reload_icon"
+                    title="Обновить капчу"
+                    onclick="reloadCaptcha(event)"
+                    style="
+                        position: absolute;
+                        top: 50%;
+                        right: -36px;
+                        transform: translateY(-50%);
+                        background: none;
+                        border: none;
+                        cursor: pointer;
+                        padding: 0;">
+                <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
+            </button>
+        </div>
+        <div class="clear"></div>
+    </div>
+    {% if error %}
+    <div style="color: #dc3545; text-align: center; margin-top: 10px;">{{ error }}</div>
+    {% endif %}
+</div>
+<div class="calc__form-submit">
+    <button class="btn btn--wall"><span>Обменять сейчас</span></button>
+</div>
                                     <div class="ajax_post_bids_res"></div>
                                 </div>
                             </div>
@@ -583,10 +607,7 @@
                 </div>
             </section>
 
-            <!--</div>-->
-            <!--</section>-->
         </main>
-        <!--content__wrapper-->
 
     </div>
 
@@ -603,7 +624,6 @@
 
                 </div>
             </div>
-            <!--popup__container-->
         </div>
     </div>
 
@@ -620,10 +640,8 @@
 
                 </div>
             </div>
-            <!--popup__container-->
         </div>
     </div>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LW8KXMZ9C5"></script>
     <script>
@@ -882,6 +900,71 @@
 
     {% include 'partials/footer.html' %}
 
+<script>
+    function reloadCaptcha(event) {
+    event.preventDefault();
+
+    const reloadBtn = event.target;
+    const originalText = reloadBtn.innerHTML;
+
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const img1 = document.querySelector('.captcha1') || document.querySelector('img[class*="captcha"]');
+        const img2 = document.querySelector('.captcha2') || document.querySelectorAll('img[class*="captcha"]')[1];
+        const operation = document.querySelector('.captcha_sym') || document.querySelector('[class*="captcha_sym"]');
+        const input = document.getElementById('captcha-input') || document.querySelector('input[name="number"]');
+
+        if (img1) img1.src = data.img1;
+        if (img2) img2.src = data.img2;
+        if (operation) operation.textContent = data.operation;
+        if (input) input.value = '';
+
+        reloadBtn.innerHTML = originalText;
+        reloadBtn.style.animation = '';
+
+        console.log('Капча успешно обновлена');
+    })
+    .catch(error => {
+        console.error('Ошибка при обновлении капчи:', error);
+
+        reloadBtn.innerHTML = originalText;
+        reloadBtn.style.animation = '';
+
+        alert('Не удалось обновить капчу. Попробуйте еще раз.');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+
     <script type="text/javascript">
         jQuery(function($) {
 
@@ -921,7 +1004,6 @@
         });
     </script>
 
-    <!-- Put online chat code or another code here / Razmestite kod onlajn chata ili drugoi kod vmesto jetogo teksta !-->
     <script type="text/javascript" id="zsiqchat">
         var $zoho = $zoho || {};
         $zoho.salesiq = $zoho.salesiq || {
@@ -943,7 +1025,6 @@
         if (typeof gtag === 'function') {
             gtag('config', 'AW-16948843742');
         } else {
-            // Full Google Tag if gtag is missing
             var script = document.createElement('script');
             script.async = true;
             script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16948843742';
@@ -1009,7 +1090,6 @@
 
                         $("#upload_hf_form_file").append(n_input);
 
-                        /* thet.clone().appendTo("#upload_hf_form_file"); */
 
                         $('.upload_hf_form').submit();
                     }
