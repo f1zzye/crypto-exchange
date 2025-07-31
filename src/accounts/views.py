@@ -82,29 +82,45 @@ class UserLoginView(TitleMixin, TemplateView):
         try:
             user_check = User.objects.get(email=email)
             if not user_check.is_active:
-                return JsonResponse({
-                    "success": False,
-                    "message": "Please confirm your email to activate your account.",
-                })
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Please confirm your email to activate your account.",
+                    }
+                )
 
             user = authenticate(request, username=email, password=password)
 
             if user is not None:
                 login(request, user)
-                return JsonResponse({
-                    "success": True,
-                    "message": f"Welcome, {user.username}!",
-                    "redirect_url": reverse("core:index"),
-                })
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "message": f"Welcome, {user.username}!",
+                        "redirect_url": reverse("core:index"),
+                    }
+                )
             else:
-                return JsonResponse({
-                    "success": False,
-                    "message": "The password is incorrect. Please try again.",
-                })
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "The password is incorrect. Please try again.",
+                    }
+                )
 
         except User.DoesNotExist:
-            return JsonResponse({
-                "success": False,
-                "message": f"User with email {email} does not exist.",
-            })
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": f"User with email {email} does not exist.",
+                }
+            )
 
+
+class UserLogoutView(LogoutView):
+    next_page = reverse_lazy("core:index")
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.success(request, "You are logged out.")
+        return super().dispatch(request, *args, **kwargs)

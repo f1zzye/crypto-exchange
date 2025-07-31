@@ -15,7 +15,9 @@ class CaptchaGenerator:
     def _rounded_rect(img, radius) -> Image:
         mask = Image.new("L", img.size, 0)
         draw = ImageDraw.Draw(mask)
-        draw.rounded_rectangle([0, 0, img.size[0], img.size[1]], radius=radius, fill=255)
+        draw.rounded_rectangle(
+            [0, 0, img.size[0], img.size[1]], radius=radius, fill=255
+        )
         img.putalpha(mask)
         return img
 
@@ -23,7 +25,7 @@ class CaptchaGenerator:
         if pattern == "rings":
             for i in range(0, self.size, 16):
                 for j in range(0, self.size, 16):
-                    draw.ellipse([i, j, i+12, j+12], outline="#CCCCCC", width=2)
+                    draw.ellipse([i, j, i + 12, j + 12], outline="#CCCCCC", width=2)
         elif pattern == "grid":
             step = 8
             for x in range(0, self.size, step):
@@ -45,7 +47,7 @@ class CaptchaGenerator:
                         (x + step // 2, y),
                         (x, y + step // 2),
                         (x + step // 2, y + step),
-                        (x + step, y + step // 2)
+                        (x + step, y + step // 2),
                     ]
                     draw.polygon(points, outline="#CCCCCC", fill=None)
 

@@ -38,13 +38,43 @@
                                     <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="https://crypto-chicken.co/deposits/"><span>Депозиты</span></a></li>
                                 </ul>
                             </div>
-                            <div class="header__profile">
-                                <div class="header__lg">
-                                    <button class="btn btn--md btn--bd btn--bdg" data-open-login="reg"><span>Регистрация</span></button>
+                            {% if user.is_authenticated %}
+                                <button class="btn btn--md btn--bd header__btnlog js-open-menu-acc">
+                                    <span>{{ user.username }}</span>
+                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/drop.svg" alt="">
+                                </button>
+                            {% else %}
+                                <div class="header__profile">
+                                    <div class="header__lg">
+                                        <button class="btn btn--md btn--bd btn--bdg" data-open-login="reg"><span>Регистрация</span></button>
+                                    </div>
+                                    <button class="btn btn--md btn--pdsm header__btnlog" data-open-login="login">
+                                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in.svg" alt="">
+                                        <span>Войти</span>
+                                    </button>
                                 </div>
-                                <button class="btn btn--md btn--pdsm header__btnlog" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in.svg" alt=""><span>Войти</span></button>
+                                <button class="header__login" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in-color.svg" alt=""></button>
+                            {% endif %}
+
+                            <div class="accmenu js-menu-acc">
+                                <ul>
+                                    <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/profile-menu.svg" alt=""><span>Профиль</span></a></li>
+                                    <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>Ваши заявки</span></a></li>
+                                    <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>Депозиты</span></a></li>
+                                    <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/cashback-menu.svg" alt=""><span>Кешбэк</span></a></li>
+                                    <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/check-menu.svg" alt=""><span>AML проверка кошелька</span></a></li>
+
+                                    <li>
+                                        <form action="{% url 'accounts:sign-out' %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="accmenu__btnlogout">
+                                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/out-menu.svg" alt="">
+                                                <span>Выход</span>
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
-                            <button class="header__login" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in-color.svg" alt=""></button>
 
                             <button class="btn btn--md header__burger js-open-nav">
                                 <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/burger.svg" class="hide-tablet-sm" alt="">
