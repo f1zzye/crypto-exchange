@@ -55,7 +55,8 @@ class IndexView(TitleMixin, TemplateView):
             context["error"] = "Incorrect answer to the captcha"
             return render(request, self.template_name, context)
 
-        return redirect('core:aml')
+        return redirect("core:aml")
+
 
 
 class AMLRulesView(TitleMixin, TemplateView):
