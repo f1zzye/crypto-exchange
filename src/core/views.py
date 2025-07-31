@@ -7,7 +7,7 @@ from core.utils.captcha import CaptchaGenerator
 
 
 class IndexView(TitleMixin, TemplateView):
-    template_name: str = "core/index.html"
+    template_name: str = "index.html"
     title: str = "Online cryptocurrency exchange - CryptoChicken"
 
     def dispatch(self, request, *args, **kwargs):
