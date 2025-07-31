@@ -1,0 +1,48 @@
+<div class="pauth box" data-popup="login">
+    <button class="pauth__close js-pauth-close"></button>
+    <div class="login__popup">
+        <div class="section__head text--center">
+            <div class="title text--white">Авторизация</div>
+        </div>
+        <form method="post" action="{% url 'accounts:sign-in' %}" id="signinForm" class="ajax_post_form">
+            {% csrf_token %}
+            <input type="hidden" name="return_url" value="" />
+            <div class="form__input">
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    class="input input--nbd"
+                    placeholder="E-mail"
+                    value="{{ request.POST.email|default:'' }}"
+                >
+                <div class="input__bg"></div>
+            </div>
+            <div class="form__input">
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    class="input input--nbd"
+                    placeholder="Пароль"
+                    autocomplete="off"
+                    value=""
+                >
+                <div class="input__bg"></div>
+            </div>
+
+            <div class="form__submit">
+                <button type="submit" class="btn btn--wall"><span>Войти</span></button>
+            </div>
+            <div class="form__submit">
+                <button class="btn btn--bd btn--bdg btn--wall" type="button" data-open-login="reg"><span>Регистрация</span></button>
+            </div>
+            <div class="pauth__links">
+                <a href="https://crypto-chicken.co/lostpass/" class="pauth__link">Забыли пароль?</a>
+            </div>
+            <div class="resultgo"></div>
+        </form>
+    </div>
+</div>

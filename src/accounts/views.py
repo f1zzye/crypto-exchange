@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login, authenticate
 from django.views.generic import CreateView, TemplateView
 from django.contrib.auth.views import LogoutView, PasswordResetConfirmView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
@@ -64,3 +64,47 @@ def activate_account_view(request, uidb64, token):
     else:
         messages.error(request, "Activation link is invalid!")
         return redirect("core:index")
+
+
+class UserLoginView(TitleMixin, TemplateView):
+    template_name = "accounts/sign-in.html"
+    title = "Sign In - PhotoHub"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.headers.get("x-requested-with") == "XMLHttpRequest":
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        try:
+            user_check = User.objects.get(email=email)
+            if not user_check.is_active:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Please confirm your email to activate your account.",
+                })
+
+            user = authenticate(request, username=email, password=password)
+
+            if user is not None:
+                login(request, user)
+                return JsonResponse({
+                    "success": True,
+                    "message": f"Welcome, {user.username}!",
+                    "redirect_url": reverse("core:index"),
+                })
+            else:
+                return JsonResponse({
+                    "success": False,
+                    "message": "The password is incorrect. Please try again.",
+                })
+
+        except User.DoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "message": f"User with email {email} does not exist.",
+            })
+

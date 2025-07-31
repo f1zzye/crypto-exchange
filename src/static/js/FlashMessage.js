@@ -31,15 +31,44 @@ function showFlashMessage(text, type="success") {
     container.insertAdjacentHTML('beforeend', html);
 
     let messageDiv = container.lastElementChild;
+    autoHideMessage(messageDiv);
+}
 
+function closeFlashMessage(btn) {
+    const messageDiv = btn.closest('.flash-message');
+    if (messageDiv) {
+        hideMessage(messageDiv);
+    }
+}
+
+function hideMessage(messageDiv) {
+    if (messageDiv && messageDiv.parentElement) {
+        messageDiv.style.animation = 'slideOut 0.3s ease-out forwards';
+        setTimeout(() => {
+            if (messageDiv.parentElement) {
+                messageDiv.remove();
+            }
+        }, 300);
+    }
+}
+
+function autoHideMessage(messageDiv) {
     setTimeout(() => {
-        if (messageDiv.parentElement) {
-            messageDiv.style.animation = 'slideOut 0.3s ease-out forwards';
-            setTimeout(() => {
-                if (messageDiv.parentElement) {
-                    messageDiv.remove();
-                }
-            }, 300);
-        }
+        hideMessage(messageDiv);
     }, 5000);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const flashMessages = document.querySelectorAll('.flash-message');
+    flashMessages.forEach((message, index) => {
+        const closeBtn = message.querySelector('.flash-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                closeFlashMessage(this);
+            });
+        }
+        setTimeout(() => {
+            autoHideMessage(message);
+        }, index * 200);
+    });
+});
