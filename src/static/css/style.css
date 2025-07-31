@@ -1089,7 +1089,7 @@ input, button {
 }
 
 .form__policy :checked + .form__policy-sq {
-    background-image: url(images/icons/check-active.svg);
+    background-image: url("/static/img/check-active.svg");
 }
 
 .form__policy a {
