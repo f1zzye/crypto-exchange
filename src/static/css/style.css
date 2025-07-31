@@ -1084,12 +1084,12 @@ input, button {
     width: 24px;
     height: 24px;
     cursor: pointer;
-    background: url(images/icons/check-inactive.svg) no-repeat center;
+    background: url("/static/img/check-inactive.svg") no-repeat center;
     background-size: 100%;
 }
 
 .form__policy :checked + .form__policy-sq {
-    background-image: url(images/icons/check-active.svg);
+    background-image: url("/static/img/check-active.svg");
 }
 
 .form__policy a {
@@ -1985,6 +1985,35 @@ header
     flex: 0 0 auto;
     width: 20px;
 }
+
+.accmenu__btnlogout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    background: none;
+    border: none;
+    color: inherit;
+    padding: 0;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.3s ease-in-out;
+}
+
+.accmenu__btnlogout:hover,
+.accmenu li a:hover {
+    text-decoration: underline;
+}
+
+.accmenu__btnlogout img {
+    flex: 0 0 auto;
+    width: 20px;
+}
+
+.accmenu.js-menu-acc { display: none; }
+.accmenu.js-menu-acc.opened { display: block; }
 
 .navfix {
     position: absolute;
