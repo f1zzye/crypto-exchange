@@ -5,6 +5,8 @@ from django.views.generic import TemplateView
 from common.mixins import TitleMixin
 from core.utils.captcha import CaptchaGenerator
 
+from exchange.models import Token
+
 
 class IndexView(TitleMixin, TemplateView):
     template_name: str = "index.html"
@@ -20,7 +22,14 @@ class IndexView(TitleMixin, TemplateView):
 
         self.request.session["captcha_answer"] = captcha_data["result"]
 
+        tokens = (
+            Token.objects.filter(is_active=True)
+            .select_related("network")
+            .order_by("name")
+        )
+
         context["captcha"] = captcha_data
+        context["tokens"] = tokens
         return context
 
     def post(self, request, *args, **kwargs):
@@ -56,7 +65,6 @@ class IndexView(TitleMixin, TemplateView):
             return render(request, self.template_name, context)
 
         return redirect("core:aml")
-
 
 
 class AMLRulesView(TitleMixin, TemplateView):
