@@ -23,6 +23,7 @@ INSTALLED_APPS: list[str] = [
     # My apps
     "core",
     "accounts",
+    "exchange",
 ]
 
 MIDDLEWARE: list[str] = [
