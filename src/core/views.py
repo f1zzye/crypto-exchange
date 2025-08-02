@@ -62,3 +62,18 @@ class IndexView(TitleMixin, TemplateView):
 class AMLRulesView(TitleMixin, TemplateView):
     template_name: str = "core/aml.html"
     title: str = "AML rules - CryptoChicken"
+
+
+class RaffleView(TitleMixin, TemplateView):
+    template_name: str = "core/raffle.html"
+    title: str = "Raffle"
+
+
+class CashbackInfoView(TitleMixin, TemplateView):
+    template_name: str = "core/cashback-info.html"
+    title: str = "Cashback - CryptoChicken"
+
+
+class DepositView(TitleMixin, TemplateView):
+    template_name: str = "core/deposit.html"
+    title: str = "Deposit - CryptoChicken"
