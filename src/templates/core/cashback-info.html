@@ -1,0 +1,327 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<body>
+<div class="wrapper">
+
+  {% include 'partials/header.html' %}
+
+  <main class="content__wrapper">
+    <section class="page">
+      <div class="container">
+        <div class="page_wrap box box--cont cashback-info post-1081 page type-page status-publish hentry">
+
+
+          <div class="cash__cont ">
+            <div class="cash__cont-title">
+              <div class="title">Соверши обмен на нашем сайте и получи кэшбэк с каждой операции!</div>
+            </div>
+            <div class="cash__cont-info">
+              <div class="cash__cont-text">
+                <p>Каждый авторизированный пользователь, совершая обмен на нашем сайте CryptoChicken, получает кэшбэк
+                  0,03% от суммы обмена на свой партнерский аккаунт (За 10000USDT обмена возвращаем 3USDT).<br/>
+                  Исключение составляют направления: Stable-Stable (TRC20/ERC20/USDC/DAI), TRC/ERC20/USDC/DAI-нал,
+                  нал-TRC20. По этим направлениям кэшбэк не начисляется.</p>
+                <p>Накопленные средства можно вывести на свой кошелек USDT TRC20. Минимальная сумма для вывода 10$.</p>
+                <p>Для вывода средств, необходимо в своем кабинете на странице "кэшбэк" ввести кошелек и нажать кнопку
+                  "заказать вывод средств".</p>
+              </div>
+              <div class="cash__cont-img"><img decoding="async"
+                                               src="{% static 'img/cash-img-3.png' %}"
+                                               alt=""/></div>
+            </div>
+            <div class="cash__cont-buttons"><a class="btn btn--bd btn--bdg btn--wall" href="/ru/account-2/"><span>Личный кабинет</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+{% include 'partials/footer.html' %}
+
+</div>
+
+<div class="popup " data-popup="call">
+    <div class="popup__content">
+        <div class="popup__bg popup-close"></div>
+        <div class="popup__container">
+            <a href="#" class="popup__close popup-close"></a>
+            <div class="popup__body">
+                <div class="popup__head">
+                    <div class="popup__title"></div>
+                    <div class="popup__intro"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="popup " data-popup="thank">
+    <div class="popup__content">
+        <div href="" class="popup__bg popup-close"></div>
+        <div class="popup__container">
+            <a href="#" class="popup__close popup-close"></a>
+            <div class="popup__body">
+                <div class="popup__head">
+                    <div class="popup__title"></div>
+                    <div class="popup__intro"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LW8KXMZ9C5"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'G-LW8KXMZ9C5');
+</script>
+
+<div class="walletsverify_box"></div>
+<script type="text/javascript">
+    jQuery(function ($) {
+
+        var auto_load = 1;
+
+        function globalajax_timer() {
+            if (auto_load == 1) {
+                auto_load = 0;
+
+                var param = 'set=1';
+
+                $('.globalajax_ind').addClass('active');
+                $.ajax({
+                    type: "POST",
+                    url: "https://crypto-chicken.co/premium_site_action-globalajax_action.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                    dataType: 'json',
+                    data: param,
+                    error: function (res, res2, res3) {
+                        for (key in res) {
+                            console.log(key + ' = ' + res[key]);
+                        }
+                    },
+                    beforeSend: function (res, res2, res3) {
+                    },
+                    success: function (res) {
+
+                        if (res['status'] == 'success') {
+                            auto_load = 1;
+                        }
+                        $('.globalajax_ind').removeClass('active');
+                    }
+                });
+            }
+        }
+
+        setInterval(globalajax_timer, 60000);
+
+    });
+</script>
+
+<script type="text/javascript" id="zsiqchat">var $zoho = $zoho || {};
+$zoho.salesiq = $zoho.salesiq || {
+    widgetcode: "siq14ec188a69152de55496ad9420108121ae55121ac1f6b0f636027b7e1192cf77",
+    values: {},
+    ready: function () {
+    }
+};
+var d = document;
+s = d.createElement("script");
+s.type = "text/javascript";
+s.id = "zsiqscript";
+s.defer = true;
+s.src = "https://salesiq.zoho.eu/widget";
+t = d.getElementsByTagName("script")[0];
+t.parentNode.insertBefore(s, t);</script>
+
+<script>
+    if (typeof gtag === 'function') {
+        gtag('config', 'AW-16948843742');
+    } else {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16948843742';
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'AW-16948843742');
+    }
+</script>
+<div style="display: none;">
+    <form method="post" class="upload_hf_form" enctype="multipart/form-data"
+          action="https://crypto-chicken.co/premium_site_action-hf_upload.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+        <input type="hidden" name="formid" id="upload_hf_form_id" value=""/>
+        <input type="hidden" name="type" id="upload_hf_form_type" value=""/>
+        <input type="hidden" name="id" id="upload_hf_form_valid" value=""/>
+        <input type="hidden" name="redir" id="upload_hf_form_redir" value=""/>
+        <div id="upload_hf_form_file"></div>
+    </form>
+</div>
+<script type="text/javascript">
+    jQuery(function ($) {
+
+        $(document).on('change', '.js_hf_input', function () {
+
+            var thet = $(this);
+            var type = thet.parents('.form_hf').attr('data-type');
+            var redir = thet.parents('.form_hf').attr('data-redir');
+            var id = thet.parents('.form_hf').attr('data-id');
+            var form_id = thet.parents('.form_hf').attr('id');
+            var input_now = thet.parents('.js_hf_input_linewrap').html();
+            var ccn = thet[0].files.length;
+            if (ccn > 0) {
+                var fileInput = thet[0];
+                var bitec = fileInput.files[0].size;
+                if (bitec > 2097152) {
+                    alert('Макс. 2 МБ !');
+                    thet.val('');
+                } else {
+                    $('#upload_hf_form_type').val(type);
+                    $('#upload_hf_form_valid').val(id);
+                    $('#upload_hf_form_redir').val(redir);
+                    $('#upload_hf_form_id').val(form_id);
+
+                    $("#upload_hf_form_file").html('');
+
+                    let dt = new DataTransfer();
+                    dt.items.add(this.files[0]);
+
+                    let n_input = $('<input>', {
+                        type: 'file',
+                        name: thet.attr('name'),
+                        class: thet.attr('class'),
+                        id: thet.attr('id'),
+                        accept: thet.attr('accept'),
+                        multiple: thet.prop('multiple'),
+                        required: thet.prop('required'),
+                    })[0];
+                    n_input.files = dt.files;
+
+                    $("#upload_hf_form_file").append(n_input);
+
+                    /* thet.clone().appendTo("#upload_hf_form_file"); */
+
+                    $('.upload_hf_form').submit();
+                }
+            }
+
+        });
+
+        $('.upload_hf_form').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (a, f, o) {
+
+                var form_id = $('#upload_hf_form_id').val();
+                $('#' + form_id).addClass('uploading');
+
+                $('.form_hf input').prop('disabled', true);
+                $('.form_hf').find('.js_hf_bar').show();
+                $('.form_hf').find('.js_hf_bar_abs').width('0px');
+                $('.js_hf_response').html('');
+
+            },
+            error: function (res, res2, res3) {
+                for (key in res) {
+                    console.log(key + ' = ' + res[key]);
+                }
+            },
+            uploadProgress: function (event, position, total, percentComplete) {
+
+                var form_id = $('#upload_hf_form_id').val();
+                var percentVal = percentComplete + '%';
+                $('#' + form_id).find('.js_hf_bar_abs').width(percentVal);
+
+            },
+            success: function (res) {
+
+                var form_id = $('#upload_hf_form_id').val();
+
+                if (res['status'] == 'success') {
+                    $('#' + form_id).find('.js_hf_files').html(res['response']);
+                }
+
+                if (res['status'] == 'error') {
+                    $('#' + form_id + '_hf_response').html('<div class="resultfalse">' + res['status_text'] + '</div>');
+                }
+
+                if (res['url']) {
+                    window.location.href = res['url'];
+                }
+
+                $('.js_hf_input').val('');
+                $('.form_hf').find('.ustbl_bar').hide();
+                $('.form_hf input').prop('disabled', false);
+                $('#' + form_id).removeClass('uploading');
+
+            }
+        });
+
+        $(document).on('click', '.js_hf_del', function () {
+
+            var id = $(this).attr('data-id');
+            var insert_html = $(this).parents('.js_hf_files');
+            var thet = $(this);
+            $('.js_hf_response').html('');
+            if (!thet.hasClass('act')) {
+                if (confirm("Вы уверены что хотите удалить этот файл?")) {
+                    thet.addClass('act');
+                    var param = 'id=' + id;
+                    $.ajax({
+                        type: "POST",
+                        url: "https://crypto-chicken.co/premium_site_action-hf_delete.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                        dataType: 'json',
+                        data: param,
+                        error: function (res, res2, res3) {
+                            for (key in res) {
+                                console.log(key + ' = ' + res[key]);
+                            }
+                        },
+                        success: function (res) {
+                            if (res['status'] == 'success') {
+                                insert_html.html(res['response']);
+                            }
+
+                            if (res['status'] == 'error') {
+                                for (key in res) {
+                                    console.log(key + ' = ' + res[key]);
+                                }
+                            }
+
+                            if (res['url']) {
+                                window.location.href = res['url'];
+                            }
+
+                            thet.removeClass('act');
+                        }
+                    });
+                }
+            }
+
+            return false;
+        });
+
+    });
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015"
+        integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ=="
+        data-cf-beacon='{"version":"2024.11.0","token":"c9541608bc38455c9e1936cbc59a8538","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
+        crossorigin="anonymous"></script>
+</body>
+{% endblock %}

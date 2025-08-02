@@ -33,9 +33,9 @@
                             <div class="header__nav">
                                 <ul id="menu-verhnee-menyu" class="hmenu">
                                     <li id="menu-item-1101" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
-                                    <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="https://crypto-chicken.co/raffle/"><span>Розыгрыш</span></a></li>
-                                    <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="https://crypto-chicken.co/cashback-info/"><span>Kэшбэк</span></a></li>
-                                    <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="https://crypto-chicken.co/deposits/"><span>Депозиты</span></a></li>
+                                    <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
+                                    <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшбэк</span></a></li>
+                                    <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
                                 </ul>
                             </div>
                             {% if user.is_authenticated %}
@@ -99,9 +99,9 @@
                     <div class="navfix__nav">
                         <ul id="menu-verhnee-menyu-1" class="hmenu">
                             <li class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
-                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="https://crypto-chicken.co/raffle/"><span>Розыгрыш</span></a></li>
-                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="https://crypto-chicken.co/cashback-info/"><span>Kэшбэк</span></a></li>
-                            <li class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="https://crypto-chicken.co/deposits/"><span>Депозиты</span></a></li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшбэк</span></a></li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
                         </ul>
                     </div>
 
