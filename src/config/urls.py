@@ -26,7 +26,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls", namespace="core")),
     path("user/", include("accounts.urls", namespace="account")),
-    path("exchange/", include("exchange.urls", namespace="exchange")),
+    path("exchange/", include("exchange.urls")),
 ]
 
 if settings.DEBUG:
