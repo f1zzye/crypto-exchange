@@ -54,15 +54,12 @@
                                                 <div class="calc__search">
                                                     <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
                                                 </div>
+
+
                                                 <div class="calc__items js-content-scroll">
                                                     <select name="" class="js_my_sel" autocomplete="off" id="select_give">
                                                         {% for token in tokens %}
-                                                        <option value="{{ token.id }}"
-                                                                {% if forloop.first %}selected='selected'{% endif %}
-                                                                data-ctypes="stable"
-                                                                data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
-                                                                data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
-                                                                data-logo-next="">
+                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo-next="">
                                                             {{ token.name }} {{ token.network.short_name }}
                                                         </option>
                                                         {% endfor %}
@@ -109,14 +106,9 @@
                                                     <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
                                                 </div>
                                                 <div class="calc__items js-content-scroll">
-                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
+                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_get">
                                                         {% for token in tokens %}
-                                                        <option value="{{ token.id }}"
-                                                                {% if forloop.first %}selected='selected'{% endif %}
-                                                                data-ctypes="stable"
-                                                                data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
-                                                                data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
-                                                                data-logo-next="">
+                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo-next="">
                                                             {{ token.name }} {{ token.network.short_name }}
                                                         </option>
                                                         {% endfor %}
@@ -254,8 +246,7 @@
                                                 <div class="form__input" style="position: relative;">
                                                     <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" />
                                                     <div class="input__bg"></div>
-                                                    <button type="button" class="captcha_reload_icon" title="Обновить капчу" onclick="reloadCaptcha(event)"
-                                                        style="
+                                                    <button type="button" class="captcha_reload_icon" title="Обновить капчу" onclick="reloadCaptcha(event)" style="
                                                             position: absolute;
                                                             top: 50%;
                                                             right: -36px;
@@ -263,8 +254,7 @@
                                                             background: none;
                                                             border: none;
                                                             cursor: pointer;
-                                                            padding: 0;"
-                                                        >
+                                                            padding: 0;">
                                                         <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
                                                     </button>
                                                 </div>
@@ -1135,6 +1125,11 @@
 
         });
     </script>
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"c9541608bc38455c9e1936cbc59a8538","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+{% block extra_js %}
+    <script src="{% static 'js/exchange/coin-display.js' %}"></script>
+    <script src="{% static 'js/exchange/exchange-calculator.js' %}"></script>
+{% endblock %}
+
 </body>
 {% endblock %}
