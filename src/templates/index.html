@@ -54,20 +54,22 @@
                                                 <div class="calc__search">
                                                     <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
                                                 </div>
-                                                <div class="calc__items js-content-scroll">
-                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
-                                                        {% for token in tokens %}
-                                                        <option value="{{ token.id }}"
-                                                                {% if forloop.first %}selected='selected'{% endif %}
-                                                                data-ctypes="stable"
-                                                                data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
-                                                                data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
-                                                                data-logo-next="">
-                                                            {{ token.name }} {{ token.network.short_name }}
-                                                        </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
+
+
+<div class="calc__items js-content-scroll">
+    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
+        {% for token in tokens %}
+        <option value="{{ token.id }}"
+                {% if forloop.first %}selected='selected'{% endif %}
+                data-ctypes="stable"
+                data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
+                data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
+                data-logo-next="">
+            {{ token.name }} {{ token.network.short_name }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
                                             </div>
                                         </div>
                                     </div>
@@ -109,19 +111,19 @@
                                                     <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
                                                 </div>
                                                 <div class="calc__items js-content-scroll">
-                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
-                                                        {% for token in tokens %}
-                                                        <option value="{{ token.id }}"
-                                                                {% if forloop.first %}selected='selected'{% endif %}
-                                                                data-ctypes="stable"
-                                                                data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
-                                                                data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
-                                                                data-logo-next="">
-                                                            {{ token.name }} {{ token.network.short_name }}
-                                                        </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
+    <select name="" class="js_my_sel" autocomplete="off" id="select_get">
+        {% for token in tokens %}
+        <option value="{{ token.id }}"
+                {% if forloop.first %}selected='selected'{% endif %}
+                data-ctypes="stable"
+                data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
+                data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
+                data-logo-next="">
+            {{ token.name }} {{ token.network.short_name }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
                                             </div>
                                         </div>
                                     </div>
@@ -1135,6 +1137,59 @@
 
         });
     </script>
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"c9541608bc38455c9e1936cbc59a8538","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+    <script>
+       jQuery(function($) {
+
+    function updateCoinDisplay(selectElement, targetImageClass, targetNameClass) {
+        const selectedOption = selectElement.find('option:selected');
+        const imageUrl = selectedOption.data('img') || selectedOption.data('logo');
+        const coinName = selectedOption.text().trim();
+
+        if (imageUrl) {
+            $(targetImageClass).attr('src', imageUrl);
+        }
+
+        $(targetNameClass).text(coinName);
+    }
+
+    // Для левого селекта (что отдаете)
+    $(document).on('change', '#select_give', function() {
+        const column = $(this).closest('.calc__col');
+        const imageElement = column.find('.js-sum-icon');
+        const nameElement = column.find('.js-sum-name');
+
+        updateCoinDisplay($(this), imageElement, nameElement);
+    });
+
+    // Для правого селекта (что получаете)
+    $(document).on('change', '#select_get', function() {
+        const column = $(this).closest('.calc__col');
+        const imageElement = column.find('.js-sum-icon');
+        const nameElement = column.find('.js-sum-name');
+
+        updateCoinDisplay($(this), imageElement, nameElement);
+    });
+
+    // Инициализация при загрузке - левый селект
+    $('#select_give').each(function() {
+        const column = $(this).closest('.calc__col');
+        const imageElement = column.find('.js-sum-icon');
+        const nameElement = column.find('.js-sum-name');
+
+        updateCoinDisplay($(this), imageElement, nameElement);
+    });
+
+    // Инициализация при загрузке - правый селект
+    $('#select_get').each(function() {
+        const column = $(this).closest('.calc__col');
+        const imageElement = column.find('.js-sum-icon');
+        const nameElement = column.find('.js-sum-name');
+
+        updateCoinDisplay($(this), imageElement, nameElement);
+    });
+
+});
+    </script>
+
 </body>
 {% endblock %}
