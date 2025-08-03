@@ -153,6 +153,11 @@ UNFOLD = {
                         "icon": "token",
                         "link": reverse_lazy("admin:exchange_token_changelist"),
                     },
+                    {
+                        "title": _("Exchange Orders "),
+                        "icon": "swap_horiz",
+                        "link": reverse_lazy("admin:exchange_exchangeorder_changelist"),
+                    },
                 ],
             },
             {

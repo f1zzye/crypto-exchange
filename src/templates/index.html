@@ -15,262 +15,304 @@
                 <div class="container">
 
                     <form method="post" class="ajax_post_bids" action="">
-                        <div class="exch_ajax_wrap">
-                            <div class="exch_ajax_wrap_abs"></div>
-                            <div id="exch_html" class="calc__cols"> <input type="hidden" name="direction_id" class="js_direction_id" value="1977" />
-                                <div class="calc__left">
-                                    <div class="calc__col js-calc-col js-calc-col-1">
-                                        <div class="calc__col-head">
-                                            <div class="calc__col-title title">Отдаете</div>
+    {% csrf_token %}
+
+    <!-- Скрытые поля для данных обмена -->
+    <input type="hidden" name="give_token_id" id="hidden_give_token_id" value="">
+    <input type="hidden" name="receive_token_id" id="hidden_receive_token_id" value="">
+    <input type="hidden" name="sum2" id="hidden_sum2" value="">
+
+    <div class="exch_ajax_wrap">
+        <div class="exch_ajax_wrap_abs"></div>
+        <div id="exch_html" class="calc__cols">
+            <input type="hidden" name="direction_id" class="js_direction_id" value="1977" />
+            <div class="calc__left">
+                <div class="calc__col js-calc-col js-calc-col-1">
+                    <div class="calc__col-head">
+                        <div class="calc__col-title title">Отдаете</div>
+                    </div>
+                    <div class="calc__body">
+                        <div class="form__input calc__irow">
+                            <div class="hexch_curs_input js_wrap_error">
+                                <input type="text" name="sum1" cash-id="sum" data-decimal="10"
+                                       class="js_sum_val js_decimal js_sum1 cache_data input input--nbd js-sum-val"
+                                       autocomplete="off" value="500" required />
+                                <div class="input__bg"></div>
+                                <div class="calc__iicon">
+                                    <img src="{% if tokens.0.image %}{{ tokens.0.image.url }}{% else %}https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png{% endif %}"
+                                         class="js-sum-icon" alt="">
+                                    <span class="calc__iicon-name js-sum-name">
+                                        {% if tokens.0 %}{{ tokens.0.name }} {{ tokens.0.network.short_name }}{% else %}Tether TRC20 USDT{% endif %}
+                                    </span>
+                                    <button type="button" class="calc__iicon-toggle js-calc-table-toggle"></button>
+                                </div>
+                                <div class="js_error js_sum1_error"></div>
+                            </div>
+                        </div>
+                        <div class="calc__amount">
+                            <a href="javascript:void(0)" class="calc__amount-val js_min1_val" data-id="sum1" data-min1="500" data-val="500">Min:&nbsp;500</a>
+                            <a href="javascript:void(0)" class="calc__amount-val js_max1_val" data-id="sum1" data-max1="15000" data-val="15000">Max:&nbsp;15000</a>
+                        </div>
+                        <div class="calc__tags">
+                            <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
+                            <div class="calc__tags-sep"></div>
+                            <div class="calc__tags-btn js-calc-type" data-type="0">Crypto</div>
+                            <div class="calc__tags-sep"></div>
+                            <div class="calc__tags-btn js-calc-type" data-type="0">Bank</div>
+                            <div class="calc__tags-sep"></div>
+                        </div>
+
+                        <div class="calc__table js-calc-table">
+                            <div class="calc__search">
+                                <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
+                            </div>
+                            <div class="calc__items js-content-scroll">
+                                <select name="give_token_select" class="js_my_sel" autocomplete="off" id="select_give" required>
+                                    {% for token in tokens %}
+                                    <option value="{{ token.id }}"
+                                            {% if forloop.first %}selected='selected'{% endif %}
+                                            data-ctypes="stable"
+                                            data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
+                                            data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
+                                            data-name="{{ token.name }} {{ token.network.short_name }}"
+                                            data-short-name="{{ token.short_name }}">
+                                        {{ token.name }} {{ token.network.short_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="calc__reverse js-calc-reverse">
+                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/reverse.svg" alt="">
+                </button>
+
+                <div class="calc__col js-calc-col js-calc-col-2">
+                    <div class="calc__col-head">
+                        <div class="calc__col-title title">Получите</div>
+                        <div class="calc__course">Курс: <span class="js_course_html">Выберите токены</span></div>
+                    </div>
+                    <div class="calc__body">
+                        <div class="form__input calc__irow">
+                            <div class="hexch_curs_input js_wrap_error">
+                                <input type="text" name="sum2_display" data-decimal="10"
+                                       class="js_sum_val js_decimal js_sum2c input input--nbd js-sum-val"
+                                       autocomplete="off" value="0" readonly />
+                                <div class="input__bg"></div>
+                                <div class="calc__iicon">
+                                    <img src="{% if tokens.1.image %}{{ tokens.1.image.url }}{% else %}https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png{% endif %}"
+                                         class="js-sum-icon" alt="">
+                                    <span class="calc__iicon-name js-sum-name">
+                                        {% if tokens.1 %}{{ tokens.1.name }} {{ tokens.1.network.short_name }}{% else %}Выберите токен{% endif %}
+                                    </span>
+                                    <button type="button" class="calc__iicon-toggle js-calc-table-toggle"></button>
+                                </div>
+                                <div class="js_error js_sum2_error"></div>
+                            </div>
+                        </div>
+                        <div class="calc__amount">
+                            <a href="javascript:void(0)" class="calc__amount-val js_min2_val" data-id="sum2" data-min1="0" data-val="0">Min:&nbsp;0</a>
+                            <a href="javascript:void(0)" class="calc__amount-val js_max2_val" data-id="sum2" data-max1="0" data-val="0">Max:&nbsp;0</a>
+                        </div>
+                        <div class="calc__tags">
+                            <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
+                            <div class="calc__tags-sep"></div>
+                            <div class="calc__tags-btn js-calc-type" data-type="0">Crypto</div>
+                            <div class="calc__tags-sep"></div>
+                            <div class="calc__tags-btn js-calc-type" data-type="0">Bank</div>
+                            <div class="calc__tags-sep"></div>
+                        </div>
+                        <div class="calc__table js-calc-table">
+                            <div class="calc__search">
+                                <input type="text" name="s2" class="input js-calc-search" placeholder="Введите валюту">
+                            </div>
+                            <div class="calc__items js-content-scroll">
+                                <select name="receive_token_select" class="js_my_sel" autocomplete="off" id="select_get" required>
+                                    {% for token in tokens %}
+                                    <option value="{{ token.id }}"
+                                            {% if forloop.counter == 2 %}selected='selected'{% endif %}
+                                            data-ctypes="stable"
+                                            data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
+                                            data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
+                                            data-name="{{ token.name }} {{ token.network.short_name }}"
+                                            data-short-name="{{ token.short_name }}">
+                                        {{ token.name }} {{ token.network.short_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calc__form">
+                <div class="calc__form-tt">Персональные данные</div>
+
+                <div class="xchange_curs_line js_line_wrapper">
+                    <div class="xchange_curs_line_ins">
+                        <div class="xchange_curs_label">
+                            <div class="xchange_curs_label_ins">
+                                <label for="account2">
+                                    <span class="xchange_label">Кошелек<span class="req">*</span>:</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="xchange_curs_input js_wrap_error js_window_wrap">
+                            <div class="form__input">
+                                <input name="account2" type="text" cash-id="account361" id="account2"
+                                       autocomplete="off" value=""
+                                       class="js_account2 cache_data check_cache input"
+                                       placeholder="Кошелек*" required />
+                                <div class="input__bg"></div>
+                            </div>
+                            <div class="js_error js_account2_error"></div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="xchange_pers">
+                    <div class="xchange_pers_ins">
+                        <div class="xchange_pers_title">
+                            <div class="xchange_pers_title_ins">
+                                <span>Персональные данные</span>
+                            </div>
+                        </div>
+                        <div class="xchange_pers_div">
+                            <div class="xchange_pers_div_ins">
+                                <div class="xchange_pers_line js_line_wrapper">
+                                    <div class="xchange_pers_line_ins">
+                                        <div class="xchange_pers_label">
+                                            <div class="xchange_pers_label_ins">
+                                                <label for="cf6">
+                                                    <span class="xchange_label">E-mail<span class="req">*</span>:</span>
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div class="calc__body">
-                                            <div class="form__input calc__irow">
-
-                                                <div class="hexch_curs_input js_wrap_error "><input type="text" name="sum1" cash-id="sum" data-decimal="10" class="js_sum_val js_decimal js_sum1 cache_data input input--nbd js-sum-val" autocomplete="off" value="500" />
-                                                    <div class="input__bg"></div>
-                                                    <div class="calc__iicon">
-                                                        <img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" class="js-sum-icon" alt="">
-                                                        <span class="calc__iicon-name js-sum-name">Tether TRC20 USDT</span>
-                                                        <button class="calc__iicon-toggle  js-calc-table-toggle"></button>
-                                                    </div>
-                                                    <div class="js_error js_sum1_error"></div>
-                                                </div>
-
+                                        <div class="xchange_pers_input js_wrap_error js_window_wrap">
+                                            <div class="form__input">
+                                                <input name="cf6" cash-id="cf6" id="cf6" autocomplete="off"
+                                                       type="email" value=""
+                                                       class="js_cf6 cache_data check_cache input"
+                                                       placeholder="E-mail*"
+                                                       title="Введите ваш действующий e-mail. Все корректировки по заявке принимаются только с вашей почты."
+                                                       required />
+                                                <div class="input__bg"></div>
                                             </div>
-                                            <div class="calc__amount">
-                                                <a href="javascript:void(0)" class="calc__amount-val js_min1_val" data-id="sum1" data-min1="500" data-val="500">Min:&nbsp;500</a>
-                                                <a href="javascript:void(0)" class="calc__amount-val js_max1_val" data-id="sum1" data-max1="15000" data-val="15000">Max:&nbsp;15000</a>
-                                            </div>
-                                            <div class="calc__tags">
-                                                <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
-                                                <div class="calc__tags-sep"></div>
-                                                <div class="calc__tags-btn js-calc-type" data-type="0">Crypto</div>
-                                                <div class="calc__tags-sep"></div>
-                                                <div class="calc__tags-btn js-calc-type" data-type="0">Bank</div>
-                                                <div class="calc__tags-sep"></div>
-                                            </div>
-
-                                            <div class="calc__table js-calc-table">
-                                                <div class="calc__search">
-                                                    <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
-                                                </div>
-
-
-                                                <div class="calc__items js-content-scroll">
-                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
-                                                        {% for token in tokens %}
-                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo-next="">
-                                                            {{ token.name }} {{ token.network.short_name }}
-                                                        </option>
-                                                        {% endfor %}
-                                                    </select>
+                                            <div class="info_window js_window">
+                                                <div class="info_window_ins">
+                                                    <div class="info_window_abs"></div>
+                                                    <p>Введите ваш действующий e-mail.<br />
+                                                        Все корректировки по заявке принимаются только с вашей почты.</p>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <button class="calc__reverse js-calc-reverse"><img src="" alt=""></button>
-                                    <div class="calc__col js-calc-col js-calc-col-2">
-                                        <div class="calc__col-head">
-                                            <div class="calc__col-title title">Получите</div>
-                                            <div class="calc__course">Курс: <span class="js_course_html">327.62268 USDT = 1 XMR</span></div>
-                                        </div>
-                                        <div class="calc__body">
-                                            <div class="form__input calc__irow">
-
-                                                <div class="hexch_curs_input js_wrap_error "><input type="text" name="" data-decimal="10" class="js_sum_val js_decimal js_sum2c input input--nbd js-sum-val" autocomplete="off" value="1.52114587" />
-                                                    <div class="input__bg"></div>
-                                                    <div class="calc__iicon">
-                                                        <img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" class="js-sum-icon" alt="">
-                                                        <span class="calc__iicon-name js-sum-name">Monero XMR</span>
-                                                        <button class="calc__iicon-toggle  js-calc-table-toggle"></button>
-                                                    </div>
-                                                    <div class="js_error js_sum2_error"></div>
-                                                </div>
-
-                                            </div>
-                                            <div class="calc__amount">
-                                                <a href="javascript:void(0)" class="calc__amount-val js_min2_val" data-id="sum2" data-min1="1.52614587" data-val="1.52614587">Min:&nbsp;1.52614587</a>
-                                                <a href="javascript:void(0)" class="calc__amount-val js_max2_val" data-id="sum2" data-max1="45.7843761" data-val="45.7843761">Max:&nbsp;45.7843761</a>
-                                            </div>
-                                            <div class="calc__tags">
-                                                <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
-                                                <div class="calc__tags-sep"></div>
-                                                <div class="calc__tags-btn js-calc-type" data-type="0">Crypto</div>
-                                                <div class="calc__tags-sep"></div>
-                                                <div class="calc__tags-btn js-calc-type" data-type="0">Bank</div>
-                                                <div class="calc__tags-sep"></div>
-                                            </div>
-                                            <div class="calc__table js-calc-table">
-                                                <div class="calc__search">
-                                                    <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
-                                                </div>
-                                                <div class="calc__items js-content-scroll">
-                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_get">
-                                                        {% for token in tokens %}
-                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo-next="">
-                                                            {{ token.name }} {{ token.network.short_name }}
-                                                        </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            <div class="js_error js_cf6_error"></div>
+                                            <div class="clear"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="calc__form">
-                                    <div class="calc__form-tt">Персональные данные</div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-
-                                    <div class="xchange_curs_line js_line_wrapper ">
-                                        <div class="xchange_curs_line_ins">
-                                            <div class="xchange_curs_label">
-                                                <div class="xchange_curs_label_ins">
-                                                    <label for="account2"><span class="xchange_label">Кошелек<span class="req">*</span>: </span></label>
-                                                </div>
-                                            </div>
-                                            <div class="xchange_curs_input js_wrap_error js_window_wrap">
-                                                <div class="form__input"><input name="account2" type="text" cash-id="account361" id="account2" autocomplete="off" value="" class="js_account2 cache_data check_cache input" placeholder="Кошелек*" />
-                                                    <div class="input__bg"></div>
-                                                </div>
-                                                <div class="js_error js_account2_error"></div>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="xchange_pers">
-                                        <div class="xchange_pers_ins">
-                                            <div class="xchange_pers_title">
-                                                <div class="xchange_pers_title_ins">
-                                                    <span>Персональные данные</span>
-                                                </div>
-                                            </div>
-                                            <div class="xchange_pers_div">
-                                                <div class="xchange_pers_div_ins">
-                                                    <div class="xchange_pers_line js_line_wrapper ">
-                                                        <div class="xchange_pers_line_ins">
-                                                            <div class="xchange_pers_label">
-                                                                <div class="xchange_pers_label_ins">
-                                                                    <label for="cf6"><span class="xchange_label">E-mail<span class="req">*</span>: <span class="help_tooltip_label"></span></span></label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="xchange_pers_input js_wrap_error js_window_wrap">
-                                                                <div class="form__input"><input name="cf6" cash-id="cf6" id="cf6" autocomplete="off" type="text" value="" class="js_cf6 cache_data check_cache input" placeholder="E-mail*" title="Введите ваш действующий e-mail.
-Все корректировки по заявке принимаются только с вашей почты." />
-                                                                    <div class="input__bg"></div>
-                                                                </div>
-                                                                <div class="info_window js_window">
-                                                                    <div class="info_window_ins">
-                                                                        <div class="info_window_abs"></div>
-                                                                        <p>Введите ваш действующий e-mail.<br />
-                                                                            Все корректировки по заявке принимаются только с вашей почты.</p>
-
-                                                                    </div>
-                                                                </div>
-                                                                <div class="js_error js_cf6_error"></div>
-                                                                <div class="clear"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="clear"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="notice_message">
-                                        <div class="notice_message_ins">
-                                            <div class="notice_message_abs"></div>
-                                            <div class="notice_message_close"></div>
-                                            <div class="notice_message_text">
-                                                <div class="notice_message_text_ins">
-                                                    <div class="text">
-                                                        <p>Данная операция производится в автоматическом режиме.<br />
-                                                            В целях противодействия легализации доходов, полученных преступным путем, проводится <strong> AML-проверка</strong>.<br />
-                                                            Курс фиксируется при достижении 20 подтверждений в сети и покупке монет на бирже.</p>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="calc__form-policy">
-                                        <div class="hexch_checkdata_div">
-                                            <label class="form__policy">
-                                                <input type="checkbox" name="check_rule" autocomplete="off" value="1" />
-                                                <span class="form__policy-sq"></span>
-                                                <span class="form__policy-t">
-                                                    Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="exchange_checkpersdata">
-                                            <label class="form__policy">
-                                                <input type="checkbox" name="add_rules" autocomplete="off" value="1" />
-                                                <span class="form__policy-sq"></span>
-                                                <span class="form__policy-t">
-                                                    Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="hexch_checkdata_div">
-                                            <label class="form__policy">
-                                                <input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" />
-                                                <span class="form__policy-sq"></span>
-                                                <span class="form__policy-t">
-                                                    Не запоминать введенные данные<span></span>
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div class="captcha_div">
-                                            <div class="captcha_title">Введите ответ</div>
-
-                                            <div class="captcha_body" style="display: flex; align-items: center;">
-                                                <div class="captcha_divimg">
-                                                    <img src="{{ captcha.img1 }}" class="captcha1" alt="" />
-                                                </div>
-                                                <div class="captcha_divznak">
-                                                    <span class="captcha_sym">{{ captcha.operation }}</span>
-                                                </div>
-                                                <div class="captcha_divimg">
-                                                    <img src="{{ captcha.img2 }}" class="captcha2" alt="" />
-                                                </div>
-                                                <div class="captcha_divznak">
-                                                    =
-                                                </div>
-                                                <div class="form__input" style="position: relative;">
-                                                    <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" />
-                                                    <div class="input__bg"></div>
-                                                    <button type="button" class="captcha_reload_icon" title="Обновить капчу" onclick="reloadCaptcha(event)" style="
-                                                            position: absolute;
-                                                            top: 50%;
-                                                            right: -36px;
-                                                            transform: translateY(-50%);
-                                                            background: none;
-                                                            border: none;
-                                                            cursor: pointer;
-                                                            padding: 0;">
-                                                        <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </div>
-                                            {% if error %}
-                                            <div style="color: #dc3545; text-align: center; margin-top: 10px;">{{ error }}</div>
-                                            {% endif %}
-                                        </div>
-                                        <div class="calc__form-submit">
-                                            <button class="btn btn--wall"><span>Обменять сейчас</span></button>
-                                        </div>
-                                    </div>
+                <div class="notice_message">
+                    <div class="notice_message_ins">
+                        <div class="notice_message_abs"></div>
+                        <div class="notice_message_close"></div>
+                        <div class="notice_message_text">
+                            <div class="notice_message_text_ins">
+                                <div class="text">
+                                    <p>Данная операция производится в автоматическом режиме.<br />
+                                        В целях противодействия легализации доходов, полученных преступным путем, проводится <strong>AML-проверка</strong>.<br />
+                                        Курс фиксируется при достижении 20 подтверждений в сети и покупке монет на бирже.</p>
                                 </div>
                             </div>
-                    </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc__form-policy">
+                    <div class="hexch_checkdata_div">
+                        <label class="form__policy">
+                            <input type="checkbox" name="check_rule" autocomplete="off" value="1" required />
+                            <span class="form__policy-sq"></span>
+                            <span class="form__policy-t">
+                                Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="exchange_checkpersdata">
+                        <label class="form__policy">
+                            <input type="checkbox" name="add_rules" autocomplete="off" value="1" required />
+                            <span class="form__policy-sq"></span>
+                            <span class="form__policy-t">
+                                Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="hexch_checkdata_div">
+                        <label class="form__policy">
+                            <input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" />
+                            <span class="form__policy-sq"></span>
+                            <span class="form__policy-t">
+                                Не запоминать введенные данные
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="captcha_div">
+                        <div class="captcha_title">Введите ответ</div>
+                        <div class="captcha_body" style="display: flex; align-items: center;">
+                            <div class="captcha_divimg">
+                                <img src="{{ captcha.img1 }}" class="captcha1" alt="" />
+                            </div>
+                            <div class="captcha_divznak">
+                                <span class="captcha_sym">{{ captcha.operation }}</span>
+                            </div>
+                            <div class="captcha_divimg">
+                                <img src="{{ captcha.img2 }}" class="captcha2" alt="" />
+                            </div>
+                            <div class="captcha_divznak">=</div>
+                            <div class="form__input" style="position: relative;">
+                                <input type="text" class="captcha_divpole captcha_value input"
+                                       name="number" maxlength="4" autocomplete="off" value=""
+                                       id="captcha-input" required />
+                                <div class="input__bg"></div>
+                                <button type="button" class="captcha_reload_icon" title="Обновить капчу"
+                                        onclick="reloadCaptcha(event)" style="
+                                        position: absolute;
+                                        top: 50%;
+                                        right: -36px;
+                                        transform: translateY(-50%);
+                                        background: none;
+                                        border: none;
+                                        cursor: pointer;
+                                        padding: 0;">
+                                    <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
+                                </button>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        {% if error %}
+                        <div style="color: #dc3545; text-align: center; margin-top: 10px;">{{ error }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="calc__form-submit">
+                        <button type="submit" class="btn btn--wall">
+                            <span>Обменять сейчас</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
                 </div>
             </section>
 
@@ -823,7 +865,7 @@
         <div class="rb_line"><input type="submit" formtarget="_top" name="submit" class="rb_submit" value="Добавить счет" /></div>
         <div class="resultgo"></div>
     </div>
-    <form method="post" class="ajax_post_form" action="https://crypto-chicken.co/premium_site_action-userwalletsform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+    <form method="post" class="ajax_post_form" action="">
         <input type="hidden" name="redir" id="userwalletsform_redir" value="" />
 
         <div class="userwalletsform_box"></div>
@@ -912,7 +954,7 @@
                     $('.globalajax_ind').addClass('active');
                     $.ajax({
                         type: "POST",
-                        url: "https://crypto-chicken.co/premium_site_action-globalajax_action.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                        url: "",
                         dataType: 'json',
                         data: param,
                         error: function(res, res2, res3) {
@@ -973,7 +1015,7 @@
         }
     </script>
     <div style="display: none;">
-        <form method="post" class="upload_hf_form" enctype="multipart/form-data" action="https://crypto-chicken.co/premium_site_action-hf_upload.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+        <form method="post" class="upload_hf_form" enctype="multipart/form-data" action="">
             <input type="hidden" name="formid" id="upload_hf_form_id" value="" />
             <input type="hidden" name="type" id="upload_hf_form_type" value="" />
             <input type="hidden" name="id" id="upload_hf_form_valid" value="" />
@@ -1091,7 +1133,7 @@
                         var param = 'id=' + id;
                         $.ajax({
                             type: "POST",
-                            url: "https://crypto-chicken.co/premium_site_action-hf_delete.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                            url: "",
                             dataType: 'json',
                             data: param,
                             error: function(res, res2, res3) {
@@ -1125,6 +1167,52 @@
 
         });
     </script>
+
+<script>
+    jQuery(function($) {
+    // Обновляем скрытые поля при изменении
+    function updateHiddenFields() {
+        $('#hidden_give_token_id').val($('#select_give').val());
+        $('#hidden_receive_token_id').val($('#select_get').val());
+        $('#hidden_sum2').val($('input[name="sum2"], .js_sum2c').val());
+    }
+
+    // Обновляем скрытые поля при каждом изменении
+    $(document).on('change', '#select_give, #select_get', updateHiddenFields);
+    $(document).on('input', 'input[name="sum1"], input[name="sum2"], .js_sum2c', updateHiddenFields);
+
+    // Обработчик отправки формы
+    $(document).on('submit', '.ajax_post_bids', function(e) {
+        // Обновляем скрытые поля перед отправкой
+        updateHiddenFields();
+
+        // Проверяем заполненность полей
+        const giveTokenId = $('#hidden_give_token_id').val();
+        const receiveTokenId = $('#hidden_receive_token_id').val();
+        const giveAmount = $('input[name="sum1"]').val();
+        const receiveAmount = $('#hidden_sum2').val();
+        const email = $('input[name="cf6"]').val();
+        const wallet = $('input[name="account2"]').val();
+
+        if (!giveTokenId || !receiveTokenId || !giveAmount || !receiveAmount) {
+            e.preventDefault();
+            alert('Выберите токены и введите сумму для обмена');
+            return false;
+        }
+
+        if (!email || !wallet) {
+            e.preventDefault();
+            alert('Заполните email и адрес кошелька');
+            return false;
+        }
+
+        // Форма отправится обычным способом
+    });
+
+    // Инициализация
+    updateHiddenFields();
+});
+</script>
 
 {% block extra_js %}
     <script src="{% static 'js/exchange/coin-display.js' %}"></script>
