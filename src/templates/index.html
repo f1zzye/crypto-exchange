@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+
 <body>
 
     <div class="wrapper">
@@ -43,7 +44,12 @@
                                             <div class="calc__tags">
                                                 <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
                                                 <div class="calc__tags-sep"></div>
+                                                <div class="calc__tags-btn js-calc-type" data-type="0">Crypto</div>
+                                                <div class="calc__tags-sep"></div>
+                                                <div class="calc__tags-btn js-calc-type" data-type="0">Bank</div>
+                                                <div class="calc__tags-sep"></div>
                                             </div>
+
                                             <div class="calc__table js-calc-table">
                                                 <div class="calc__search">
                                                     <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
@@ -51,14 +57,13 @@
                                                 <div class="calc__items js-content-scroll">
                                                     <select name="" class="js_my_sel" autocomplete="off" id="select_give">
                                                         {% for token in tokens %}
-                                                        
                                                         <option value="{{ token.id }}"
                                                                 {% if forloop.first %}selected='selected'{% endif %}
                                                                 data-ctypes="stable"
                                                                 data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
                                                                 data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
                                                                 data-logo-next="">
-                                                            {{ token.name }} {{ token.network.short_name }} {{ token.short_name }}
+                                                            {{ token.name }} {{ token.network.short_name }}
                                                         </option>
                                                         {% endfor %}
                                                     </select>
@@ -79,7 +84,7 @@
                                                 <div class="hexch_curs_input js_wrap_error "><input type="text" name="" data-decimal="10" class="js_sum_val js_decimal js_sum2c input input--nbd js-sum-val" autocomplete="off" value="1.52114587" />
                                                     <div class="input__bg"></div>
                                                     <div class="calc__iicon">
-                                                        <img src="/wp-content/uploads/Monero.png" class="js-sum-icon" alt="">
+                                                        <img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" class="js-sum-icon" alt="">
                                                         <span class="calc__iicon-name js-sum-name">Monero XMR</span>
                                                         <button class="calc__iicon-toggle  js-calc-table-toggle"></button>
                                                     </div>
@@ -94,12 +99,16 @@
                                             <div class="calc__tags">
                                                 <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
                                                 <div class="calc__tags-sep"></div>
+                                                <div class="calc__tags-btn js-calc-type" data-type="0">Crypto</div>
+                                                <div class="calc__tags-sep"></div>
+                                                <div class="calc__tags-btn js-calc-type" data-type="0">Bank</div>
+                                                <div class="calc__tags-sep"></div>
                                             </div>
                                             <div class="calc__table js-calc-table">
                                                 <div class="calc__search">
                                                     <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
                                                 </div>
-                                               <div class="calc__items js-content-scroll">
+                                                <div class="calc__items js-content-scroll">
                                                     <select name="" class="js_my_sel" autocomplete="off" id="select_give">
                                                         {% for token in tokens %}
                                                         <option value="{{ token.id }}"
@@ -108,7 +117,7 @@
                                                                 data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
                                                                 data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
                                                                 data-logo-next="">
-                                                            {{ token.name }} {{ token.network.short_name }} {{ token.short_name }}
+                                                            {{ token.name }} {{ token.network.short_name }}
                                                         </option>
                                                         {% endfor %}
                                                     </select>
@@ -197,83 +206,80 @@
                                             </div>
                                         </div>
                                     </div>
-                                  <div class="calc__form-policy">
-    <div class="hexch_checkdata_div">
-        <label class="form__policy">
-            <input type="checkbox" name="check_rule" autocomplete="off" value="1" />
-            <span class="form__policy-sq"></span>
-            <span class="form__policy-t">
-                Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a>
-            </span>
-        </label>
-    </div>
-    <div class="exchange_checkpersdata">
-        <label class="form__policy">
-            <input type="checkbox" name="add_rules" autocomplete="off" value="1" />
-            <span class="form__policy-sq"></span>
-            <span class="form__policy-t">
-                Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a>
-            </span>
-        </label>
-    </div>
-    <div class="hexch_checkdata_div">
-        <label class="form__policy">
-            <input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" />
-            <span class="form__policy-sq"></span>
-            <span class="form__policy-t">
-                Не запоминать введенные данные<span></span>
-            </span>
-        </label>
-    </div>
+                                    <div class="calc__form-policy">
+                                        <div class="hexch_checkdata_div">
+                                            <label class="form__policy">
+                                                <input type="checkbox" name="check_rule" autocomplete="off" value="1" />
+                                                <span class="form__policy-sq"></span>
+                                                <span class="form__policy-t">
+                                                    Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="exchange_checkpersdata">
+                                            <label class="form__policy">
+                                                <input type="checkbox" name="add_rules" autocomplete="off" value="1" />
+                                                <span class="form__policy-sq"></span>
+                                                <span class="form__policy-t">
+                                                    Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="hexch_checkdata_div">
+                                            <label class="form__policy">
+                                                <input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" />
+                                                <span class="form__policy-sq"></span>
+                                                <span class="form__policy-t">
+                                                    Не запоминать введенные данные<span></span>
+                                                </span>
+                                            </label>
+                                        </div>
 
-<div class="captcha_div">
-    <div class="captcha_title">Введите ответ</div>
+                                        <div class="captcha_div">
+                                            <div class="captcha_title">Введите ответ</div>
 
-    <div class="captcha_body" style="display: flex; align-items: center;">
-        <div class="captcha_divimg">
-            <img src="{{ captcha.img1 }}" class="captcha1" alt="" />
-        </div>
-        <div class="captcha_divznak">
-            <span class="captcha_sym">{{ captcha.operation }}</span>
-        </div>
-        <div class="captcha_divimg">
-            <img src="{{ captcha.img2 }}" class="captcha2" alt="" />
-        </div>
-        <div class="captcha_divznak">
-            =
-        </div>
-        <div class="form__input" style="position: relative;">
-            <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" />
-            <div class="input__bg"></div>
-            <button type="button"
-                    class="captcha_reload_icon"
-                    title="Обновить капчу"
-                    onclick="reloadCaptcha(event)"
-                    style="
-                        position: absolute;
-                        top: 50%;
-                        right: -36px;
-                        transform: translateY(-50%);
-                        background: none;
-                        border: none;
-                        cursor: pointer;
-                        padding: 0;">
-                <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
-            </button>
-        </div>
-        <div class="clear"></div>
-    </div>
-    {% if error %}
-    <div style="color: #dc3545; text-align: center; margin-top: 10px;">{{ error }}</div>
-    {% endif %}
-</div>
-<div class="calc__form-submit">
-    <button class="btn btn--wall"><span>Обменять сейчас</span></button>
-</div>
-                                    <div class="ajax_post_bids_res"></div>
+                                            <div class="captcha_body" style="display: flex; align-items: center;">
+                                                <div class="captcha_divimg">
+                                                    <img src="{{ captcha.img1 }}" class="captcha1" alt="" />
+                                                </div>
+                                                <div class="captcha_divznak">
+                                                    <span class="captcha_sym">{{ captcha.operation }}</span>
+                                                </div>
+                                                <div class="captcha_divimg">
+                                                    <img src="{{ captcha.img2 }}" class="captcha2" alt="" />
+                                                </div>
+                                                <div class="captcha_divznak">
+                                                    =
+                                                </div>
+                                                <div class="form__input" style="position: relative;">
+                                                    <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" />
+                                                    <div class="input__bg"></div>
+                                                    <button type="button" class="captcha_reload_icon" title="Обновить капчу" onclick="reloadCaptcha(event)"
+                                                        style="
+                                                            position: absolute;
+                                                            top: 50%;
+                                                            right: -36px;
+                                                            transform: translateY(-50%);
+                                                            background: none;
+                                                            border: none;
+                                                            cursor: pointer;
+                                                            padding: 0;"
+                                                        >
+                                                        <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            {% if error %}
+                                            <div style="color: #dc3545; text-align: center; margin-top: 10px;">{{ error }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="calc__form-submit">
+                                            <button class="btn btn--wall"><span>Обменять сейчас</span></button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                     </form>
                 </div>
             </section>
@@ -838,70 +844,69 @@
 
     {% include 'partials/footer.html' %}
 
-<script>
-    function reloadCaptcha(event) {
-    event.preventDefault();
+    <script>
+        function reloadCaptcha(event) {
+            event.preventDefault();
 
-    const reloadBtn = event.target;
-    const originalText = reloadBtn.innerHTML;
+            const reloadBtn = event.target;
+            const originalText = reloadBtn.innerHTML;
 
-    fetch(window.location.href, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        credentials: 'same-origin'
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+            fetch(window.location.href, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const img1 = document.querySelector('.captcha1') || document.querySelector('img[class*="captcha"]');
+                    const img2 = document.querySelector('.captcha2') || document.querySelectorAll('img[class*="captcha"]')[1];
+                    const operation = document.querySelector('.captcha_sym') || document.querySelector('[class*="captcha_sym"]');
+                    const input = document.getElementById('captcha-input') || document.querySelector('input[name="number"]');
+
+                    if (img1) img1.src = data.img1;
+                    if (img2) img2.src = data.img2;
+                    if (operation) operation.textContent = data.operation;
+                    if (input) input.value = '';
+
+                    reloadBtn.innerHTML = originalText;
+                    reloadBtn.style.animation = '';
+
+                    console.log('Капча успешно обновлена');
+                })
+                .catch(error => {
+                    console.error('Ошибка при обновлении капчи:', error);
+
+                    reloadBtn.innerHTML = originalText;
+                    reloadBtn.style.animation = '';
+
+                    alert('Не удалось обновить капчу. Попробуйте еще раз.');
+                });
         }
-        return response.json();
-    })
-    .then(data => {
-        const img1 = document.querySelector('.captcha1') || document.querySelector('img[class*="captcha"]');
-        const img2 = document.querySelector('.captcha2') || document.querySelectorAll('img[class*="captcha"]')[1];
-        const operation = document.querySelector('.captcha_sym') || document.querySelector('[class*="captcha_sym"]');
-        const input = document.getElementById('captcha-input') || document.querySelector('input[name="number"]');
 
-        if (img1) img1.src = data.img1;
-        if (img2) img2.src = data.img2;
-        if (operation) operation.textContent = data.operation;
-        if (input) input.value = '';
-
-        reloadBtn.innerHTML = originalText;
-        reloadBtn.style.animation = '';
-
-        console.log('Капча успешно обновлена');
-    })
-    .catch(error => {
-        console.error('Ошибка при обновлении капчи:', error);
-
-        reloadBtn.innerHTML = originalText;
-        reloadBtn.style.animation = '';
-
-        alert('Не удалось обновить капчу. Попробуйте еще раз.');
-    });
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
             }
+            return cookieValue;
         }
-    }
-    return cookieValue;
-}
-
-</script>
+    </script>
 
     <script type="text/javascript">
         jQuery(function($) {

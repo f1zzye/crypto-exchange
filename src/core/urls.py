@@ -1,6 +1,12 @@
 from django.urls import path
 
-from core.views import IndexView, AMLRulesView, RaffleView, CashbackInfoView, DepositView
+from core.views import (
+    IndexView,
+    AMLRulesView,
+    RaffleView,
+    CashbackInfoView,
+    DepositView,
+)
 
 app_name: str = "core"
 

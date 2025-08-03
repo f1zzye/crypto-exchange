@@ -5,7 +5,6 @@ from decimal import Decimal
 import uuid
 
 
-
 class TimestampMixin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
@@ -13,10 +12,13 @@ class TimestampMixin(models.Model):
     class Meta:
         abstract = True
 
+
 class Network(TimestampMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50, unique=True, verbose_name="Network name")
-    short_name = models.CharField(max_length=10, unique=True, verbose_name="Network shortname")
+    short_name = models.CharField(
+        max_length=10, unique=True, verbose_name="Network shortname"
+    )
     is_testnet = models.BooleanField(default=False, verbose_name="Is testnet")
     is_active = models.BooleanField(default=True, verbose_name="Is active")
 
@@ -42,9 +44,7 @@ class Token(TimestampMixin):
     image = models.ImageField(
         upload_to="tokens/", blank=True, null=True, verbose_name="Token image"
     )
-    decimals = models.PositiveIntegerField(
-        default=2, verbose_name="Decimal places"
-    )
+    decimals = models.PositiveIntegerField(default=2, verbose_name="Decimal places")
     is_active = models.BooleanField(default=True, verbose_name="Is active")
 
     class Meta:
@@ -97,7 +97,7 @@ class Pool(TimestampMixin):
         default=Decimal("1.3"),
         validators=[MinValueValidator(Decimal("0"))],
         verbose_name="Fee rate (%)",
-        help_text="Trading fee percentage (e.g., 0.3000 for 0.3%)"
+        help_text="Trading fee percentage (e.g., 0.3000 for 0.3%)",
     )
     admin_notes = models.TextField(blank=True, null=True, verbose_name="Admin notes")
 
@@ -150,11 +150,9 @@ class Pool(TimestampMixin):
         input_amount = Decimal(str(input_amount))
 
         if input_token == self.token1:
-            # Обмен token1 -> token2
             input_reserve = self.token1_amount
             output_reserve = self.token2_amount
         elif input_token == self.token2:
-            # Обмен token2 -> token1
             input_reserve = self.token2_amount
             output_reserve = self.token1_amount
         else:
@@ -163,7 +161,6 @@ class Pool(TimestampMixin):
         if input_reserve <= 0 or output_reserve <= 0:
             return Decimal("0")
 
-        # Формула AMM с комиссией: (input_amount * (100 - fee) * output_reserve) / (input_reserve * 100 + input_amount * (100 - fee))
         fee_multiplier = Decimal("100") - self.fee_percentage
         numerator = input_amount * fee_multiplier * output_reserve
         denominator = (input_reserve * Decimal("100")) + (input_amount * fee_multiplier)
@@ -172,6 +169,24 @@ class Pool(TimestampMixin):
             return Decimal("0")
 
         return numerator / denominator
+
+        # формула используеться для вычисления количества выходного B токена исходя из того сколько токена А внесет пользователь
+
+        # Пользователь хочет обменять 1000 USDT на TON
+        # Пул: 30000 USDT / 10000 TON, комиссия 1.3%
+
+        # input_amount = Decimal("1000")  # 1000 USDT от пользователя
+        # fee_percentage = Decimal("1.3")  # 1.3% комиссия пула
+        # fee_multiplier = 100 - 1.3 = 98.7  # 98.7% остается пользователю
+        #
+        # # Формула AMM:
+        # numerator = 1000 * 98.7 * 10000 = 987, 000, 000
+        # denominator = (30000 * 100) + (1000 * 98.7) = 3, 000, 000 + 98, 700 = 3, 0
+        # 98, 700
+        #
+        # output = 987, 000, 000 / 3, 0
+        # 98, 700 ≈ 318.5
+        # TON
 
 
 # class Exchange(models.Model):

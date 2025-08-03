@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 
-from exchange.models import Token
+from .models import Token
 
 
 class ExchangeView(View):
