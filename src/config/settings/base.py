@@ -119,7 +119,6 @@ UNFOLD = {
     "SITE_TITLE": "Admin Dashboard",
     "SITE_HEADER": "Admin Dashboard - Crypto Exchange",
     "SITE_FOOTER": "Crypto Exchange Admin",
-
     "SIDEBAR": {
         "show_search": True,
         "show_all_applications": False,
