@@ -56,20 +56,15 @@
                                                 </div>
 
 
-<div class="calc__items js-content-scroll">
-    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
-        {% for token in tokens %}
-        <option value="{{ token.id }}"
-                {% if forloop.first %}selected='selected'{% endif %}
-                data-ctypes="stable"
-                data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
-                data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
-                data-logo-next="">
-            {{ token.name }} {{ token.network.short_name }}
-        </option>
-        {% endfor %}
-    </select>
-</div>
+                                                <div class="calc__items js-content-scroll">
+                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
+                                                        {% for token in tokens %}
+                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo-next="">
+                                                            {{ token.name }} {{ token.network.short_name }}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -111,19 +106,14 @@
                                                     <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
                                                 </div>
                                                 <div class="calc__items js-content-scroll">
-    <select name="" class="js_my_sel" autocomplete="off" id="select_get">
-        {% for token in tokens %}
-        <option value="{{ token.id }}"
-                {% if forloop.first %}selected='selected'{% endif %}
-                data-ctypes="stable"
-                data-img="{% if token.image %}{{ token.image.url }}{% endif %}"
-                data-logo="{% if token.image %}{{ token.image.url }}{% endif %}"
-                data-logo-next="">
-            {{ token.name }} {{ token.network.short_name }}
-        </option>
-        {% endfor %}
-    </select>
-</div>
+                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_get">
+                                                        {% for token in tokens %}
+                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo-next="">
+                                                            {{ token.name }} {{ token.network.short_name }}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -256,8 +246,7 @@
                                                 <div class="form__input" style="position: relative;">
                                                     <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" />
                                                     <div class="input__bg"></div>
-                                                    <button type="button" class="captcha_reload_icon" title="Обновить капчу" onclick="reloadCaptcha(event)"
-                                                        style="
+                                                    <button type="button" class="captcha_reload_icon" title="Обновить капчу" onclick="reloadCaptcha(event)" style="
                                                             position: absolute;
                                                             top: 50%;
                                                             right: -36px;
@@ -265,8 +254,7 @@
                                                             background: none;
                                                             border: none;
                                                             cursor: pointer;
-                                                            padding: 0;"
-                                                        >
+                                                            padding: 0;">
                                                         <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
                                                     </button>
                                                 </div>
@@ -1137,59 +1125,11 @@
 
         });
     </script>
-    <script>
-       jQuery(function($) {
 
-    function updateCoinDisplay(selectElement, targetImageClass, targetNameClass) {
-        const selectedOption = selectElement.find('option:selected');
-        const imageUrl = selectedOption.data('img') || selectedOption.data('logo');
-        const coinName = selectedOption.text().trim();
-
-        if (imageUrl) {
-            $(targetImageClass).attr('src', imageUrl);
-        }
-
-        $(targetNameClass).text(coinName);
-    }
-
-    // Для левого селекта (что отдаете)
-    $(document).on('change', '#select_give', function() {
-        const column = $(this).closest('.calc__col');
-        const imageElement = column.find('.js-sum-icon');
-        const nameElement = column.find('.js-sum-name');
-
-        updateCoinDisplay($(this), imageElement, nameElement);
-    });
-
-    // Для правого селекта (что получаете)
-    $(document).on('change', '#select_get', function() {
-        const column = $(this).closest('.calc__col');
-        const imageElement = column.find('.js-sum-icon');
-        const nameElement = column.find('.js-sum-name');
-
-        updateCoinDisplay($(this), imageElement, nameElement);
-    });
-
-    // Инициализация при загрузке - левый селект
-    $('#select_give').each(function() {
-        const column = $(this).closest('.calc__col');
-        const imageElement = column.find('.js-sum-icon');
-        const nameElement = column.find('.js-sum-name');
-
-        updateCoinDisplay($(this), imageElement, nameElement);
-    });
-
-    // Инициализация при загрузке - правый селект
-    $('#select_get').each(function() {
-        const column = $(this).closest('.calc__col');
-        const imageElement = column.find('.js-sum-icon');
-        const nameElement = column.find('.js-sum-name');
-
-        updateCoinDisplay($(this), imageElement, nameElement);
-    });
-
-});
-    </script>
+{% block extra_js %}
+    <script src="{% static 'js/exchange/coin-display.js' %}"></script>
+    <script src="{% static 'js/exchange/exchange-calculator.js' %}"></script>
+{% endblock %}
 
 </body>
 {% endblock %}
