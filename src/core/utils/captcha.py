@@ -83,6 +83,26 @@ class CaptchaGenerator:
         except (IOError, OSError):
             return ImageFont.load_default()
 
+    def _get_random_text_position(self, text_bbox):
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1]
+        margin = 3
+        max_x = self.size - text_width - margin
+        max_y = self.size - text_height - margin
+        mix_x, mix_y = margin, margin
+
+        if max_x < mix_x:
+            x = (self.size - text_width) // 2
+        else:
+            x = random.randint(mix_x, max_x)
+
+        if max_y < mix_y:
+            y = (self.size - text_height) // 2
+        else:
+            y = random.randint(mix_y, max_y)
+
+        return x, y
+
     def _create_number_image(self, number, pattern):
         img = Image.new("RGBA", (self.size, self.size), self.bg_color)
         draw = ImageDraw.Draw(img)
@@ -95,8 +115,7 @@ class CaptchaGenerator:
         text = str(number)
         bbox = draw.textbbox((0, 0), text, font=font)
 
-        x = (self.size - (bbox[2] - bbox[0])) // 2
-        y = (self.size - (bbox[3] - bbox[1])) // 2
+        x, y = self._get_random_text_position(bbox)
 
         draw.text((x + 1, y + 1), text, font=font, fill="#555")
         draw.text((x, y), text, font=font, fill="#000")
@@ -111,28 +130,33 @@ class CaptchaGenerator:
         operation = random.choice(operations)
 
         if operation == "+":
-            num1 = random.randint(1, 9)
-            num2 = random.randint(1, 9)
-            result = num1 + num2
+            num_1 = random.randint(1, 9)
+            num_2 = random.randint(1, 9)
+            result = num_1 + num_2
         elif operation == "-":
-            num1 = random.randint(2, 9)
-            num2 = random.randint(1, num1)
-            result = num1 - num2
+            num_1 = random.randint(2, 9)
+            num_2 = random.randint(1, num_1)
+            result = num_1 - num_2
         else:
-            num1 = random.randint(2, 5)
-            num2 = random.randint(2, 4)
-            result = num1 * num2
+            num_1 = random.randint(2, 5)
+            num_2 = random.randint(2, 4)
+            result = num_1 * num_2
 
-        return num1, num2, operation, result
+        return num_1, num_2, operation, result
+
+    def _get_different_patterns(self):
+        pattern_1 = random.choice(self.patterns)
+        pattern_2 = random.choice([p for p in self.patterns if p != pattern_1])
+
+        return pattern_1, pattern_2
 
     def generate(self):
-        num1, num2, operation, result = self._generate_math_operation()
+        num_1, num_2, operation, result = self._generate_math_operation()
 
-        pattern1 = random.choice(self.patterns)
-        pattern2 = random.choice(self.patterns)
+        pattern_1, pattern_2 = self._get_different_patterns()
 
-        img1_b64 = self._create_number_image(num1, pattern1)
-        img2_b64 = self._create_number_image(num2, pattern2)
+        img1_b64 = self._create_number_image(num_1, pattern_1)
+        img2_b64 = self._create_number_image(num_2, pattern_2)
 
         return {
             "img1": f"data:image/png;base64,{img1_b64}",
