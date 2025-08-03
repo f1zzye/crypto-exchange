@@ -118,7 +118,6 @@ class UserLoginView(TitleMixin, TemplateView):
 
 
 class UserLogoutView(LogoutView):
-    next_page = reverse_lazy("core:index")
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:

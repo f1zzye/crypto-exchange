@@ -1,4 +1,6 @@
 from pathlib import Path
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -20,6 +22,7 @@ INSTALLED_APPS: list[str] = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Custom apps
+
     # My apps
     "core",
     "accounts",
@@ -88,26 +91,83 @@ USE_I18N: bool = True
 USE_TZ: bool = True
 
 
-STATIC_URL = "/static/"
+STATIC_URL: str = "/static/"
 
 STATICFILES_DIRS = [BASE_DIR / "static"]  # noqa
 
-MEDIA_URL = "/media/"
+MEDIA_URL: str = "/media/"
 
 MEDIA_ROOT = BASE_DIR / "media"  # noqa
 
 STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa
 
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD: str = "django.db.models.BigAutoField"
 
 AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
-AUTH_USER_MODEL = "accounts.User"
+AUTH_USER_MODEL: str = "accounts.User"
 
-LOGIN_URL = "accounts:sign-in"
+LOGIN_URL: str = "accounts:sign-in"
 
-LOGIN_REDIRECT_URL = "core:index"
-LOGOUT_REDIRECT_URL = "core:index"
+LOGIN_REDIRECT_URL: str = "core:index"
+LOGOUT_REDIRECT_URL: str = "core:index"
 
-SESSION_COOKIE_AGE = 86400
+SESSION_COOKIE_AGE: int = 86400
+
+
+UNFOLD = {
+    "SITE_TITLE": "Admin Dashboard",
+    "SITE_HEADER": "Admin Dashboard - Crypto Exchange",
+    "SITE_FOOTER": "Crypto Exchange Admin",
+
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": _("Navigation"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Dashboard"),
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                ],
+            },
+            {
+                "title": _("Blockchain"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Pools"),
+                        "icon": "circle",
+                        "link": reverse_lazy("admin:exchange_pool_changelist"),
+                    },
+                    {
+                        "title": _("Networks"),
+                        "icon": "hub",
+                        "link": reverse_lazy("admin:exchange_network_changelist"),
+                    },
+                    {
+                        "title": _("Tokens"),
+                        "icon": "token",
+                        "link": reverse_lazy("admin:exchange_token_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Users"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Users"),
+                        "icon": "person",
+                        "link": reverse_lazy("admin:accounts_user_changelist"),
+                    },
+                ],
+            },
+        ],
+    },
+}
