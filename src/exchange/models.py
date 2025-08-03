@@ -189,79 +189,92 @@ class Pool(TimestampMixin):
         # TON
 
 
-# class Exchange(models.Model):
-#     """Модель для записи обменов"""
-#     pool = models.ForeignKey(
-#         Pool,
-#         on_delete=models.CASCADE,
-#         related_name='exchanges',
-#         verbose_name="Пул"
-#     )
-#     user = models.ForeignKey(
-#         'auth.User',  # или ваша кастомная модель пользователя
-#         on_delete=models.CASCADE,
-#         related_name='exchanges',
-#         verbose_name="Пользователь"
-#     )
-#
-#     input_token = models.ForeignKey(
-#         Token,
-#         on_delete=models.CASCADE,
-#         related_name='input_exchanges',
-#         verbose_name="Входящий токен"
-#     )
-#     input_amount = models.DecimalField(
-#         max_digits=30,
-#         decimal_places=18,
-#         verbose_name="Количество входящего токена"
-#     )
-#
-#     output_token = models.ForeignKey(
-#         Token,
-#         on_delete=models.CASCADE,
-#         related_name='output_exchanges',
-#         verbose_name="Исходящий токен"
-#     )
-#     output_amount = models.DecimalField(
-#         max_digits=30,
-#         decimal_places=18,
-#         verbose_name="Количество исходящего токена"
-#     )
-#
-#     exchange_rate = models.DecimalField(
-#         max_digits=30,
-#         decimal_places=18,
-#         verbose_name="Курс обмена"
-#     )
-#     fee_amount = models.DecimalField(
-#         max_digits=30,
-#         decimal_places=18,
-#         verbose_name="Размер комиссии"
-#     )
-#
-#     transaction_hash = models.CharField(
-#         max_length=255,
-#         blank=True,
-#         null=True,
-#         verbose_name="Хэш транзакции"
-#     )
-#     status = models.CharField(
-#         max_length=20,
-#         choices=[
-#             ('pending', 'Ожидает'),
-#             ('completed', 'Завершен'),
-#             ('failed', 'Неудачен'),
-#         ],
-#         default='pending',
-#         verbose_name="Статус"
-#     )
-#
-#     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-#
-#     class Meta:
-#         verbose_name = "Обмен"
-#         verbose_name_plural = "Обмены"
-#         ordering = ['-created_at']
-#
-#     def __str__(self):
-#         return f"{self.input_amount} {self.input_token.symbol} -> {self.output_amount} {self.output_token.symbol}"
+class ExchangeOrder(TimestampMixin):
+    STATUS_CHOICES = [
+        ("pending", "Ожидает обработки"),
+        ('processing', 'В обработке'),
+        ('completed', 'Завершен'),
+        ('cancelled', 'Отменен'),
+        ('failed', 'Неудачен'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    email = models.EmailField(max_length=100 ,verbose_name="Email пользователя")
+    wallet_address = models.CharField(max_length=100, verbose_name="Адрес кошелька пользователя")
+
+    give_token = models.ForeignKey(
+        Token,
+        on_delete=models.CASCADE,
+        related_name="orders_as_give_token",
+        verbose_name="Отдаваемый токен",
+    )
+    give_amount = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0"))],
+        verbose_name="Количество отдаваемого токена",
+    )
+
+    receive_token = models.ForeignKey(
+        Token,
+        on_delete=models.CASCADE,
+        related_name='orders_as_receive_token',
+        verbose_name="Получаемый токен",
+    )
+    receive_amount = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0"))],
+        verbose_name="Количество получаемого токена",
+    )
+
+    exchange_rate = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        verbose_name="Курс обмена",
+    )
+    fee_percentage = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        verbose_name="Комиссия (%)",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name="Статус заявки"
+    )
+
+    pool = models.ForeignKey(
+        Pool,
+        on_delete=models.CASCADE,
+        related_name='orders',
+        verbose_name="Пул обмена"
+    )
+
+    transaction_hash = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Хэш транзакции"
+    )
+
+    class Meta:
+        verbose_name = "Заявка на обмен"
+        verbose_name_plural = "Заявки на обмен"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['status']),
+            models.Index(fields=['email']),
+            models.Index(fields=['created_at']),
+        ]
+
+    def __str__(self):
+        return f"Заявка #{str(self.id)[:8]} - {self.give_amount} {self.give_token.short_name} → {self.receive_amount} {self.receive_token.short_name}"
+
+    @property
+    def order_short_number(self):
+        return str(self.id)[:8].upper()
+
