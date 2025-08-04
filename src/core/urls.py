@@ -6,7 +6,6 @@ from core.views import (
     RaffleView,
     CashbackInfoView,
     DepositView,
-    OrderSuccessView,
 )
 
 app_name: str = "core"
@@ -17,5 +16,4 @@ urlpatterns = [
     path("raffle/", RaffleView.as_view(), name="raffle"),
     path("cashback-info/", CashbackInfoView.as_view(), name="cashback"),
     path("deposit/", DepositView.as_view(), name="deposit"),
-    path("order-success/", OrderSuccessView.as_view(), name="order_success"),
 ]

@@ -21,8 +21,8 @@ class NetworkAdmin(ModelAdmin):
     list_display = (
         "name",
         "short_name",
-        "is_testnet_display",
-        "is_active_display",
+        "network_type_display",
+        "status_display",
         "tokens_count",
         "pools_count",
         "created_at",
@@ -31,15 +31,22 @@ class NetworkAdmin(ModelAdmin):
     search_fields = ("name", "short_name")
     list_filter = ("is_active", "is_testnet", "created_at")
     ordering = ("name",)
-    readonly_fields = ("id", "created_at", "updated_at", "get_stats")
+    readonly_fields = ("id", "created_at", "updated_at", "get_network_stats")
 
     fieldsets = (
-        (None, {"fields": ("name", "short_name")}),
-        ("Status", {"fields": ("is_active", "is_testnet")}),
+        ("Basic Information", {"fields": ("name", "short_name")}),
+        ("Configuration", {"fields": ("is_active", "is_testnet")}),
+        (
+            "Analytics",
+            {
+                "fields": ("get_network_stats",),
+                "classes": ("collapse",),
+            },
+        ),
         (
             "Metadata",
             {
-                "fields": ("id", "created_at", "updated_at", "get_stats"),
+                "fields": ("id", "created_at", "updated_at"),
                 "classes": ("collapse",),
             },
         ),
@@ -50,25 +57,25 @@ class NetworkAdmin(ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related("tokens")
 
-    def is_testnet_display(self, obj):
+    def network_type_display(self, obj):
         if obj.is_testnet:
-            return format_html('<span style="color: orange;">Testnet</span>')
-        return format_html('<span style="color: green;">Mainnet</span>')
+            return format_html('<span style="color: #ff9800;">Testnet</span>')
+        return format_html('<span style="color: #4caf50;">Mainnet</span>')
 
-    is_testnet_display.short_description = "Network Type"
+    network_type_display.short_description = "Type"
 
-    def is_active_display(self, obj):
+    def status_display(self, obj):
         return format_html(
-            '<span style="color: {};">{}</span>',
-            "green" if obj.is_active else "red",
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            "#4caf50" if obj.is_active else "#f44336",
             "Active" if obj.is_active else "Inactive",
         )
 
-    is_active_display.short_description = "Status"
+    status_display.short_description = "Status"
 
     def tokens_count(self, obj):
         if not obj.pk:
-            return "0 tokens"
+            return "0"
 
         count = obj.tokens.count()
         if count > 0:
@@ -76,40 +83,49 @@ class NetworkAdmin(ModelAdmin):
                 reverse("admin:exchange_token_changelist")
                 + f"?network__id__exact={obj.id}"
             )
-            return format_html('<a href="{}">{} tokens</a>', url, count)
-        return "0 tokens"
+            return format_html('<a href="{}">{}</a>', url, count)
+        return "0"
 
     tokens_count.short_description = "Tokens"
 
     def pools_count(self, obj):
         if not obj.pk:
-            return "0 pools"
+            return "0"
 
         pools_count = (
             Pool.objects.filter(Q(token1__network=obj) | Q(token2__network=obj))
             .distinct()
             .count()
         )
-
-        return "{} pools".format(pools_count) if pools_count > 0 else "0 pools"
+        return str(pools_count)
 
     pools_count.short_description = "Pools"
 
-    def get_stats(self, obj):
+    def get_network_stats(self, obj):
         if not obj.pk:
-            return "Save to see statistics"
+            return "Save to see analytics"
 
         tokens = obj.tokens.count()
         active_tokens = obj.tokens.filter(is_active=True).count()
-        return format_html(
-            "<strong>Statistics:</strong><br>"
-            "• Total tokens: {}<br>"
-            "• Active tokens: {}<br>",
-            tokens,
-            active_tokens,
+        pools_count = (
+            Pool.objects.filter(Q(token1__network=obj) | Q(token2__network=obj))
+            .distinct()
+            .count()
         )
 
-    get_stats.short_description = "Network Statistics"
+        return format_html(
+            "<strong>Network Analytics:</strong><br>"
+            "Total Tokens: {}<br>"
+            "Active Tokens: {}<br>"
+            "Associated Pools: {}<br>"
+            "Network Health: {}",
+            tokens,
+            active_tokens,
+            pools_count,
+            "Good" if active_tokens > 0 else "Needs Tokens",
+        )
+
+    get_network_stats.short_description = "Network Analytics"
 
 
 @admin.register(Token)
@@ -119,7 +135,7 @@ class TokenAdmin(ModelAdmin):
         "short_name",
         "network_link",
         "decimals",
-        "is_active_display",
+        "status_display",
         "pools_count",
         "image_preview",
         "created_at",
@@ -128,16 +144,22 @@ class TokenAdmin(ModelAdmin):
     search_fields = ("name", "short_name", "network__name", "network__short_name")
     list_filter = ("is_active", "network", "decimals", "created_at")
     ordering = ("name",)
-    readonly_fields = ("id", "created_at", "updated_at", "get_pool_info")
+    readonly_fields = ("id", "created_at", "updated_at", "get_token_analytics")
 
     fieldsets = (
-        (None, {"fields": ("name", "short_name", "network")}),
-        ("Visual & Technical", {"fields": ("image", "decimals")}),
-        ("Status", {"fields": ("is_active",)}),
+        ("Basic Information", {"fields": ("name", "short_name", "network")}),
+        ("Configuration", {"fields": ("image", "decimals", "is_active")}),
+        (
+            "Analytics",
+            {
+                "fields": ("get_token_analytics",),
+                "classes": ("collapse",),
+            },
+        ),
         (
             "Metadata",
             {
-                "fields": ("id", "created_at", "updated_at", "get_pool_info"),
+                "fields": ("id", "created_at", "updated_at"),
                 "classes": ("collapse",),
             },
         ),
@@ -155,21 +177,21 @@ class TokenAdmin(ModelAdmin):
 
     network_link.short_description = "Network"
 
-    def is_active_display(self, obj):
+    def status_display(self, obj):
         return format_html(
-            '<span style="color: {};">{}</span>',
-            "green" if obj.is_active else "red",
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            "#4caf50" if obj.is_active else "#f44336",
             "Active" if obj.is_active else "Inactive",
         )
 
-    is_active_display.short_description = "Active"
+    status_display.short_description = "Status"
 
     def pools_count(self, obj):
         if not obj.pk:
-            return "0 pools"
+            return "0"
 
         count = Pool.objects.filter(Q(token1=obj) | Q(token2=obj)).count()
-        return "{} pools".format(count) if count > 0 else "0 pools"
+        return str(count)
 
     pools_count.short_description = "Pools"
 
@@ -183,28 +205,46 @@ class TokenAdmin(ModelAdmin):
 
     image_preview.short_description = "Preview"
 
-    def get_pool_info(self, obj):
+    def get_token_analytics(self, obj):
         if not obj.pk:
-            return "Save to see pool information"
+            return "Save to see analytics"
 
-        pools = Pool.objects.filter(Q(token1=obj) | Q(token2=obj)).select_related(
-            "token1", "token2"
+        pools = Pool.objects.filter(Q(token1=obj) | Q(token2=obj))
+        active_pools = pools.filter(is_active=True)
+
+        total_liquidity = sum(
+            pool.token1_amount + pool.token2_amount
+            for pool in active_pools
+            if pool.token1_amount and pool.token2_amount
         )
 
-        if not pools.exists():
-            return "No pools found"
-
         pool_list = []
-        for pool in pools[:5]:  # Show max 5 pools
+        for pool in active_pools[:3]:
             pool_url = reverse("admin:exchange_pool_change", args=[pool.id])
             pool_list.append(f'<a href="{pool_url}">{pool}</a>')
 
-        result = "<strong>Active Pools:</strong><br>" + "<br>".join(pool_list)
-        if pools.count() > 5:
-            result += "<br>... and {} more".format(pools.count() - 5)
-        return format_html(result)
+        result = format_html(
+            "<strong>Token Analytics:</strong><br>"
+            "Total Pools: {}<br>"
+            "Active Pools: {}<br>"
+            "Total Liquidity: ${:,.0f}<br>"
+            "Token Health: {}",
+            pools.count(),
+            active_pools.count(),
+            total_liquidity,
+            "Good" if active_pools.count() > 0 else "Needs Pools",
+        )
 
-    get_pool_info.short_description = "Pool Information"
+        if pool_list:
+            result += format_html(
+                "<br><br><strong>Active Pools:</strong><br>{}", "<br>".join(pool_list)
+            )
+            if active_pools.count() > 3:
+                result += f"<br>... and {active_pools.count() - 3} more"
+
+        return result
+
+    get_token_analytics.short_description = "Token Analytics"
 
 
 @admin.register(Pool)
@@ -215,7 +255,7 @@ class PoolAdmin(ModelAdmin):
         "reserves_display",
         "exchange_rate_display",
         "fee_percentage",
-        "is_active_display",
+        "status_display",
         "liquidity_info",
     )
     list_display_links = ("name", "token_pair_display")
@@ -235,13 +275,14 @@ class PoolAdmin(ModelAdmin):
     ordering = ("name",)
     readonly_fields = (
         "id",
-        "get_exchange_rates",
-        "get_liquidity_analysis",
-        "calculate_sample_swaps",
+        "created_at",
+        "updated_at",
+        "get_pool_analytics",
+        "get_trading_analytics",
     )
 
     fieldsets = (
-        (None, {"fields": ("name",)}),
+        ("Basic Information", {"fields": ("name",)}),
         (
             "Token Configuration",
             {
@@ -256,15 +297,14 @@ class PoolAdmin(ModelAdmin):
         (
             "Analytics",
             {
-                "fields": (
-                    "get_exchange_rates",
-                    "get_liquidity_analysis",
-                    "calculate_sample_swaps",
-                ),
+                "fields": ("get_pool_analytics", "get_trading_analytics"),
                 "classes": ("collapse",),
             },
         ),
-        ("Metadata", {"fields": ("id",), "classes": ("collapse",)}),
+        (
+            "Metadata",
+            {"fields": ("id", "created_at", "updated_at"), "classes": ("collapse",)},
+        ),
     )
 
     def get_queryset(self, request):
@@ -299,11 +339,11 @@ class PoolAdmin(ModelAdmin):
         ):
             return "Reserves not set"
 
-        token1_formatted = "{:,.2f}".format(obj.token1_amount)
-        token2_formatted = "{:,.2f}".format(obj.token2_amount)
+        token1_formatted = "{:,.0f}".format(obj.token1_amount)
+        token2_formatted = "{:,.0f}".format(obj.token2_amount)
 
         return format_html(
-            "<strong>{}</strong> {} / <strong>{}</strong> {}",
+            "{} {} / {} {}",
             token1_formatted,
             obj.token1.short_name,
             token2_formatted,
@@ -321,33 +361,28 @@ class PoolAdmin(ModelAdmin):
             and obj.token1_amount > 0
             and obj.token2_amount > 0
         ):
-            return "Set reserves to see rates"
+            return "Set reserves"
 
         rate1to2 = obj.exchange_rate_token1_to_token2
-        rate2to1 = obj.exchange_rate_token2_to_token1
-        rate1to2_formatted = "{:.6f}".format(rate1to2)
-        rate2to1_formatted = "{:.6f}".format(rate2to1)
+        rate1to2_formatted = "{:.4f}".format(rate1to2)
 
         return format_html(
-            "1 {} = <strong>{}</strong> {}<br>" "1 {} = <strong>{}</strong> {}",
+            "1 {} = {} {}",
             obj.token1.short_name,
             rate1to2_formatted,
             obj.token2.short_name,
-            obj.token2.short_name,
-            rate2to1_formatted,
-            obj.token1.short_name,
         )
 
-    exchange_rate_display.short_description = "Exchange Rates"
+    exchange_rate_display.short_description = "Rate"
 
-    def is_active_display(self, obj):
+    def status_display(self, obj):
         return format_html(
-            '<span style="color: {};">{}</span>',
-            "green" if obj.is_active else "red",
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            "#4caf50" if obj.is_active else "#f44336",
             "Active" if obj.is_active else "Inactive",
         )
 
-    is_active_display.short_description = "Status"
+    status_display.short_description = "Status"
 
     def liquidity_info(self, obj):
         if obj.token1_amount is None or obj.token2_amount is None:
@@ -355,18 +390,12 @@ class PoolAdmin(ModelAdmin):
 
         total_liquidity = obj.token1_amount + obj.token2_amount
         if total_liquidity > 1000000:
-            formatted_value = "{:,.0f}K+".format(total_liquidity / 1000)
+            formatted_value = "{:,.0f}K".format(total_liquidity / 1000)
             return format_html(
-                '<span style="color: green; font-weight: bold;">${} 🔥</span>',
+                '<span style="color: #4caf50; font-weight: bold;">${}</span>',
                 formatted_value,
             )
         elif total_liquidity > 100000:
-            formatted_value = "{:,.0f}K".format(total_liquidity / 1000)
-            return format_html(
-                '<span style="color: blue; font-weight: bold;">${}</span>',
-                formatted_value,
-            )
-        elif total_liquidity > 10000:
             formatted_value = "{:,.0f}K".format(total_liquidity / 1000)
             return format_html("${}", formatted_value)
         else:
@@ -375,45 +404,9 @@ class PoolAdmin(ModelAdmin):
 
     liquidity_info.short_description = "Liquidity"
 
-    def get_exchange_rates(self, obj):
-        if not (obj.pk and obj.token1 and obj.token2):
-            return "Save and set tokens/amounts to see exchange rates"
-
-        if not (
-            obj.token1_amount
-            and obj.token2_amount
-            and obj.token1_amount > 0
-            and obj.token2_amount > 0
-        ):
-            return "Set token amounts to see exchange rates"
-
-        rate1to2 = obj.exchange_rate_token1_to_token2
-        rate2to1 = obj.exchange_rate_token2_to_token1
-        rate1to2_formatted = "{:,.2f}".format(rate1to2)
-        rate2to1_formatted = "{:,.2f}".format(rate2to1)
-        ratio_formatted = "{:,.2f}".format(
-            (obj.token1_amount / (obj.token1_amount + obj.token2_amount)) * 100
-        )
-
-        return format_html(
-            "<strong>Current Exchange Rates:</strong><br>"
-            "• 1 {} = {} {}<br>"
-            "• 1 {} = {} {}<br>"
-            "<br><strong>Reserve Ratio:</strong> {}%",
-            obj.token1.short_name,
-            rate1to2_formatted,
-            obj.token2.short_name,
-            obj.token2.short_name,
-            rate2to1_formatted,
-            obj.token1.short_name,
-            ratio_formatted,
-        )
-
-    get_exchange_rates.short_description = "Exchange Rate Analysis"
-
-    def get_liquidity_analysis(self, obj):
+    def get_pool_analytics(self, obj):
         if not obj.pk:
-            return "Save and set amounts to see liquidity analysis"
+            return "Save to see analytics"
 
         if not (
             obj.token1_amount
@@ -421,33 +414,32 @@ class PoolAdmin(ModelAdmin):
             and obj.token1_amount > 0
             and obj.token2_amount > 0
         ):
-            return "Set token amounts to see liquidity analysis"
+            return "Set token amounts to see analytics"
 
         k_constant = obj.token1_amount * obj.token2_amount
-        avg_liquidity = (obj.token1_amount + obj.token2_amount) / 2
         total_value = obj.token1_amount + obj.token2_amount
-
-        k_formatted = "{:,.2f}".format(k_constant)
-        avg_formatted = "{:,.2f}".format(avg_liquidity)
-        total_formatted = "{:,.2f}".format(total_value)
+        ratio = (obj.token1_amount / (obj.token1_amount + obj.token2_amount)) * 100
 
         return format_html(
-            "<strong>Liquidity Analysis:</strong><br>"
-            "• K Constant: {}<br>"
-            "• Average Liquidity: {}<br>"
-            "• Total Value: {}<br>"
-            "• Fee Rate: {}%",
-            k_formatted,
-            avg_formatted,
-            total_formatted,
+            "<strong>Pool Analytics:</strong><br>"
+            "K Constant: {:,.0f}<br>"
+            "Total Value: ${:,.0f}<br>"
+            "Token Ratio: {:.1f}% / {:.1f}%<br>"
+            "Fee Rate: {}%<br>"
+            "Pool Health: {}",
+            k_constant,
+            total_value,
+            ratio,
+            100 - ratio,
             obj.fee_percentage,
+            "Good" if 30 <= ratio <= 70 else "Imbalanced",
         )
 
-    get_liquidity_analysis.short_description = "Liquidity Analysis"
+    get_pool_analytics.short_description = "Pool Analytics"
 
-    def calculate_sample_swaps(self, obj):
+    def get_trading_analytics(self, obj):
         if not (obj.pk and obj.token1 and obj.token2):
-            return "Save and set tokens/amounts to see sample swap calculations"
+            return "Save to see trading analytics"
 
         if not (
             obj.token1_amount
@@ -455,48 +447,43 @@ class PoolAdmin(ModelAdmin):
             and obj.token1_amount > 0
             and obj.token2_amount > 0
         ):
-            return "Set token amounts to see sample swaps"
+            return "Set token amounts to see trading analytics"
 
-        # Calculate sample swaps for different amounts
+        # Sample swap calculations
         test_amounts = [Decimal("1"), Decimal("10"), Decimal("100")]
         results = []
 
         for amount in test_amounts:
-            output1to2 = obj.get_output_amount(obj.token1, amount)
-            output2to1 = obj.get_output_amount(obj.token2, amount)
-
-            output1to2_formatted = "{:.6f}".format(output1to2)
-            output2to1_formatted = "{:.6f}".format(output2to1)
-
+            output = obj.get_output_amount(obj.token1, amount)
+            rate = output / amount if amount > 0 else Decimal("0")
             results.append(
-                "• Swap {} {} → {} {}".format(
-                    amount,
-                    obj.token1.short_name,
-                    output1to2_formatted,
-                    obj.token2.short_name,
-                )
-            )
-            results.append(
-                "• Swap {} {} → {} {}".format(
-                    amount,
-                    obj.token2.short_name,
-                    output2to1_formatted,
-                    obj.token1.short_name,
-                )
+                f"Swap {amount} {obj.token1.short_name} → {output:.4f} {obj.token2.short_name}"
             )
 
-        results_html = "<br>".join(results)
+        # Count orders using this pool
+        orders_count = ExchangeOrder.objects.filter(pool=obj).count()
+        pending_orders = ExchangeOrder.objects.filter(
+            pool=obj, status="pending"
+        ).count()
+
+        results_html = "<br>".join(results[:3])
         return format_html(
-            "<strong>Sample Swaps:</strong><br>{}", mark_safe(results_html)
+            "<strong>Trading Analytics:</strong><br>"
+            "Total Orders: {}<br>"
+            "Pending Orders: {}<br>"
+            "<br><strong>Sample Swaps:</strong><br>{}",
+            orders_count,
+            pending_orders,
+            mark_safe(results_html),
         )
 
-    calculate_sample_swaps.short_description = "Sample Swap Calculator"
+    get_trading_analytics.short_description = "Trading Analytics"
 
     actions = ["activate_pools", "deactivate_pools"]
 
     def activate_pools(self, request, queryset):
         updated = queryset.update(is_active=True)
-        self.message_user(request, "{} pools were activated.".format(updated))
+        self.message_user(request, f"{updated} pools were activated.")
 
     activate_pools.short_description = "Activate selected pools"
 
@@ -522,7 +509,6 @@ class ExchangeOrderAdmin(ModelAdmin):
     list_display_links = ("order_number_display", "exchange_summary_display")
     search_fields = (
         "email",
-        "wallet_address",
         "transaction_hash",
         "give_token__name",
         "give_token__short_name",
@@ -543,14 +529,13 @@ class ExchangeOrderAdmin(ModelAdmin):
         "order_short_number",
         "created_at",
         "updated_at",
-        "get_exchange_analysis",
-        "get_profit_analysis",
-        "get_transaction_timeline",
+        "get_order_analytics",
+        "get_financial_analytics",
     )
 
     fieldsets = (
-        ("Order Information", {"fields": ("id", "order_short_number", "status")}),
-        ("User Details", {"fields": ("email", "wallet_address")}),
+        ("Basic Information", {"fields": ("id", "order_short_number", "status")}),
+        ("User Details", {"fields": ("email",)}),
         (
             "Exchange Details",
             {
@@ -566,11 +551,7 @@ class ExchangeOrderAdmin(ModelAdmin):
         (
             "Analytics",
             {
-                "fields": (
-                    "get_exchange_analysis",
-                    "get_profit_analysis",
-                    "get_transaction_timeline",
-                ),
+                "fields": ("get_order_analytics", "get_financial_analytics"),
                 "classes": ("collapse",),
             },
         ),
@@ -608,7 +589,6 @@ class ExchangeOrderAdmin(ModelAdmin):
         }
 
         color = status_colors.get(obj.status, "#000000")
-
         return format_html(
             '<span style="color: {}; font-weight: bold;">{}</span>',
             color,
@@ -623,15 +603,11 @@ class ExchangeOrderAdmin(ModelAdmin):
     user_email.short_description = "Email"
 
     def exchange_summary_display(self, obj):
-        give_formatted = "{:,.2f}".format(obj.give_amount)
-        receive_formatted = "{:,.2f}".format(obj.receive_amount)
+        give_formatted = "{:,.0f}".format(obj.give_amount)
+        receive_formatted = "{:,.4f}".format(obj.receive_amount)
 
         return format_html(
-            '<div style="text-align: center;">'
-            "<strong>{} {}</strong><br>"
-            "↓<br>"
-            "<strong>{} {}</strong>"
-            "</div>",
+            '<div style="text-align: center;">' "{} {}<br>" "↓<br>" "{} {}" "</div>",
             give_formatted,
             obj.give_token.short_name,
             receive_formatted,
@@ -641,9 +617,9 @@ class ExchangeOrderAdmin(ModelAdmin):
     exchange_summary_display.short_description = "Exchange"
 
     def exchange_rate_display(self, obj):
-        rate_formatted = "{:,.6f}".format(obj.exchange_rate)
+        rate_formatted = "{:,.4f}".format(obj.exchange_rate)
         return format_html(
-            "1 {} = <br>{} {}",
+            "1 {} = {} {}",
             obj.give_token.short_name,
             rate_formatted,
             obj.receive_token.short_name,
@@ -652,7 +628,7 @@ class ExchangeOrderAdmin(ModelAdmin):
     exchange_rate_display.short_description = "Rate"
 
     def fee_display(self, obj):
-        return format_html("<strong>{}%</strong>", obj.fee_percentage)
+        return format_html("{}%", obj.fee_percentage)
 
     fee_display.short_description = "Fee"
 
@@ -665,14 +641,26 @@ class ExchangeOrderAdmin(ModelAdmin):
 
     pool_link.short_description = "Pool"
 
-    def get_exchange_analysis(self, obj):
+    def get_order_analytics(self, obj):
         if not obj.pk:
-            return "Save to see exchange analysis"
+            return "Save to see analytics"
 
+        from django.utils import timezone
+        import datetime
+
+        # Time analysis
+        processing_time = obj.updated_at - obj.created_at
+        time_waiting = timezone.now() - obj.created_at
+
+        # Size analysis
         total_value_usd = float(obj.give_amount)
-        fee_amount = obj.give_amount * (obj.fee_percentage / 100)
-        net_receive = obj.receive_amount
+        size_category = (
+            "Large"
+            if total_value_usd > 10000
+            else "Medium" if total_value_usd > 1000 else "Small"
+        )
 
+        # Rate analysis
         current_pool_rate = (
             obj.pool.exchange_rate_token1_to_token2
             if obj.give_token == obj.pool.token1
@@ -683,43 +671,42 @@ class ExchangeOrderAdmin(ModelAdmin):
         ) * 100
 
         return format_html(
-            "<strong>Exchange Analysis:</strong><br>"
-            "Order Value: ${:,.2f}<br>"
-            "Fee Amount: {:.4f} {}<br>"
-            "Net Receive: {:.6f} {}<br>"
+            "<strong>Order Analytics:</strong><br>"
+            "Order Value: ${:,.0f}<br>"
+            "Order Size: {}<br>"
+            "Processing Time: {}<br>"
             "Rate vs Current: {:.2f}%<br>"
-            "Order Size: {}",
+            "Order Health: {}",
             total_value_usd,
-            fee_amount,
-            obj.give_token.short_name,
-            net_receive,
-            obj.receive_token.short_name,
+            size_category,
+            processing_time,
             rate_difference,
             (
-                "Large"
-                if total_value_usd > 10000
-                else "Medium" if total_value_usd > 1000 else "Small"
+                "Good"
+                if obj.status == "completed"
+                else "Pending" if obj.status == "pending" else "Issue"
             ),
         )
 
-    get_exchange_analysis.short_description = "Exchange Analysis"
+    get_order_analytics.short_description = "Order Analytics"
 
-    def get_profit_analysis(self, obj):
+    def get_financial_analytics(self, obj):
         if not obj.pk:
-            return "Save to see profit analysis"
+            return "Save to see analytics"
 
+        # Revenue calculation
         fee_revenue = obj.give_amount * (obj.fee_percentage / 100)
         operational_cost = Decimal("0.01")
         net_profit = fee_revenue - operational_cost
         profit_margin = (net_profit / fee_revenue) * 100 if fee_revenue > 0 else 0
 
         return format_html(
-            "<strong>Revenue Analysis:</strong><br>"
+            "<strong>Financial Analytics:</strong><br>"
             "Fee Revenue: {:.4f} {}<br>"
             "Operational Cost: ${:.2f}<br>"
             "Net Profit: {:.4f} {}<br>"
             "Profit Margin: {:.1f}%<br>"
-            "Status: {}",
+            "Financial Health: {}",
             fee_revenue,
             obj.give_token.short_name,
             operational_cost,
@@ -728,41 +715,7 @@ class ExchangeOrderAdmin(ModelAdmin):
             "Profitable" if net_profit > 0 else "Loss",
         )
 
-    get_profit_analysis.short_description = "Profit Analysis"
-
-    def get_transaction_timeline(self, obj):
-        if not obj.pk:
-            return "Save to see timeline"
-
-        from django.utils import timezone
-        import datetime
-
-        timeline_events = []
-        timeline_events.append(f"Order Created: {obj.created_at.strftime('%H:%M:%S')}")
-
-        if obj.updated_at != obj.created_at:
-            timeline_events.append(
-                f"Last Updated: {obj.updated_at.strftime('%H:%M:%S')}"
-            )
-
-        if obj.transaction_hash:
-            timeline_events.append(f"Transaction Hash: {obj.transaction_hash[:20]}...")
-
-        if obj.status == "completed":
-            timeline_events.append("Status: Successfully Completed")
-        elif obj.status == "pending":
-            time_waiting = timezone.now() - obj.created_at
-            if time_waiting > datetime.timedelta(hours=1):
-                timeline_events.append("Status: Long Wait Time")
-            else:
-                timeline_events.append("Status: Normal Wait Time")
-
-        timeline_html = "<br>".join(timeline_events)
-        return format_html(
-            "<strong>Transaction Timeline:</strong><br>{}", mark_safe(timeline_html)
-        )
-
-    get_transaction_timeline.short_description = "Transaction Timeline"
+    get_financial_analytics.short_description = "Financial Analytics"
 
     actions = [
         "mark_as_processing",
@@ -827,7 +780,6 @@ class ExchangeOrderAdmin(ModelAdmin):
                     order.order_short_number,
                     order.get_status_display(),
                     order.email,
-                    order.wallet_address,
                     order.give_token.short_name,
                     order.give_amount,
                     order.receive_token.short_name,
@@ -843,16 +795,3 @@ class ExchangeOrderAdmin(ModelAdmin):
         return response
 
     export_selected_orders.short_description = "Export selected orders to CSV"
-
-    def changelist_view(self, request, extra_context=None):
-        extra_context = extra_context or {}
-
-        total_orders = ExchangeOrder.objects.count()
-        pending_orders = ExchangeOrder.objects.filter(status="pending").count()
-        completed_orders = ExchangeOrder.objects.filter(status="completed").count()
-
-        extra_context["total_orders"] = total_orders
-        extra_context["pending_orders"] = pending_orders
-        extra_context["completed_orders"] = completed_orders
-
-        return super().changelist_view(request, extra_context)
