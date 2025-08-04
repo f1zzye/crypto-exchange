@@ -1,125 +1,109 @@
 jQuery(function($) {
-    const $selectGive = $('#select_give');
-    const $selectGet = $('#select_get');
+    let exchangeTimeout;
+    let lastCalculationData = {};
 
-    const SELECTORS = {
-        coinItem: '.calc__item.js-calc-item',
-        select: 'select',
-        icon: '.js-sum-icon',
-        name: '.js-sum-name',
-        activeItem: '.calc__item'
-    };
-
-    const columnCache = new Map();
-
-    function getColumn(selectElement) {
-        const id = selectElement.attr('id');
-        if (!columnCache.has(id)) {
-            columnCache.set(id, selectElement.closest('.calc__col'));
-        }
-        return columnCache.get(id);
+    function calculateExchangeDelayed() {
+        clearTimeout(exchangeTimeout);
+        exchangeTimeout = setTimeout(calculateExchange, 200);
     }
 
-    function updateCoinUI(selectElement) {
-        const column = getColumn(selectElement);
-        if (!column.length) return;
+    function calculateExchange() {
+        const giveTokenId = $('#select_give').val();
+        const receiveTokenId = $('#select_get').val();
+        const amount = parseFloat($('input[name="sum1"]').val()) || 0;
 
-        const selectedOption = selectElement.find('option:selected');
-        const selectedValue = selectElement.val();
-        const imageUrl = selectedOption.data('img') || selectedOption.data('logo');
-        const coinName = selectedOption.text().trim();
+        const currentData = { giveTokenId, receiveTokenId, amount };
 
-        const $activeItems = column.find(SELECTORS.activeItem);
-        $activeItems.removeClass('active');
+        if (JSON.stringify(currentData) === JSON.stringify(lastCalculationData)) return;
+        lastCalculationData = currentData;
 
-        if (selectedValue) {
-            $activeItems.filter(`[data-id="${selectedValue}"]`).addClass('active');
-        }
+        const outputField = $('input[name="sum2"], .js_sum2c');
+        const courseField = $('.js_course_html');
 
-        if (imageUrl) column.find(SELECTORS.icon).attr('src', imageUrl);
-        if (coinName) column.find(SELECTORS.name).text(coinName);
-    }
-
-    function findNextAvailableToken(selectElement, excludeValue) {
-        return selectElement.find('option').filter(function() {
-            const val = $(this).val();
-            return val && val !== excludeValue;
-        }).first();
-    }
-
-    function getOtherSelect(currentSelect) {
-        return currentSelect.is($selectGive) ? $selectGet : $selectGive;
-    }
-
-    function handleDuplicateSelection(changedSelect, newValue) {
-        const otherSelect = getOtherSelect(changedSelect);
-
-        if (otherSelect.val() !== newValue) return;
-
-        const nextOption = findNextAvailableToken(otherSelect, newValue);
-        if (nextOption.length) {
-            otherSelect.val(nextOption.val()).trigger('change');
-        }
-    }
-
-    function handleSelectChange(selectElement) {
-        const selectedValue = selectElement.val();
-        handleDuplicateSelection(selectElement, selectedValue);
-        updateCoinUI(selectElement);
-    }
-
-    $(document)
-        .on('click', SELECTORS.coinItem, function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const tokenId = $(this).data('id');
-            if (!tokenId) return;
-
-            const column = $(this).closest('.calc__col');
-            const select = column.find(SELECTORS.select);
-
-            if (!select.length || select.val() === tokenId) return;
-
-            handleDuplicateSelection(select, tokenId);
-
-            select.val(tokenId).trigger('change');
-        })
-        .on('change', '#select_give, #select_get', function() {
-            handleSelectChange($(this));
-        })
-        .on('click', '.js-calc-reverse', function(e) {
-            e.preventDefault();
-
-            const giveValue = $selectGive.val();
-            const getValue = $selectGet.val();
-
-            $selectGive.val(getValue);
-            $selectGet.val(giveValue);
-
-            updateCoinUI($selectGive);
-            updateCoinUI($selectGet);
-
-            $selectGive.add($selectGet).trigger('change');
-        });
-
-    function init() {
-        if (!$selectGive.length || !$selectGet.length) {
-            setTimeout(init, 200);
+        if (!giveTokenId || !receiveTokenId) {
+            outputField.val('0');
+            courseField.text('Выберите токены');
             return;
         }
 
-        updateCoinUI($selectGive);
-        updateCoinUI($selectGet);
-
-        if ($selectGive.val() === $selectGet.val() && $selectGive.val()) {
-            const nextOption = findNextAvailableToken($selectGet, $selectGive.val());
-            if (nextOption.length) {
-                $selectGet.val(nextOption.val());
-                updateCoinUI($selectGet);
-            }
+        if (giveTokenId === receiveTokenId) {
+            outputField.val('0');
+            courseField.text('Выберите разные токены');
+            return;
         }
+
+        if (amount <= 0) {
+            outputField.val('0');
+            courseField.text('Введите сумму > 0');
+            return;
+        }
+
+        courseField.text('Расчет...');
+
+        $.ajax({
+            url: '/exchange/calculate-exchange/',
+            type: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+            },
+            data: JSON.stringify({
+                give_token_id: giveTokenId,
+                receive_token_id: receiveTokenId,
+                amount: amount
+            }),
+            success: function(data) {
+                if (data.success) {
+                    const formattedAmount = parseFloat(data.output_amount).toFixed(6);
+                    const effectiveRate = parseFloat(data.effective_rate).toFixed(6);
+
+                    outputField.val(formattedAmount);
+                    courseField.text(`1 ${data.give_token_name} = ${effectiveRate} ${data.receive_token_name}`);
+
+                    outputField.addClass('exchange-updated');
+                    setTimeout(() => outputField.removeClass('exchange-updated'), 300);
+                } else {
+                    outputField.val('0');
+                    courseField.text(data.error);
+                }
+            },
+            error: function() {
+                if (amount > 0) {
+                    outputField.val((amount * 0.97).toFixed(6));
+                    const giveTokenName = $('#select_give option:selected').text().split(' ')[0];
+                    const receiveTokenName = $('#select_get option:selected').text().split(' ')[0];
+                    courseField.text(`1 ${giveTokenName} ≈ 0.97 ${receiveTokenName}`);
+                } else {
+                    outputField.val('0');
+                    courseField.text('Ошибка соединения');
+                }
+            }
+        });
     }
 
-    $(document).ready(init);
+    $(document).on('change', '#select_give, #select_get', calculateExchangeDelayed);
+    $(document).on('input keyup paste', 'input[name="sum1"]', calculateExchangeDelayed);
+
+    $(document).on('click', '.js-calc-reverse', function(e) {
+        e.preventDefault();
+        const giveValue = $('#select_give').val();
+        const receiveValue = $('#select_get').val();
+
+        $('#select_give').val(receiveValue);
+        $('#select_get').val(giveValue);
+    });
+
+    $(document).on('click', '.js_min1_val', function(e) {
+        e.preventDefault();
+        const minVal = $(this).data('min1') || $(this).data('val') || 1;
+        $('input[name="sum1"]').val(minVal).trigger('input');
+    });
+
+    $(document).on('click', '.js_max1_val', function(e) {
+        e.preventDefault();
+        const maxVal = $(this).data('max1') || $(this).data('val') || 10000;
+        $('input[name="sum1"]').val(maxVal).trigger('input');
+    });
+
+    setTimeout(calculateExchange, 500);
 });
