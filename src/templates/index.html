@@ -14,10 +14,17 @@
             <section class="calc">
                 <div class="container">
 
-                    <form method="post" class="ajax_post_bids" action="https://crypto-chicken.co/premium_site_action-create_bid.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
+                    <form method="post" class="ajax_post_bids" action="">
+                        {% csrf_token %}
+
+                        <input type="hidden" name="give_token_id" id="hidden_give_token_id" value="">
+                        <input type="hidden" name="receive_token_id" id="hidden_receive_token_id" value="">
+                        <input type="hidden" name="sum2" id="hidden_sum2" value="">
+
                         <div class="exch_ajax_wrap">
                             <div class="exch_ajax_wrap_abs"></div>
-                            <div id="exch_html" class="calc__cols"> <input type="hidden" name="direction_id" class="js_direction_id" value="1977" />
+                            <div id="exch_html" class="calc__cols">
+                                <input type="hidden" name="direction_id" class="js_direction_id" value="1977" />
                                 <div class="calc__left">
                                     <div class="calc__col js-calc-col js-calc-col-1">
                                         <div class="calc__col-head">
@@ -25,21 +32,18 @@
                                         </div>
                                         <div class="calc__body">
                                             <div class="form__input calc__irow">
-
-                                                <div class="hexch_curs_input js_wrap_error "><input type="text" name="sum1" cash-id="sum" data-decimal="10" class="js_sum_val js_decimal js_sum1 cache_data input input--nbd js-sum-val" autocomplete="off" value="500" />
+                                                <div class="hexch_curs_input js_wrap_error">
+                                                    <input type="text" name="sum1" cash-id="sum" data-decimal="10" class="js_sum_val js_decimal js_sum1 cache_data input input--nbd js-sum-val" autocomplete="off" value="500" required />
                                                     <div class="input__bg"></div>
                                                     <div class="calc__iicon">
-                                                        <img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" class="js-sum-icon" alt="">
-                                                        <span class="calc__iicon-name js-sum-name">Tether TRC20 USDT</span>
-                                                        <button class="calc__iicon-toggle  js-calc-table-toggle"></button>
+                                                        <img src="{% if tokens.0.image %}{{ tokens.0.image.url }}{% else %}https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png{% endif %}" class="js-sum-icon" alt="">
+                                                        <span class="calc__iicon-name js-sum-name">
+                                                            {% if tokens.0 %}{{ tokens.0.name }} {{ tokens.0.network.short_name }}{% else %}Tether TRC20 USDT{% endif %}
+                                                        </span>
+                                                        <button type="button" class="calc__iicon-toggle js-calc-table-toggle"></button>
                                                     </div>
                                                     <div class="js_error js_sum1_error"></div>
                                                 </div>
-
-                                            </div>
-                                            <div class="calc__amount">
-                                                <a href="javascript:void(0)" class="calc__amount-val js_min1_val" data-id="sum1" data-min1="500" data-val="500">Min:&nbsp;500</a>
-                                                <a href="javascript:void(0)" class="calc__amount-val js_max1_val" data-id="sum1" data-max1="15000" data-val="15000">Max:&nbsp;15000</a>
                                             </div>
                                             <div class="calc__tags">
                                                 <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
@@ -54,12 +58,10 @@
                                                 <div class="calc__search">
                                                     <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
                                                 </div>
-
-
                                                 <div class="calc__items js-content-scroll">
-                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_give">
+                                                    <select name="give_token_select" class="js_my_sel" autocomplete="off" id="select_give" required>
                                                         {% for token in tokens %}
-                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo-next="">
+                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-name="{{ token.name }} {{ token.network.short_name }}" data-short-name="{{ token.short_name }}">
                                                             {{ token.name }} {{ token.network.short_name }}
                                                         </option>
                                                         {% endfor %}
@@ -69,29 +71,29 @@
                                         </div>
                                     </div>
 
-                                    <button class="calc__reverse js-calc-reverse"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/reverse.svg" alt=""></button>
+                                    <button type="button" class="calc__reverse js-calc-reverse">
+                                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/reverse.svg" alt="">
+                                    </button>
+
                                     <div class="calc__col js-calc-col js-calc-col-2">
                                         <div class="calc__col-head">
                                             <div class="calc__col-title title">Получите</div>
-                                            <div class="calc__course">Курс: <span class="js_course_html">327.62268 USDT = 1 XMR</span></div>
+                                            <div class="calc__course">Курс: <span class="js_course_html">Выберите токены</span></div>
                                         </div>
                                         <div class="calc__body">
                                             <div class="form__input calc__irow">
-
-                                                <div class="hexch_curs_input js_wrap_error "><input type="text" name="" data-decimal="10" class="js_sum_val js_decimal js_sum2c input input--nbd js-sum-val" autocomplete="off" value="1.52114587" />
+                                                <div class="hexch_curs_input js_wrap_error">
+                                                    <input type="text" name="sum2_display" data-decimal="10" class="js_sum_val js_decimal js_sum2c input input--nbd js-sum-val" autocomplete="off" value="0" readonly />
                                                     <div class="input__bg"></div>
                                                     <div class="calc__iicon">
-                                                        <img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" class="js-sum-icon" alt="">
-                                                        <span class="calc__iicon-name js-sum-name">Monero XMR</span>
-                                                        <button class="calc__iicon-toggle  js-calc-table-toggle"></button>
+                                                        <img src="{% if tokens.1.image %}{{ tokens.1.image.url }}{% else %}https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png{% endif %}" class="js-sum-icon" alt="">
+                                                        <span class="calc__iicon-name js-sum-name">
+                                                            {% if tokens.1 %}{{ tokens.1.name }} {{ tokens.1.network.short_name }}{% else %}Выберите токен{% endif %}
+                                                        </span>
+                                                        <button type="button" class="calc__iicon-toggle js-calc-table-toggle"></button>
                                                     </div>
                                                     <div class="js_error js_sum2_error"></div>
                                                 </div>
-
-                                            </div>
-                                            <div class="calc__amount">
-                                                <a href="javascript:void(0)" class="calc__amount-val js_min2_val" data-id="sum2" data-min1="1.52614587" data-val="1.52614587">Min:&nbsp;1.52614587</a>
-                                                <a href="javascript:void(0)" class="calc__amount-val js_max2_val" data-id="sum2" data-max1="45.7843761" data-val="45.7843761">Max:&nbsp;45.7843761</a>
                                             </div>
                                             <div class="calc__tags">
                                                 <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
@@ -103,12 +105,12 @@
                                             </div>
                                             <div class="calc__table js-calc-table">
                                                 <div class="calc__search">
-                                                    <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
+                                                    <input type="text" name="s2" class="input js-calc-search" placeholder="Введите валюту">
                                                 </div>
                                                 <div class="calc__items js-content-scroll">
-                                                    <select name="" class="js_my_sel" autocomplete="off" id="select_get">
+                                                    <select name="receive_token_select" class="js_my_sel" autocomplete="off" id="select_get" required>
                                                         {% for token in tokens %}
-                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo-next="">
+                                                        <option value="{{ token.id }}" {% if forloop.counter == 2 %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-name="{{ token.name }} {{ token.network.short_name }}" data-short-name="{{ token.short_name }}">
                                                             {{ token.name }} {{ token.network.short_name }}
                                                         </option>
                                                         {% endfor %}
@@ -118,47 +120,28 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="calc__form">
                                     <div class="calc__form-tt">Персональные данные</div>
 
-
-                                    <div class="xchange_curs_line js_line_wrapper ">
-                                        <div class="xchange_curs_line_ins">
-                                            <div class="xchange_curs_label">
-                                                <div class="xchange_curs_label_ins">
-                                                    <label for="account2"><span class="xchange_label">Кошелек<span class="req">*</span>: </span></label>
-                                                </div>
-                                            </div>
-                                            <div class="xchange_curs_input js_wrap_error js_window_wrap">
-                                                <div class="form__input"><input name="account2" type="text" cash-id="account361" id="account2" autocomplete="off" value="" class="js_account2 cache_data check_cache input" placeholder="Кошелек*" />
-                                                    <div class="input__bg"></div>
-                                                </div>
-                                                <div class="js_error js_account2_error"></div>
-                                                <div class="clear"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                    <!-- Убрали блок с кошельком -->
 
                                     <div class="xchange_pers">
                                         <div class="xchange_pers_ins">
-                                            <div class="xchange_pers_title">
-                                                <div class="xchange_pers_title_ins">
-                                                    <span>Персональные данные</span>
-                                                </div>
-                                            </div>
                                             <div class="xchange_pers_div">
                                                 <div class="xchange_pers_div_ins">
-                                                    <div class="xchange_pers_line js_line_wrapper ">
+                                                    <div class="xchange_pers_line js_line_wrapper">
                                                         <div class="xchange_pers_line_ins">
                                                             <div class="xchange_pers_label">
                                                                 <div class="xchange_pers_label_ins">
-                                                                    <label for="cf6"><span class="xchange_label">E-mail<span class="req">*</span>: <span class="help_tooltip_label"></span></span></label>
+                                                                    <label for="cf6">
+                                                                        <span class="xchange_label">E-mail<span class="req">*</span>:</span>
+                                                                    </label>
                                                                 </div>
                                                             </div>
                                                             <div class="xchange_pers_input js_wrap_error js_window_wrap">
-                                                                <div class="form__input"><input name="cf6" cash-id="cf6" id="cf6" autocomplete="off" type="text" value="" class="js_cf6 cache_data check_cache input" placeholder="E-mail*" title="Введите ваш действующий e-mail.
-Все корректировки по заявке принимаются только с вашей почты." />
+                                                                <div class="form__input">
+                                                                    <input name="cf6" cash-id="cf6" id="cf6" autocomplete="off" type="email" value="" class="js_cf6 cache_data check_cache input" placeholder="E-mail*" title="Введите ваш действующий e-mail. Все корректировки по заявке принимаются только с вашей почты." required />
                                                                     <div class="input__bg"></div>
                                                                 </div>
                                                                 <div class="info_window js_window">
@@ -166,7 +149,6 @@
                                                                         <div class="info_window_abs"></div>
                                                                         <p>Введите ваш действующий e-mail.<br />
                                                                             Все корректировки по заявке принимаются только с вашей почты.</p>
-
                                                                     </div>
                                                                 </div>
                                                                 <div class="js_error js_cf6_error"></div>
@@ -174,13 +156,11 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                     <div class="clear"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div class="notice_message">
                                         <div class="notice_message_ins">
@@ -190,18 +170,18 @@
                                                 <div class="notice_message_text_ins">
                                                     <div class="text">
                                                         <p>Данная операция производится в автоматическом режиме.<br />
-                                                            В целях противодействия легализации доходов, полученных преступным путем, проводится <strong> AML-проверка</strong>.<br />
+                                                            В целях противодействия легализации доходов, полученных преступным путем, проводится <strong>AML-проверка</strong>.<br />
                                                             Курс фиксируется при достижении 20 подтверждений в сети и покупке монет на бирже.</p>
-
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="calc__form-policy">
                                         <div class="hexch_checkdata_div">
                                             <label class="form__policy">
-                                                <input type="checkbox" name="check_rule" autocomplete="off" value="1" />
+                                                <input type="checkbox" name="check_rule" autocomplete="off" value="1" required />
                                                 <span class="form__policy-sq"></span>
                                                 <span class="form__policy-t">
                                                     Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a>
@@ -210,7 +190,7 @@
                                         </div>
                                         <div class="exchange_checkpersdata">
                                             <label class="form__policy">
-                                                <input type="checkbox" name="add_rules" autocomplete="off" value="1" />
+                                                <input type="checkbox" name="add_rules" autocomplete="off" value="1" required />
                                                 <span class="form__policy-sq"></span>
                                                 <span class="form__policy-t">
                                                     Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a>
@@ -222,14 +202,13 @@
                                                 <input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" />
                                                 <span class="form__policy-sq"></span>
                                                 <span class="form__policy-t">
-                                                    Не запоминать введенные данные<span></span>
+                                                    Не запоминать введенные данные
                                                 </span>
                                             </label>
                                         </div>
 
                                         <div class="captcha_div">
                                             <div class="captcha_title">Введите ответ</div>
-
                                             <div class="captcha_body" style="display: flex; align-items: center;">
                                                 <div class="captcha_divimg">
                                                     <img src="{{ captcha.img1 }}" class="captcha1" alt="" />
@@ -240,21 +219,19 @@
                                                 <div class="captcha_divimg">
                                                     <img src="{{ captcha.img2 }}" class="captcha2" alt="" />
                                                 </div>
-                                                <div class="captcha_divznak">
-                                                    =
-                                                </div>
+                                                <div class="captcha_divznak">=</div>
                                                 <div class="form__input" style="position: relative;">
-                                                    <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" />
+                                                    <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" required />
                                                     <div class="input__bg"></div>
                                                     <button type="button" class="captcha_reload_icon" title="Обновить капчу" onclick="reloadCaptcha(event)" style="
-                                                            position: absolute;
-                                                            top: 50%;
-                                                            right: -36px;
-                                                            transform: translateY(-50%);
-                                                            background: none;
-                                                            border: none;
-                                                            cursor: pointer;
-                                                            padding: 0;">
+                                    position: absolute;
+                                    top: 50%;
+                                    right: -36px;
+                                    transform: translateY(-50%);
+                                    background: none;
+                                    border: none;
+                                    cursor: pointer;
+                                    padding: 0;">
                                                         <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
                                                     </button>
                                                 </div>
@@ -264,12 +241,16 @@
                                             <div style="color: #dc3545; text-align: center; margin-top: 10px;">{{ error }}</div>
                                             {% endif %}
                                         </div>
+
                                         <div class="calc__form-submit">
-                                            <button class="btn btn--wall"><span>Обменять сейчас</span></button>
+                                            <button type="submit" class="btn btn--wall">
+                                                <span>Обменять сейчас</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </form>
                 </div>
             </section>
@@ -576,328 +557,13 @@
             </div>
         </div>
     </div>
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LW8KXMZ9C5"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', 'G-LW8KXMZ9C5');
-    </script>
-
-    <div class="userwalletsform_box_html" style="display: none;">
-
-        <div class="form_field_line rb_line type_select field_name_currency_id has_title">
-            <div class="form_field_label rb_label"><label for="form_field_id-1-currency_id"><span class="form_field_label_ins">Платежная система <span class="req">*</span>:</span></label></div>
-            <div class="form_field_ins form__input rb_line_ins">
-
-                <select id="form_field_id-1-currency_id" class="userwalletsform_currency_id rb_select" autocomplete="off" name="currency_id">
-                    <option value="0">--выберите валюту--</option>
-                    <option value="596">0x Protocol ZRX</option>
-                    <option value="434">Advanced Cash EUR</option>
-                    <option value="436">Advanced Cash KZT</option>
-                    <option value="433">Advanced Cash RUB</option>
-                    <option value="437">Advanced Cash TRY</option>
-                    <option value="435">Advanced Cash UAH</option>
-                    <option value="432">Advanced Cash USD</option>
-                    <option value="408">Algorand ALGO</option>
-                    <option value="458">Alipay CNY</option>
-                    <option value="593">ApeCoin APE</option>
-                    <option value="589">Aptos APT</option>
-                    <option value="410">Avalanche C-CHAIN AVAX</option>
-                    <option value="395">BAT ERC20 BAT</option>
-                    <option value="377">Binance USD BUSD</option>
-                    <option value="390">BinanceCoin BEP2 BNB</option>
-                    <option value="391">BinanceCoin BEP20 BNB</option>
-                    <option value="394">BitTorrent BTTC</option>
-                    <option value="350">Bitcoin BEP20 BTCB</option>
-                    <option value="348">Bitcoin BTC</option>
-                    <option value="352">Bitcoin Cash BCH</option>
-                    <option value="354">Bitcoin Gold BTG</option>
-                    <option value="353">Bitcoin SV BSV</option>
-                    <option value="446">Capitalist EUR</option>
-                    <option value="447">Capitalist RUB</option>
-                    <option value="445">Capitalist USD</option>
-                    <option value="383">Cardano ADA</option>
-                    <option value="398">Chainlink LINK</option>
-                    <option value="561">Contact RUB</option>
-                    <option value="560">Contact USD</option>
-                    <option value="399">Cosmos ATOM</option>
-                    <option value="415">Cronos CRO</option>
-                    <option value="376">Dai DAI</option>
-                    <option value="364">Dash DASH</option>
-                    <option value="412">Decentraland MANA</option>
-                    <option value="362">Dogecoin DOGE</option>
-                    <option value="381">EOS EOS</option>
-                    <option value="457">Epay EUR</option>
-                    <option value="456">Epay USD</option>
-                    <option value="358">Ether Classic ETC</option>
-                    <option value="356">Ethereum BEP20 ETH</option>
-                    <option value="355">Ethereum ETH</option>
-                    <option value="508">ForteBank KZT</option>
-                    <option value="506">HalykBank KZT</option>
-                    <option value="392">ICON ICX</option>
-                    <option value="382">IOTA MIOTA</option>
-                    <option value="443">Idram AMD</option>
-                    <option value="510">Jusan Bank KZT</option>
-                    <option value="509">Kaspi Bank KZT</option>
-                    <option value="393">Komodo KMD</option>
-                    <option value="359">Litecoin LTC</option>
-                    <option value="409">Maker MKR</option>
-                    <option value="361">Monero XMR</option>
-                    <option value="559">MoneyGram EUR</option>
-                    <option value="558">MoneyGram USD</option>
-                    <option value="502">Monobank UAH</option>
-                    <option value="414">NEAR Protocol NEAR</option>
-                    <option value="379">NEM XEM</option>
-                    <option value="380">NEO N3 NEO</option>
-                    <option value="449">Neteller EUR</option>
-                    <option value="448">Neteller USD</option>
-                    <option value="454">NixMoney EUR</option>
-                    <option value="453">NixMoney USD</option>
-                    <option value="387">OMG Network OMG</option>
-                    <option value="592">Official Trump TRUMP</option>
-                    <option value="396">Ontology ONT</option>
-                    <option value="591">Optimism OP</option>
-                    <option value="499">Oschadbank UAH</option>
-                    <option value="424">PM e-Voucher USD</option>
-                    <option value="501">PUMB UAH</option>
-                    <option value="375">Pax Dollar USDP</option>
-                    <option value="444">Paxum USD</option>
-                    <option value="430">PayPal EUR</option>
-                    <option value="431">PayPal GBP</option>
-                    <option value="429">PayPal RUB</option>
-                    <option value="428">PayPal USD</option>
-                    <option value="451">PaySera EUR</option>
-                    <option value="450">PaySera USD</option>
-                    <option value="440">Payeer EUR</option>
-                    <option value="439">Payeer RUB</option>
-                    <option value="438">Payeer USD</option>
-                    <option value="420">Paymer USD</option>
-                    <option value="459">Payoneer USD</option>
-                    <option value="423">Perfect Money BTC</option>
-                    <option value="422">Perfect Money EUR</option>
-                    <option value="421">Perfect Money USD</option>
-                    <option value="401">Polkadot DOT</option>
-                    <option value="363">Polygon POL</option>
-                    <option value="497">Privat 24 UAH</option>
-                    <option value="496">Privat 24 USD</option>
-                    <option value="427">QIWI KZT</option>
-                    <option value="426">QIWI RUB</option>
-                    <option value="397">Qtum QTUM</option>
-                    <option value="488">Raiffeisen Bank Aval RUB</option>
-                    <option value="498">Raiffeisen Bank Aval UAH</option>
-                    <option value="403">Ravencoin RVN</option>
-                    <option value="555">Revolut EUR</option>
-                    <option value="554">Revolut USD</option>
-                    <option value="567">Ria EUR</option>
-                    <option value="566">Ria USD</option>
-                    <option value="360">Ripple XRP</option>
-                    <option value="550">Sepa EUR</option>
-                    <option value="407">Shiba BEP20 SHIB</option>
-                    <option value="406">Shiba ERC20 SHIB</option>
-                    <option value="442">Skrill EUR</option>
-                    <option value="441">Skrill USD</option>
-                    <option value="404">Solana SOL</option>
-                    <option value="384">Stellar XLM</option>
-                    <option value="595">Sui SUI</option>
-                    <option value="385">TRON TRX</option>
-                    <option value="413">Terra LUNA</option>
-                    <option value="378">TerraUSD UST</option>
-                    <option value="597">Tether Arbitrum USDT</option>
-                    <option value="369">Tether BEP20 USDT</option>
-                    <option value="367">Tether ERC20 USDT</option>
-                    <option value="366">Tether Omni USDT</option>
-                    <option value="370">Tether SOL USDT</option>
-                    <option value="598">Tether TON USDT</option>
-                    <option value="368">Tether TRC20 USDT</option>
-                    <option value="400">Tezos XTZ</option>
-                    <option value="416">Toncoin TON</option>
-                    <option value="374">TrueUSD TUSD</option>
-                    <option value="371">USDCoin ERC20 USDC</option>
-                    <option value="373">USDCoin SOL USDC</option>
-                    <option value="372">USDCoin TRC20 USDC</option>
-                    <option value="402">Uniswap ERC20 UNI</option>
-                    <option value="405">VeChain VET</option>
-                    <option value="388">Verge XVG</option>
-                    <option value="520">Visa/MasterCard AMD</option>
-                    <option value="515">Visa/MasterCard BYN</option>
-                    <option value="522">Visa/MasterCard CNY</option>
-                    <option value="577">Visa/MasterCard CZK</option>
-                    <option value="513">Visa/MasterCard EUR</option>
-                    <option value="521">Visa/MasterCard GBP</option>
-                    <option value="516">Visa/MasterCard KZT</option>
-                    <option value="578">Visa/MasterCard MDL</option>
-                    <option value="579">Visa/MasterCard PLN</option>
-                    <option value="512">Visa/MasterCard RUB</option>
-                    <option value="580">Visa/MasterCard SEK</option>
-                    <option value="523">Visa/MasterCard TRY</option>
-                    <option value="514">Visa/MasterCard UAH</option>
-                    <option value="511">Visa/MasterCard USD</option>
-                    <option value="557">WU EUR</option>
-                    <option value="556">WU USD</option>
-                    <option value="386">Waves WAVES</option>
-                    <option value="418">WebMoney WME</option>
-                    <option value="419">WebMoney WMX</option>
-                    <option value="417">WebMoney WMZ</option>
-                    <option value="365">Zcash ZEC</option>
-                    <option value="484">Авангард RUB</option>
-                    <option value="477">Альфа cash-in RUB</option>
-                    <option value="476">Альфа cash-in USD</option>
-                    <option value="475">Альфа-Банк RUB</option>
-                    <option value="504">Альфа-Банк UAH</option>
-                    <option value="505">Беларусбанк BYN</option>
-                    <option value="482">ВТБ RUB</option>
-                    <option value="486">Газпромбанк RUB</option>
-                    <option value="563">ЗК RUB</option>
-                    <option value="562">ЗК USD</option>
-                    <option value="533">Карта HUMO UZS</option>
-                    <option value="532">Карта UZCARD UZS</option>
-                    <option value="531">Карта UnionPay CNY</option>
-                    <option value="530">Карта Мир RUB</option>
-                    <option value="487">Кукуруза RUB</option>
-                    <option value="538">Любой банк BYN</option>
-                    <option value="542">Любой банк CNY</option>
-                    <option value="536">Любой банк EUR</option>
-                    <option value="539">Любой банк KZT</option>
-                    <option value="535">Любой банк RUB</option>
-                    <option value="543">Любой банк TRY</option>
-                    <option value="537">Любой банк UAH</option>
-                    <option value="534">Любой банк USD</option>
-                    <option value="494">МТС Банк RUB</option>
-                    <option value="575">Наличные AED</option>
-                    <option value="572">Наличные BYN</option>
-                    <option value="570">Наличные EUR</option>
-                    <option value="573">Наличные KZT</option>
-                    <option value="569">Наличные RUB</option>
-                    <option value="576">Наличные TRY</option>
-                    <option value="571">Наличные UAH</option>
-                    <option value="568">Наличные USD</option>
-                    <option value="490">Открытие RUB</option>
-                    <option value="491">Почта Банк RUB</option>
-                    <option value="485">Промсвязьбанк RUB</option>
-                    <option value="489">РНКБ RUB</option>
-                    <option value="493">Росбанк RUB</option>
-                    <option value="492">Россельхозбанк RUB</option>
-                    <option value="483">Русский Стандарт RUB</option>
-                    <option value="552">СБП RUB</option>
-                    <option value="507">Сбербанк KZT</option>
-                    <option value="474">Сбербанк QR RUB</option>
-                    <option value="473">Сбербанк RUB</option>
-                    <option value="460">Счет телефона RUB</option>
-                    <option value="461">Счет телефона UAH</option>
-                    <option value="481">Тинькофф QR RUB</option>
-                    <option value="479">Тинькофф RUB</option>
-                    <option value="478">Тинькофф USD</option>
-                    <option value="480">Тинькофф cash-in RUB</option>
-                    <option value="500">УкрСиббанк UAH</option>
-                    <option value="495">Хоум Кредит RUB</option>
-                    <option value="425">ЮMoney RUB</option>
-                </select>
-
-
-                <div class="form_field_errors">
-                    <div class="form_field_errors_ins"></div>
-                </div>
-            </div>
-            <div class="form_field_clear rb_line_clear"></div>
-        </div>
-
-        <div class="form_field_line rb_line type_input field_name_account has_title">
-            <div class="form_field_label rb_label"><label for="form_field_id-1-account"><span class="form_field_label_ins">Номер счета <span class="req">*</span>:</span></label></div>
-            <div class="form_field_ins form__input rb_line_ins">
-
-                <input type="text" id="form_field_id-1-account" class="userwalletsform_account rb_input input input--nbd" autocomplete="off" name="account" value="" />
-                <div class="input__bg"></div>
-
-                <div class="form_field_errors">
-                    <div class="form_field_errors_ins"></div>
-                </div>
-            </div>
-            <div class="form_field_clear rb_line_clear"></div>
-        </div>
-
-        <div class="rb_line"><input type="submit" formtarget="_top" name="submit" class="rb_submit" value="Добавить счет" /></div>
-        <div class="resultgo"></div>
-    </div>
-    <form method="post" class="ajax_post_form" action="https://crypto-chicken.co/premium_site_action-userwalletsform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
-        <input type="hidden" name="redir" id="userwalletsform_redir" value="" />
-
-        <div class="userwalletsform_box"></div>
-    </form>
 
 
     <div class="walletsverify_box"></div>
 
     {% include 'partials/footer.html' %}
 
-    <script>
-        function reloadCaptcha(event) {
-            event.preventDefault();
-
-            const reloadBtn = event.target;
-            const originalText = reloadBtn.innerHTML;
-
-            fetch(window.location.href, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    credentials: 'same-origin'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const img1 = document.querySelector('.captcha1') || document.querySelector('img[class*="captcha"]');
-                    const img2 = document.querySelector('.captcha2') || document.querySelectorAll('img[class*="captcha"]')[1];
-                    const operation = document.querySelector('.captcha_sym') || document.querySelector('[class*="captcha_sym"]');
-                    const input = document.getElementById('captcha-input') || document.querySelector('input[name="number"]');
-
-                    if (img1) img1.src = data.img1;
-                    if (img2) img2.src = data.img2;
-                    if (operation) operation.textContent = data.operation;
-                    if (input) input.value = '';
-
-                    reloadBtn.innerHTML = originalText;
-                    reloadBtn.style.animation = '';
-
-                    console.log('Капча успешно обновлена');
-                })
-                .catch(error => {
-                    console.error('Ошибка при обновлении капчи:', error);
-
-                    reloadBtn.innerHTML = originalText;
-                    reloadBtn.style.animation = '';
-
-                    alert('Не удалось обновить капчу. Попробуйте еще раз.');
-                });
-        }
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
-
+    <!--    Автоматическое поддержание активности сессии-->
     <script type="text/javascript">
         jQuery(function($) {
 
@@ -912,7 +578,7 @@
                     $('.globalajax_ind').addClass('active');
                     $.ajax({
                         type: "POST",
-                        url: "https://crypto-chicken.co/premium_site_action-globalajax_action.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
+                        url: "",
                         dataType: 'json',
                         data: param,
                         error: function(res, res2, res3) {
@@ -937,6 +603,7 @@
         });
     </script>
 
+    <!--    Интеграция с системой онлайн-чата Zoho SalesIQ-->
     <script type="text/javascript" id="zsiqchat">
         var $zoho = $zoho || {};
         $zoho.salesiq = $zoho.salesiq || {
@@ -954,182 +621,13 @@
         t.parentNode.insertBefore(s, t);
     </script>
 
-    <script>
-        if (typeof gtag === 'function') {
-            gtag('config', 'AW-16948843742');
-        } else {
-            var script = document.createElement('script');
-            script.async = true;
-            script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16948843742';
-            document.head.appendChild(script);
 
-            window.dataLayer = window.dataLayer || [];
-
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
-            gtag('config', 'AW-16948843742');
-        }
-    </script>
-    <div style="display: none;">
-        <form method="post" class="upload_hf_form" enctype="multipart/form-data" action="https://crypto-chicken.co/premium_site_action-hf_upload.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru">
-            <input type="hidden" name="formid" id="upload_hf_form_id" value="" />
-            <input type="hidden" name="type" id="upload_hf_form_type" value="" />
-            <input type="hidden" name="id" id="upload_hf_form_valid" value="" />
-            <input type="hidden" name="redir" id="upload_hf_form_redir" value="" />
-            <div id="upload_hf_form_file"></div>
-        </form>
-    </div>
-    <script type="text/javascript">
-        jQuery(function($) {
-
-            $(document).on('change', '.js_hf_input', function() {
-
-                var thet = $(this);
-                var type = thet.parents('.form_hf').attr('data-type');
-                var redir = thet.parents('.form_hf').attr('data-redir');
-                var id = thet.parents('.form_hf').attr('data-id');
-                var form_id = thet.parents('.form_hf').attr('id');
-                var input_now = thet.parents('.js_hf_input_linewrap').html();
-                var ccn = thet[0].files.length;
-                if (ccn > 0) {
-                    var fileInput = thet[0];
-                    var bitec = fileInput.files[0].size;
-                    if (bitec > 2097152) {
-                        alert('Макс. 2 МБ !');
-                        thet.val('');
-                    } else {
-                        $('#upload_hf_form_type').val(type);
-                        $('#upload_hf_form_valid').val(id);
-                        $('#upload_hf_form_redir').val(redir);
-                        $('#upload_hf_form_id').val(form_id);
-
-                        $("#upload_hf_form_file").html('');
-
-                        let dt = new DataTransfer();
-                        dt.items.add(this.files[0]);
-
-                        let n_input = $('<input>', {
-                            type: 'file',
-                            name: thet.attr('name'),
-                            class: thet.attr('class'),
-                            id: thet.attr('id'),
-                            accept: thet.attr('accept'),
-                            multiple: thet.prop('multiple'),
-                            required: thet.prop('required'),
-                        })[0];
-                        n_input.files = dt.files;
-
-                        $("#upload_hf_form_file").append(n_input);
-
-
-                        $('.upload_hf_form').submit();
-                    }
-                }
-
-            });
-
-            $('.upload_hf_form').ajaxForm({
-                dataType: 'json',
-                beforeSubmit: function(a, f, o) {
-
-                    var form_id = $('#upload_hf_form_id').val();
-                    $('#' + form_id).addClass('uploading');
-
-                    $('.form_hf input').prop('disabled', true);
-                    $('.form_hf').find('.js_hf_bar').show();
-                    $('.form_hf').find('.js_hf_bar_abs').width('0px');
-                    $('.js_hf_response').html('');
-
-                },
-                error: function(res, res2, res3) {
-                    for (key in res) {
-                        console.log(key + ' = ' + res[key]);
-                    }
-                },
-                uploadProgress: function(event, position, total, percentComplete) {
-
-                    var form_id = $('#upload_hf_form_id').val();
-                    var percentVal = percentComplete + '%';
-                    $('#' + form_id).find('.js_hf_bar_abs').width(percentVal);
-
-                },
-                success: function(res) {
-
-                    var form_id = $('#upload_hf_form_id').val();
-
-                    if (res['status'] == 'success') {
-                        $('#' + form_id).find('.js_hf_files').html(res['response']);
-                    }
-
-                    if (res['status'] == 'error') {
-                        $('#' + form_id + '_hf_response').html('<div class="resultfalse">' + res['status_text'] + '</div>');
-                    }
-
-                    if (res['url']) {
-                        window.location.href = res['url'];
-                    }
-
-                    $('.js_hf_input').val('');
-                    $('.form_hf').find('.ustbl_bar').hide();
-                    $('.form_hf input').prop('disabled', false);
-                    $('#' + form_id).removeClass('uploading');
-
-                }
-            });
-
-            $(document).on('click', '.js_hf_del', function() {
-
-                var id = $(this).attr('data-id');
-                var insert_html = $(this).parents('.js_hf_files');
-                var thet = $(this);
-                $('.js_hf_response').html('');
-                if (!thet.hasClass('act')) {
-                    if (confirm("Вы уверены что хотите удалить этот файл?")) {
-                        thet.addClass('act');
-                        var param = 'id=' + id;
-                        $.ajax({
-                            type: "POST",
-                            url: "https://crypto-chicken.co/premium_site_action-hf_delete.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru",
-                            dataType: 'json',
-                            data: param,
-                            error: function(res, res2, res3) {
-                                for (key in res) {
-                                    console.log(key + ' = ' + res[key]);
-                                }
-                            },
-                            success: function(res) {
-                                if (res['status'] == 'success') {
-                                    insert_html.html(res['response']);
-                                }
-
-                                if (res['status'] == 'error') {
-                                    for (key in res) {
-                                        console.log(key + ' = ' + res[key]);
-                                    }
-                                }
-
-                                if (res['url']) {
-                                    window.location.href = res['url'];
-                                }
-
-                                thet.removeClass('act');
-                            }
-                        });
-                    }
-                }
-
-                return false;
-            });
-
-        });
-    </script>
-
-{% block extra_js %}
+    {% block extra_js %}
     <script src="{% static 'js/exchange/coin-display.js' %}"></script>
     <script src="{% static 'js/exchange/exchange-calculator.js' %}"></script>
-{% endblock %}
+    <script src="{% static 'js/exchange/order-form.js' %}"></script>
+    <script src="{% static 'js/captcha.js' %}"></script>
+    {% endblock %}
 
 </body>
 {% endblock %}

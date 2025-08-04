@@ -119,7 +119,6 @@ UNFOLD = {
     "SITE_TITLE": "Admin Dashboard",
     "SITE_HEADER": "Admin Dashboard - Crypto Exchange",
     "SITE_FOOTER": "Crypto Exchange Admin",
-
     "SIDEBAR": {
         "show_search": True,
         "show_all_applications": False,
@@ -153,6 +152,11 @@ UNFOLD = {
                         "title": _("Tokens"),
                         "icon": "token",
                         "link": reverse_lazy("admin:exchange_token_changelist"),
+                    },
+                    {
+                        "title": _("Exchange Orders "),
+                        "icon": "swap_horiz",
+                        "link": reverse_lazy("admin:exchange_exchangeorder_changelist"),
                     },
                 ],
             },

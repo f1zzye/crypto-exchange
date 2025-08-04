@@ -91,6 +91,7 @@ jQuery(function($) {
 
         $('#select_give').val(receiveValue);
         $('#select_get').val(giveValue);
+        $('#select_give, #select_get').trigger('change');
     });
 
     $(document).on('click', '.js_min1_val', function(e) {

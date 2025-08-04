@@ -1,0 +1,26 @@
+
+
+{% block content %}
+<div class="container">
+    <div class="success-page">
+        <h1>✅ Заявка успешно создана!</h1>
+
+        {% if order %}
+        <div class="order-details">
+            <h2>Детали заявки #{{ order.order_number }}</h2>
+
+            <div class="order-info">
+                <p><strong>Email:</strong> {{ order.email }}</p>
+                <p><strong>Кошелек:</strong> {{ order.wallet_address }}</p>
+                <p><strong>Обмен:</strong> {{ order.give_amount }} {{ order.give_token.short_name }} → {{ order.receive_amount }} {{ order.receive_token.short_name }}</p>
+                <p><strong>Курс:</strong> 1 {{ order.give_token.short_name }} = {{ order.exchange_rate }} {{ order.receive_token.short_name }}</p>
+                <p><strong>Комиссия:</strong> {{ order.fee_percentage }}%</p>
+                <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+                <p><strong>Дата создания:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+            </div>
+
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
