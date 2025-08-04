@@ -201,9 +201,6 @@ class ExchangeOrder(TimestampMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     email = models.EmailField(max_length=100, verbose_name="User Email")
-    wallet_address = models.CharField(
-        max_length=100, verbose_name="User Wallet Address"
-    )
 
     give_token = models.ForeignKey(
         "Token",
