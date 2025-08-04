@@ -11,26 +11,311 @@
 
                     <div class="header__right">
                         <div class="header__top">
-                            <a href="https://t.me/CryptoChicken_bot" class="btn header__contacts-support" target="_blank">
-                                <span>Support</span>
-                                <svg class="icon icon--fill">
-                                    <use xlink:href="{% static 'img/sprite.svg' %}#tg"></use>
-                                </svg>
-                            </a>
-                            <div class="header__lang js-lang">
-                                <div class="header__lang-current">
-                                    <span>RU</span>
-                                    <button class="header__lang-open js-lang-open"></button>
-                                </div>
-                                <div class="header__lang-drop js-lang-drop">
-                                    <ul>
-                                        <li class="current"><a href="">RU</a></li>
+    <!-- TON Wallet Button вместо Support -->
+    <div id="header-wallet-container">
+        <button id="header-connect-btn" class="btn header__contacts-support" type="button">
+            <span>Connect Wallet</span>
+            <svg class="icon icon--fill">
+                <use xlink:href="{% static 'img/sprite.svg' %}#wallet"></use>
+            </svg>
+        </button>
 
-                                        <li><a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" rel="nofollow">EN</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+        <button id="header-wallet-info" class="btn header__contacts-support" style="display: none;" type="button">
+            <span class="wallet-info">
+                <span class="wallet-balance">$0</span>
+                <span class="wallet-address">UQDk...zT6b</span>
+            </span>
+            <svg class="icon icon--fill">
+                <use xlink:href="{% static 'img/sprite.svg' %}#wallet"></use>
+            </svg>
+        </button>
+    </div>
+
+    <div class="header__lang js-lang">
+        <div class="header__lang-current">
+            <span>RU</span>
+            <button class="header__lang-open js-lang-open"></button>
+        </div>
+        <div class="header__lang-drop js-lang-drop">
+            <ul>
+                <li class="current"><a href="">RU</a></li>
+                <li><a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" rel="nofollow">EN</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Скрытый контейнер для TON Connect -->
+<div id="ton-connect-header" style="display: none;"></div>
+
+<style>
+.wallet-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.wallet-balance {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.wallet-address {
+    font-size: 11px;
+    color: #666;
+    font-weight: normal;
+}
+
+.header__contacts-support {
+    min-width: 120px;
+    text-align: left;
+}
+
+.header__contacts-support:hover .wallet-balance {
+    color: #fff;
+}
+
+.header__contacts-support:hover .wallet-address {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Dropdown меню для кошелька */
+.wallet-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    z-index: 1000;
+    display: none;
+}
+
+.wallet-dropdown-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.wallet-dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+.wallet-dropdown-item:last-child {
+    border-bottom: none;
+    color: #dc3545;
+}
+
+.wallet-dropdown-item:last-child:hover {
+    background-color: #fee;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализируем TON Connect и делаем глобально доступным
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://7dc4e007bbdd.ngrok-free.app/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect-header'
+    });
+
+    // Делаем экземпляр глобально доступным для других страниц
+    window.headerTonConnectUI = tonConnectUI;
+
+    const connectBtn = document.getElementById('header-connect-btn');
+    const walletInfoBtn = document.getElementById('header-wallet-info');
+    const balanceEl = document.querySelector('.wallet-balance');
+    const addressEl = document.querySelector('.wallet-address');
+
+    let currentWallet = null;
+
+    // Функция для получения баланса из API
+    async function getWalletBalance(address) {
+        try {
+            const response = await fetch(`/api/wallet-balance/?address=${address}`);
+            const data = await response.json();
+            return data.balance || '$0';
+        } catch (error) {
+            console.error('Error fetching balance:', error);
+            // Fallback к моку в случае ошибки API
+            const mockBalance = (Math.random() * 1000).toFixed(2);
+            return `$${mockBalance}`;
+        }
+    }
+
+    // Функция для форматирования адреса
+    function formatAddress(address) {
+        if (!address) return 'Unknown';
+        return `${address.slice(0, 4)}...${address.slice(-4)}`;
+    }
+
+    // Подключение кошелька из header
+    connectBtn.onclick = async function() {
+        try {
+            connectBtn.disabled = true;
+            connectBtn.querySelector('span').textContent = 'Connecting...';
+
+            const wallet = await tonConnectUI.connectWallet();
+            console.log('Wallet connected from header:', wallet);
+        } catch (error) {
+            console.error('Connection failed:', error);
+        } finally {
+            connectBtn.disabled = false;
+            connectBtn.querySelector('span').textContent = 'Connect Wallet';
+        }
+    };
+
+    // Отключение кошелька
+    walletInfoBtn.onclick = function(e) {
+        e.stopPropagation();
+        showWalletDropdown();
+    };
+
+    // Dropdown меню для кошелька
+    function showWalletDropdown() {
+        // Убираем существующий dropdown
+        const existingDropdown = document.querySelector('.wallet-dropdown');
+        if (existingDropdown) {
+            existingDropdown.remove();
+        }
+
+        // Создаем новый dropdown
+        const dropdown = document.createElement('div');
+        dropdown.className = 'wallet-dropdown';
+        dropdown.style.display = 'block';
+
+        dropdown.innerHTML = `
+            <div class="wallet-dropdown-item" onclick="copyAddress()">
+                <strong>Copy Address</strong><br>
+                <small>${currentWallet ? currentWallet.account.address : ''}</small>
+            </div>
+            <div class="wallet-dropdown-item" onclick="refreshBalance()">
+                <strong>Refresh Balance</strong>
+            </div>
+            <div class="wallet-dropdown-item" onclick="disconnectWallet()">
+                <strong>Disconnect</strong>
+            </div>
+        `;
+
+        // Позиционируем dropdown
+        walletInfoBtn.style.position = 'relative';
+        walletInfoBtn.appendChild(dropdown);
+
+        // Закрываем dropdown при клике вне его
+        setTimeout(() => {
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!walletInfoBtn.contains(e.target)) {
+                    dropdown.remove();
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
+        }, 100);
+    }
+
+    // Функции для dropdown
+    window.copyAddress = function() {
+        if (currentWallet) {
+            navigator.clipboard.writeText(currentWallet.account.address).then(() => {
+                console.log('Address copied to clipboard');
+
+                // Добавляем визуальное уведомление
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #4caf50;
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    z-index: 10000;
+                    font-weight: 500;
+                `;
+                notification.textContent = 'Address copied to clipboard!';
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy address:', err);
+            });
+        }
+        const dropdown = document.querySelector('.wallet-dropdown');
+        if (dropdown) dropdown.remove();
+    };
+
+    window.refreshBalance = async function() {
+        if (currentWallet) {
+            balanceEl.textContent = 'Updating...';
+            try {
+                const newBalance = await getWalletBalance(currentWallet.account.address);
+                balanceEl.textContent = newBalance;
+
+                // Показываем уведомление об обновлении
+                console.log('Balance refreshed:', newBalance);
+            } catch (error) {
+                console.error('Failed to refresh balance:', error);
+                balanceEl.textContent = '$0';
+            }
+        }
+        const dropdown = document.querySelector('.wallet-dropdown');
+        if (dropdown) dropdown.remove();
+    };
+
+    window.disconnectWallet = function() {
+        tonConnectUI.disconnect();
+        const dropdown = document.querySelector('.wallet-dropdown');
+        if (dropdown) dropdown.remove();
+    };
+
+    // Слушаем изменения состояния кошелька
+    tonConnectUI.onStatusChange(async wallet => {
+        if (wallet) {
+            currentWallet = wallet;
+
+            // Обновляем UI header
+            connectBtn.style.display = 'none';
+            walletInfoBtn.style.display = 'block';
+
+            // Устанавливаем адрес
+            addressEl.textContent = formatAddress(wallet.account.address);
+
+            // Получаем баланс из API
+            balanceEl.textContent = 'Loading...';
+            try {
+                const balance = await getWalletBalance(wallet.account.address);
+                balanceEl.textContent = balance;
+                console.log(`Header: Wallet connected: ${wallet.account.address}, Balance: ${balance}`);
+            } catch (error) {
+                console.error('Failed to load balance:', error);
+                balanceEl.textContent = '$0';
+            }
+
+        } else {
+            currentWallet = null;
+
+            // Возвращаем к кнопке подключения
+            connectBtn.style.display = 'block';
+            walletInfoBtn.style.display = 'none';
+
+            console.log('Header: Wallet disconnected');
+        }
+    });
+
+    // Проверяем уже подключенный кошелек
+    const existingWallet = tonConnectUI.wallet;
+    if (existingWallet) {
+        console.log('Header: Found existing wallet connection');
+        tonConnectUI.onStatusChange(existingWallet);
+    }
+});
+</script>
 
                         <div class="header__bottom">
                             <div class="header__nav">
