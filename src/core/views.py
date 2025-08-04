@@ -11,6 +11,24 @@ from exchange.models import Token, ExchangeOrder, Pool
 from django.db import models
 
 
+def tonconnect_manifest(request):
+    manifest = {
+        "url": "https://7dc4e007bbdd.ngrok-free.app",
+        "name": "CryptoChicken Exchange",
+        "iconUrl": "https://7dc4e007bbdd.ngrok-free.app/static/img/logo.png",
+        "termsOfUseUrl": "https://7dc4e007bbdd.ngrok-free.app/tos/",
+        "privacyPolicyUrl": "https://7dc4e007bbdd.ngrok-free.app/privacy/"
+    }
+
+    response = JsonResponse(manifest)
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+    response['Access-Control-Allow-Headers'] = 'Content-Type'
+    response['Content-Type'] = 'application/json'
+
+    return response
+
+
 class IndexView(TitleMixin, TemplateView):
     template_name: str = "index.html"
     title: str = "Online cryptocurrency exchange - CryptoChicken"
