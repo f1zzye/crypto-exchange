@@ -11,6 +11,56 @@ from exchange.models import Token, ExchangeOrder, Pool
 from django.db import models
 
 
+def tonconnect_manifest(request):
+    manifest = {
+        "url": "https://7dc4e007bbdd.ngrok-free.app",
+        "name": "CryptoChicken Exchange",
+        "iconUrl": "https://7dc4e007bbdd.ngrok-free.app/static/img/logo.png",
+        "termsOfUseUrl": "https://7dc4e007bbdd.ngrok-free.app/tos/",
+        "privacyPolicyUrl": "https://7dc4e007bbdd.ngrok-free.app/privacy/"
+    }
+
+    response = JsonResponse(manifest)
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+    response['Access-Control-Allow-Headers'] = 'Content-Type'
+    response['Content-Type'] = 'application/json'
+
+    return response
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import requests
+import json
+
+
+@csrf_exempt
+def get_wallet_balance(request):
+    if request.method == 'GET':
+        address = request.GET.get('address')
+        if not address:
+            return JsonResponse({'error': 'Address required'}, status=400)
+
+        try:
+            # Пример запроса к TON API для получения баланса
+            # Замените на реальный API
+            api_url = f"https://toncenter.com/api/v2/getAddressInformation?address={address}"
+            response = requests.get(api_url)
+            data = response.json()
+
+            if data.get('ok'):
+                balance = int(data.get('result', {}).get('balance', 0)) / 1e9  # Конвертируем из нанотонов
+                return JsonResponse({'balance': f'${balance:.2f}'})
+            else:
+                return JsonResponse({'balance': '$0'})
+
+        except Exception as e:
+            return JsonResponse({'balance': '$0'})
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
 class IndexView(TitleMixin, TemplateView):
     template_name: str = "index.html"
     title: str = "Online cryptocurrency exchange - CryptoChicken"
