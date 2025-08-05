@@ -13,11 +13,11 @@ from django.db import models
 
 def tonconnect_manifest(request):
     manifest = {
-        "url": "https://7dc4e007bbdd.ngrok-free.app",
+        "url": "https://16904b744b13.ngrok-free.app",
         "name": "CryptoChicken Exchange",
-        "iconUrl": "https://7dc4e007bbdd.ngrok-free.app/static/img/logo.png",
-        "termsOfUseUrl": "https://7dc4e007bbdd.ngrok-free.app/tos/",
-        "privacyPolicyUrl": "https://7dc4e007bbdd.ngrok-free.app/privacy/"
+        "iconUrl": "https://16904b744b13.ngrok-free.app/static/img/logo.png",
+        "termsOfUseUrl": "https://16904b744b13.ngrok-free.app/tos/",
+        "privacyPolicyUrl": "https://16904b744b13.ngrok-free.app/privacy/"
     }
 
     response = JsonResponse(manifest)

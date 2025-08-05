@@ -245,106 +245,106 @@
                                                 <span>Обменять сейчас</span>
                                             </button>
 
-                                           <div style="margin: 20px 0;">
-    <button id="custom-connect-btn" class="btn btn--wall" style="margin-right: 10px;">
-        Connect Wallet
-    </button>
-    <button id="custom-disconnect-btn" class="btn btn--wall" style="display: none;">
-        Disconnect
-    </button>
-</div>
+                                            <div style="margin: 20px 0;">
+                                                <button id="custom-connect-btn" class="btn btn--wall" style="margin-right: 10px;">
+                                                    Connect Wallet
+                                                </button>
+                                                <button id="custom-disconnect-btn" class="btn btn--wall" style="display: none;">
+                                                    Disconnect
+                                                </button>
+                                            </div>
 
-<div id="ton-connect" style="display: none;"></div>
+                                            <div id="ton-connect" style="display: none;"></div>
 
-<div id="wallet-status" style="margin: 10px 0;"></div>
+                                            <div id="wallet-status" style="margin: 10px 0;"></div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Ждем пока загрузится header script
-    function waitForHeaderTonConnect() {
-        if (window.headerTonConnectUI) {
-            initIndexWallet();
-        } else {
-            setTimeout(waitForHeaderTonConnect, 100);
-        }
-    }
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                    // Ждем пока загрузится header script
+                                                    function waitForHeaderTonConnect() {
+                                                        if (window.headerTonConnectUI) {
+                                                            initIndexWallet();
+                                                        } else {
+                                                            setTimeout(waitForHeaderTonConnect, 100);
+                                                        }
+                                                    }
 
-    function initIndexWallet() {
-        // Используем тот же экземпляр TON Connect что и в header
-        const tonConnectUI = window.headerTonConnectUI;
+                                                    function initIndexWallet() {
+                                                        // Используем тот же экземпляр TON Connect что и в header
+                                                        const tonConnectUI = window.headerTonConnectUI;
 
-        const connectBtn = document.getElementById('custom-connect-btn');
-        const disconnectBtn = document.getElementById('custom-disconnect-btn');
+                                                        const connectBtn = document.getElementById('custom-connect-btn');
+                                                        const disconnectBtn = document.getElementById('custom-disconnect-btn');
 
-        // Обработчик подключения на странице index
-        connectBtn.onclick = async function() {
-            try {
-                connectBtn.disabled = true;
-                connectBtn.textContent = 'Connecting...';
+                                                        // Обработчик подключения на странице index
+                                                        connectBtn.onclick = async function() {
+                                                            try {
+                                                                connectBtn.disabled = true;
+                                                                connectBtn.textContent = 'Connecting...';
 
-                const wallet = await tonConnectUI.connectWallet();
-                console.log('Wallet connected from index page:', wallet);
-            } catch (error) {
-                console.error('Connection failed:', error);
-            } finally {
-                connectBtn.disabled = false;
-                connectBtn.textContent = 'Connect Wallet';
-            }
-        };
+                                                                const wallet = await tonConnectUI.connectWallet();
+                                                                console.log('Wallet connected from index page:', wallet);
+                                                            } catch (error) {
+                                                                console.error('Connection failed:', error);
+                                                            } finally {
+                                                                connectBtn.disabled = false;
+                                                                connectBtn.textContent = 'Connect Wallet';
+                                                            }
+                                                        };
 
-        // Обработчик отключения на странице index
-        disconnectBtn.onclick = async function() {
-            try {
-                await tonConnectUI.disconnect();
-            } catch (error) {
-                console.error('Disconnect failed:', error);
-            }
-        };
+                                                        // Обработчик отключения на странице index
+                                                        disconnectBtn.onclick = async function() {
+                                                            try {
+                                                                await tonConnectUI.disconnect();
+                                                            } catch (error) {
+                                                                console.error('Disconnect failed:', error);
+                                                            }
+                                                        };
 
-        // Слушаем изменения состояния (синхронизируется с header)
-        tonConnectUI.onStatusChange(wallet => {
-            if (wallet) {
-                // Кошелек подключен - показываем кнопку отключения
-                connectBtn.style.display = 'none';
-                disconnectBtn.style.display = 'inline-block';
+                                                        // Слушаем изменения состояния (синхронизируется с header)
+                                                        tonConnectUI.onStatusChange(wallet => {
+                                                            if (wallet) {
+                                                                // Кошелек подключен - показываем кнопку отключения
+                                                                connectBtn.style.display = 'none';
+                                                                disconnectBtn.style.display = 'inline-block';
 
-                console.log('Index page: Wallet connected');
+                                                                console.log('Index page: Wallet connected');
 
-                // Заполняем поле кошелька в форме если есть
-                const walletField = document.querySelector('input[name="wallet_address"]');
-                if (walletField) {
-                    walletField.value = wallet.account.address;
-                }
-            } else {
-                // Кошелек отключен - показываем кнопку подключения
-                connectBtn.style.display = 'inline-block';
-                connectBtn.disabled = false;
-                connectBtn.textContent = 'Connect Wallet';
-                disconnectBtn.style.display = 'none';
+                                                                // Заполняем поле кошелька в форме если есть
+                                                                const walletField = document.querySelector('input[name="wallet_address"]');
+                                                                if (walletField) {
+                                                                    walletField.value = wallet.account.address;
+                                                                }
+                                                            } else {
+                                                                // Кошелек отключен - показываем кнопку подключения
+                                                                connectBtn.style.display = 'inline-block';
+                                                                connectBtn.disabled = false;
+                                                                connectBtn.textContent = 'Connect Wallet';
+                                                                disconnectBtn.style.display = 'none';
 
-                console.log('Index page: Wallet disconnected');
+                                                                console.log('Index page: Wallet disconnected');
 
-                // Очищаем поле кошелька
-                const walletField = document.querySelector('input[name="wallet_address"]');
-                if (walletField) {
-                    walletField.value = '';
-                }
-            }
-        });
+                                                                // Очищаем поле кошелька
+                                                                const walletField = document.querySelector('input[name="wallet_address"]');
+                                                                if (walletField) {
+                                                                    walletField.value = '';
+                                                                }
+                                                            }
+                                                        });
 
-        // Проверяем текущее состояние при загрузке
-        const currentWallet = tonConnectUI.wallet;
-        if (currentWallet) {
-            console.log('Index page: Found existing wallet connection');
-            // Вызываем onStatusChange для синхронизации UI
-            tonConnectUI.onStatusChange(currentWallet);
-        }
-    }
+                                                        // Проверяем текущее состояние при загрузке
+                                                        const currentWallet = tonConnectUI.wallet;
+                                                        if (currentWallet) {
+                                                            console.log('Index page: Found existing wallet connection');
+                                                            // Вызываем onStatusChange для синхронизации UI
+                                                            tonConnectUI.onStatusChange(currentWallet);
+                                                        }
+                                                    }
 
-    // Запускаем инициализацию
-    waitForHeaderTonConnect();
-});
-</script>
+                                                    // Запускаем инициализацию
+                                                    waitForHeaderTonConnect();
+                                                });
+                                            </script>
 
                                         </div>
                                     </div>
