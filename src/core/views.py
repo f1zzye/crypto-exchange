@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from common.mixins import TitleMixin
@@ -9,24 +10,51 @@ from core.utils.captcha import CaptchaGenerator
 
 from exchange.models import Token, ExchangeOrder, Pool
 from django.db import models
+import requests
 
+
+import requests
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def tonconnect_manifest(request):
     manifest = {
-        "url": "https://7dc4e007bbdd.ngrok-free.app",
+        "url": "https://3b0a02c1acb3.ngrok-free.app",
         "name": "CryptoChicken Exchange",
-        "iconUrl": "https://7dc4e007bbdd.ngrok-free.app/static/img/logo.png",
-        "termsOfUseUrl": "https://7dc4e007bbdd.ngrok-free.app/tos/",
-        "privacyPolicyUrl": "https://7dc4e007bbdd.ngrok-free.app/privacy/"
+        "iconUrl": "https://3b0a02c1acb3.ngrok-free.app/static/img/logo.png",
+        "termsOfUseUrl": "https://3b0a02c1acb3.ngrok-free.app/tos/",
+        "privacyPolicyUrl": "https://3b0a02c1acb3.ngrok-free.app/privacy/",
     }
 
     response = JsonResponse(manifest)
-    response['Access-Control-Allow-Origin'] = '*'
-    response['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
-    response['Access-Control-Allow-Headers'] = 'Content-Type'
-    response['Content-Type'] = 'application/json'
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+    response["Access-Control-Allow-Headers"] = "Content-Type"
+    response["Content-Type"] = "application/json"
 
     return response
+
+@csrf_exempt
+def wallet_balance(request):
+    address = request.GET.get("address")
+    if not address:
+        return JsonResponse({"error": "No address provided"}, status=400)
+
+    toncenter_url = f"https://toncenter.com/api/v2/getAddressBalance?address={address}"
+
+    try:
+        res = requests.get(toncenter_url, timeout=10)
+        data = res.json()
+
+        if data.get("ok"):
+            balance_ton = float(data.get("result", 0)) / 1e9
+            return JsonResponse({"balance": f"{balance_ton:.2f} TON"})
+        else:
+            return JsonResponse({"balance": "0.00 TON"})
+
+    except Exception as e:
+        print(f"Error fetching balance: {e}")
+        return JsonResponse({"balance": "0.00 TON"})
 
 
 class IndexView(TitleMixin, TemplateView):

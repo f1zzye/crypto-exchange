@@ -1200,7 +1200,7 @@ textarea.input, textarea.cf_input {
     font-weight: 600;
     outline: 0;
     cursor: pointer;
-    z-index: 2;
+    z-index: 3;
 }
 
 .btn[disabled], .btn[disabled]:hover, .btn[disabled]::after {
@@ -1228,6 +1228,7 @@ textarea.input, textarea.cf_input {
     background: linear-gradient(61deg, #399c81 0%, #114abe 100%);
     opacity: 0;
 }
+
 
 .btn img {
     max-height: 22px;
@@ -1928,7 +1929,7 @@ header
 .header__bottom {
     margin-top: 12px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 30px;
 }

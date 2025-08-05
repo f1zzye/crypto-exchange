@@ -1,13 +1,66 @@
 {% load static %}
 
+<style>
+.wallet-btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.wallet-balance-display {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+    transition: font-size 0.2s;
+}
+
+.wallet-balance-small {
+    font-size: 16px !important;
+    font-weight: 700;
+    color: #fff;
+    opacity: 0.9;
+}
+
+.wallet-address-display {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-left: 7px;
+    margin-right: 0;
+    letter-spacing: 0.5px;
+}
+
+.wallet-btn-content.only-balance {
+    justify-content: center;
+    gap: 0;
+}
+.wallet-btn-content.only-balance .wallet-balance-display {
+    font-size: 22px;
+    font-weight: 700;
+}
+.wallet-btn-content.only-balance .wallet-address-display {
+    display: none;
+}
+
+.wallet-dropdown-title .dropdown-wallet-address {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+}
+
+</style>
+
 <header class="header">
     <div class="container">
         <div class="header__inner">
             <div class="header__sname">
-                <a href="https://crypto-chicken.co/" class="header__logo"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/logo.svg" alt=""></a>
+                <a href="https://crypto-chicken.co/" class="header__logo">
+                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/logo.svg" alt="">
+                </a>
                 <div class="header__name"><a href="https://crypto-chicken.co/">CryptoChicken</a></div>
             </div>
-
             <div class="header__right">
                 <div class="header__top">
                     <div id="header-wallet-container">
@@ -15,419 +68,401 @@
                             <i class="fas fa-wallet"></i>
                             <span>Connect Wallet</span>
                         </button>
-
                         <div id="wallet-button-container" style="position: relative; display: none;">
                             <button id="header-wallet-info" class="btn btn--md btn--bd" type="button">
                                 <div class="wallet-btn-content">
-                                    <div class="wallet-text-info">
-                                        <span class="wallet-balance-display">$0.00</span>
-                                        <span class="wallet-address-display">0:bIce...63f5</span>
-                                    </div>
+                                    <span class="wallet-balance-display">Loading...</span>
+                                    <span class="wallet-address-display">Connecting...</span>
                                 </div>
                             </button>
-
                             <div id="wallet-dropdown" class="wallet-dropdown-modal" style="display: none;">
                                 <div class="wallet-dropdown-header">
                                     <div class="wallet-dropdown-title">
                                         <img src="{% static 'img/tonconnect-icon.png' %}" alt="Wallet" class="wallet-icon-dropdown-img">
-                                        <span id="dropdown-wallet-address">0:bIce...63f5</span>
+                                        <span class="dropdown-wallet-address" id="dropdown-wallet-address">Connecting...</span>
                                     </div>
-
                                     <div class="wallet-actions-icons">
                                         <button class="wallet-icon-btn" onclick="copyWalletAddress()" title="Copy Address">
                                             <i class="fas fa-copy"></i>
                                         </button>
-
                                         <button class="wallet-icon-btn" onclick="refreshWalletBalance()" title="Refresh Balance">
                                             <i class="fas fa-sync-alt"></i>
                                         </button>
-
                                         <button class="wallet-icon-btn disconnect-btn" onclick="disconnectWalletFromDropdown()" title="Disconnect">
                                             <i class="fas fa-sign-out-alt"></i>
                                         </button>
                                     </div>
                                 </div>
-
                                 <div class="wallet-dropdown-body">
                                     <div class="wallet-balance-section-dropdown">
                                         <div class="balance-label-dropdown">Баланс TON</div>
-                                        <div class="balance-amount-dropdown" id="dropdown-wallet-balance">
-                                            < 0.00</div> </div> </div>
-                                                <div class="wallet-dropdown-decoration"></div>
-                                        </div>
+                                        <div class="balance-amount-dropdown" id="dropdown-wallet-balance">Loading...</div>
                                     </div>
                                 </div>
-
-                                <div class="header__lang js-lang">
-                                    <div class="header__lang-current">
-                                        <span>RU</span>
-                                        <button class="header__lang-open js-lang-open"></button>
-                                    </div>
-                                    <div class="header__lang-drop js-lang-drop">
-                                        <ul>
-                                            <li class="current"><a href="">RU</a></li>
-                                            <li><a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" rel="nofollow">EN</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="ton-connect-header" style="display: none;"></div>
-
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    console.log('🚀 Script loaded!');
-
-                                    // Инициализируем TON Connect и делаем глобально доступным
-                                    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                                        manifestUrl: 'https://7dc4e007bbdd.ngrok-free.app/tonconnect-manifest.json',
-                                        buttonRootId: 'ton-connect-header'
-                                    });
-
-                                    // Делаем экземпляр глобально доступным для других страниц
-                                    window.headerTonConnectUI = tonConnectUI;
-
-                                    const connectBtn = document.getElementById('header-connect-btn');
-                                    const walletContainer = document.getElementById('wallet-button-container');
-                                    const walletInfoBtn = document.getElementById('header-wallet-info');
-                                    const walletDropdown = document.getElementById('wallet-dropdown');
-                                    const balanceEl = document.querySelector('.wallet-balance-display');
-                                    const addressEl = document.querySelector('.wallet-address-display');
-
-                                    console.log('📋 Elements found:', {
-                                        connectBtn: !!connectBtn,
-                                        walletContainer: !!walletContainer,
-                                        walletInfoBtn: !!walletInfoBtn,
-                                        walletDropdown: !!walletDropdown,
-                                        balanceEl: !!balanceEl,
-                                        addressEl: !!addressEl
-                                    });
-
-                                    let currentWallet = null;
-                                    let isDropdownOpen = false;
-
-                                    // Функция для получения баланса из API
-                                    async function getWalletBalance(address) {
-                                        try {
-                                            const response = await fetch(`/api/wallet-balance/?address=${address}`);
-                                            const data = await response.json();
-                                            return data.balance || '$0.00';
-                                        } catch (error) {
-                                            console.error('Error fetching balance:', error);
-                                            return '$0.00';
-                                        }
-                                    }
-
-                                    // Функция для форматирования адреса как на изображении
-                                    function formatAddress(address) {
-                                        if (!address) return '0:bIce...63f5';
-
-                                        // Проверяем, есть ли уже префикс "0:"
-                                        if (address.startsWith('0:')) {
-                                            return `${address.slice(0, 7)}...${address.slice(-4)}`;
-                                        } else {
-                                            // Добавляем префикс 0: и форматируем
-                                            return `0:${address.slice(0, 4)}...${address.slice(-4)}`;
-                                        }
-                                    }
-
-                                    // Функция для отображения уведомлений
-                                    function showToast(message, type = 'success') {
-                                        const toast = document.createElement('div');
-                                        toast.className = `toast-notification ${type}`;
-                                        toast.textContent = message;
-                                        document.body.appendChild(toast);
-
-                                        setTimeout(() => toast.classList.add('show'), 100);
-
-                                        setTimeout(() => {
-                                            toast.classList.remove('show');
-                                            setTimeout(() => toast.remove(), 300);
-                                        }, 3000);
-                                    }
-
-                                    // Подключение кошелька
-                                    if (connectBtn) {
-                                        connectBtn.onclick = async function() {
-                                            try {
-                                                connectBtn.disabled = true;
-                                                connectBtn.querySelector('span').textContent = 'Connecting...';
-
-                                                const wallet = await tonConnectUI.connectWallet();
-                                                console.log('Wallet connected from header:', wallet);
-                                            } catch (error) {
-                                                console.error('Connection failed:', error);
-                                                showToast('Failed to connect wallet', 'error');
-                                            } finally {
-                                                connectBtn.disabled = false;
-                                                connectBtn.querySelector('span').textContent = 'Connect Wallet';
-                                            }
-                                        };
-                                    }
-
-                                    // При клике на кнопку кошелька открываем/закрываем dropdown
-                                    if (walletInfoBtn) {
-                                        walletInfoBtn.onclick = function(e) {
-                                            console.log('💰 Wallet button clicked!');
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            toggleWalletDropdown();
-                                        };
-                                    }
-
-                                    // Функция для открытия/закрытия dropdown
-                                    function toggleWalletDropdown() {
-                                        console.log('🔄 Toggle dropdown, current state:', isDropdownOpen);
-                                        if (isDropdownOpen) {
-                                            closeWalletDropdown();
-                                        } else {
-                                            openWalletDropdown();
-                                        }
-                                    }
-
-                                    function openWalletDropdown() {
-                                        console.log('📖 Opening dropdown...');
-
-                                        if (!walletDropdown) {
-                                            console.error('❌ Dropdown element not found!');
-                                            return;
-                                        }
-
-                                        const dropdownAddress = document.getElementById('dropdown-wallet-address');
-                                        const dropdownBalance = document.getElementById('dropdown-wallet-balance');
-
-                                        if (currentWallet) {
-                                            dropdownAddress.textContent = formatAddress(currentWallet.account.address);
-                                            const balanceValue = balanceEl ? balanceEl.textContent.replace('$', '') : '0.00';
-                                            dropdownBalance.textContent = `< ${balanceValue}`;
-                                        }
-
-                                        walletDropdown.classList.add('show');
-                                        if (walletInfoBtn) walletInfoBtn.classList.add('active');
-                                        isDropdownOpen = true;
-
-                                        console.log('✅ Dropdown opened!');
-
-                                        // Закрываем dropdown при клике вне его
-                                        setTimeout(() => {
-                                            document.addEventListener('click', handleClickOutside);
-                                        }, 100);
-                                    }
-
-                                    function closeWalletDropdown() {
-                                        console.log('📕 Closing dropdown...');
-
-                                        if (walletDropdown) walletDropdown.classList.remove('show');
-                                        if (walletInfoBtn) walletInfoBtn.classList.remove('active');
-                                        isDropdownOpen = false;
-                                        document.removeEventListener('click', handleClickOutside);
-                                    }
-
-                                    function handleClickOutside(e) {
-                                        if (walletContainer && !walletContainer.contains(e.target)) {
-                                            closeWalletDropdown();
-                                        }
-                                    }
-
-                                    // Функции для действий в dropdown
-                                    window.copyWalletAddress = function() {
-                                        if (currentWallet) {
-                                            navigator.clipboard.writeText(currentWallet.account.address).then(() => {
-                                                showToast('Address copied to clipboard!');
-                                            }).catch(err => {
-                                                console.error('Failed to copy address:', err);
-                                                showToast('Failed to copy address', 'error');
-                                            });
-                                        }
-                                    };
-
-                                    window.refreshWalletBalance = async function() {
-                                        if (currentWallet) {
-                                            const dropdownBalance = document.getElementById('dropdown-wallet-balance');
-                                            if (dropdownBalance) dropdownBalance.textContent = 'Updating...';
-                                            if (balanceEl) balanceEl.textContent = 'Loading...';
-
-                                            try {
-                                                const newBalance = await getWalletBalance(currentWallet.account.address);
-                                                const tonBalance = newBalance.replace('$', '');
-
-                                                if (balanceEl) balanceEl.textContent = newBalance;
-                                                if (dropdownBalance) dropdownBalance.textContent = `< ${tonBalance}`;
-
-                                                showToast('Balance updated successfully!');
-                                            } catch (error) {
-                                                console.error('Failed to refresh balance:', error);
-                                                if (balanceEl) balanceEl.textContent = '$0.00';
-                                                if (dropdownBalance) dropdownBalance.textContent = '< 0.00';
-                                                showToast('Failed to update balance', 'error');
-                                            }
-                                        }
-                                    };
-
-                                    window.disconnectWalletFromDropdown = function() {
-                                        tonConnectUI.disconnect();
-                                        closeWalletDropdown();
-                                        showToast('Wallet disconnected');
-                                    };
-
-                                    // Закрытие dropdown по Escape
-                                    document.addEventListener('keydown', function(e) {
-                                        if (e.key === 'Escape' && isDropdownOpen) {
-                                            closeWalletDropdown();
-                                        }
-                                    });
-
-                                    // Слушаем изменения состояния кошелька
-                                    tonConnectUI.onStatusChange(async wallet => {
-                                        console.log('🔄 Wallet status changed:', !!wallet);
-
-                                        if (wallet) {
-                                            currentWallet = wallet;
-
-                                            if (connectBtn) connectBtn.style.display = 'none';
-                                            if (walletContainer) walletContainer.style.display = 'block';
-
-                                            // Используем реальный адрес кошелька
-                                            if (addressEl) addressEl.textContent = formatAddress(wallet.account.address);
-
-                                            if (balanceEl) balanceEl.textContent = 'Loading...';
-                                            try {
-                                                const balance = await getWalletBalance(wallet.account.address);
-                                                if (balanceEl) balanceEl.textContent = balance;
-                                                console.log(`Header: Wallet connected: ${wallet.account.address}, Balance: ${balance}`);
-                                            } catch (error) {
-                                                console.error('Failed to load balance:', error);
-                                                if (balanceEl) balanceEl.textContent = '$0.00';
-                                            }
-
-                                        } else {
-                                            currentWallet = null;
-                                            if (connectBtn) connectBtn.style.display = 'block';
-                                            if (walletContainer) walletContainer.style.display = 'none';
-                                            closeWalletDropdown();
-                                            console.log('Header: Wallet disconnected');
-                                        }
-                                    });
-
-                                    // Проверяем уже подключенный кошелек
-                                    const existingWallet = tonConnectUI.wallet;
-                                    if (existingWallet) {
-                                        console.log('Header: Found existing wallet connection');
-                                        tonConnectUI.onStatusChange(existingWallet);
-                                    }
-                                });
-                            </script>
-
-                            <div class="header__bottom">
-                                <div class="header__nav">
-                                    <ul id="menu-verhnee-menyu" class="hmenu">
-                                        <li id="menu-item-1101" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
-                                        <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
-                                        <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшбэк</span></a></li>
-                                        <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
-                                    </ul>
-                                </div>
-                                {% if user.is_authenticated %}
-                                <button class="btn btn--md btn--bd header__btnlog js-open-menu-acc">
-                                    <span>{{ user.username }}</span>
-                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/drop.svg" alt="">
-                                </button>
-                                {% else %}
-                                <div class="header__profile">
-                                    <div class="header__lg">
-                                        <button class="btn btn--md btn--bd btn--bdg" data-open-login="reg"><span>Регистрация</span></button>
-                                    </div>
-                                    <button class="btn btn--md btn--pdsm header__btnlog" data-open-login="login">
-                                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in.svg" alt="">
-                                        <span>Войти</span>
-                                    </button>
-                                </div>
-                                <button class="header__login" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in-color.svg" alt=""></button>
-                                {% endif %}
-
-                                <div class="accmenu js-menu-acc">
-                                    <ul>
-                                        <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/profile-menu.svg" alt=""><span>Профиль</span></a></li>
-                                        <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>Ваши заявки</span></a></li>
-                                        <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>Депозиты</span></a></li>
-                                        <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/cashback-menu.svg" alt=""><span>Кешбэк</span></a></li>
-                                        <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/check-menu.svg" alt=""><span>AML проверка кошелька</span></a></li>
-
-                                        <li>
-                                            <form action="{% url 'accounts:sign-out' %}" method="post" style="display:inline;">
-                                                {% csrf_token %}
-                                                <button type="submit" class="accmenu__btnlogout">
-                                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/out-menu.svg" alt="">
-                                                    <span>Выход</span>
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <button class="btn btn--md header__burger js-open-nav">
-                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/burger.svg" class="hide-tablet-sm" alt="">
-                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/closed.svg" class="icon-close hide-tablet-sm" alt="">
-                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/menu_open.svg" class="show-tablet-sm" alt="">
-                                    <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/menu_closed.svg" class="icon-close show-tablet-sm" alt="">
-                                </button>
+                                <div class="wallet-dropdown-decoration"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="accmenu js-menu-acc">
-                    </div>
-
-                    {% include "accounts/sign-in.html" %}
-
-                    {% include "accounts/sign-up.html" %}
-                </div>
-
-                <div class="navfix js-navfix">
-                    <div class="container">
-                        <div class="navfix__nav">
-                            <ul id="menu-verhnee-menyu-1" class="hmenu">
-                                <li class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
-                                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
-                                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшбэк</span></a></li>
-                                <li class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
+                    <div class="header__lang js-lang">
+                        <div class="header__lang-current">
+                            <span>RU</span>
+                            <button class="header__lang-open js-lang-open"></button>
+                        </div>
+                        <div class="header__lang-drop js-lang-drop">
+                            <ul>
+                                <li class="current"><a href="">RU</a></li>
+                                <li><a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" rel="nofollow">EN</a></li>
                             </ul>
                         </div>
-
-                        <div class="navfix__contacts">
-                            <a href="/cdn-cgi/l/email-protection#3950575f56795a4b40494d56145a51505a525c57175a56" class="navfix__contacts-val"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/mail.svg" alt=""><span><span class="__cf_email__" data-cfemail="6900070f06290a1b10191d06440a01000a020c07470a06">[email&#160;protected]</span></span></a>
-                            <br>
-                            <a href="tg://resolve?domain=CryptoChicken_bot" class="navfix__contacts-val"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/tg.svg" alt=""><span>@CryptoChicken_bot</span></a> <br>
-                        </div>
-
-                        <div class="navfix__lang">
-                            <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2F" class="navfix__lang-item active"><span>RU</span></a>
-                            <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" class="navfix__lang-item"><span>EN</span></a></div>
-                        <div class="navfix__buttons">
-                            <button class="btn btn--bd btn--md btn--chat"><span>Онлайн чат</span></button>
-                        </div>
                     </div>
                 </div>
-                {% if messages %}
-                <div class="flash-messages-container">
-                    {% for message in messages %}
-                    <div class="flash-message flash-{{ message.tags }}">
-                        <div class="flash-icon">
-                            {% if message.tags == 'success' %}
-                            <i class="fas fa-check-circle"></i>
-                            {% elif message.tags == 'error' %}
-                            <i class="fas fa-times-circle"></i>
-                            {% elif message.tags == 'warning' %}
-                            <i class="fas fa-exclamation-circle"></i>
-                            {% else %}
-                            <i class="fas fa-bell"></i>
-                            {% endif %}
+                <div id="ton-connect-header" style="display: none;"></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                            manifestUrl: 'https://3b0a02c1acb3.ngrok-free.app/tonconnect-manifest.json',
+                            buttonRootId: 'ton-connect-header'
+                        });
+                        window.headerTonConnectUI = tonConnectUI;
+
+                        const connectBtn = document.getElementById('header-connect-btn');
+                        const walletContainer = document.getElementById('wallet-button-container');
+                        const walletInfoBtn = document.getElementById('header-wallet-info');
+                        const walletDropdown = document.getElementById('wallet-dropdown');
+                        const balanceEl = document.querySelector('.wallet-balance-display');
+                        const addressEl = document.querySelector('.wallet-address-display');
+                        const btnContent = document.querySelector('.wallet-btn-content');
+                        const dropdownAddress = document.getElementById('dropdown-wallet-address');
+                        const dropdownBalance = document.getElementById('dropdown-wallet-balance');
+                        let currentWallet = null;
+                        let isDropdownOpen = false;
+
+                        function rawToUserFriendly(rawAddress) {
+                            try {
+                                if (!rawAddress || !rawAddress.includes(':')) return rawAddress;
+                                const [workchain, hash] = rawAddress.split(':');
+                                const hashBytes = [];
+                                for (let i = 0; i < hash.length; i += 2) {
+                                    hashBytes.push(parseInt(hash.substr(i, 2), 16));
+                                }
+                                const addressBytes = [0x51, parseInt(workchain), ...hashBytes];
+                                let crc = 0;
+                                for (let i = 0; i < addressBytes.length; i++) {
+                                    crc ^= addressBytes[i] << 8;
+                                    for (let j = 0; j < 8; j++) {
+                                        crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
+                                    }
+                                }
+                                crc &= 0xFFFF;
+                                const fullAddress = [...addressBytes, crc >> 8, crc & 0xFF];
+                                const base64 = btoa(String.fromCharCode.apply(null, fullAddress))
+                                    .replace(/\+/g, '-')
+                                    .replace(/\//g, '_')
+                                    .replace(/=/g, '');
+                                return base64;
+                            } catch (error) {
+                                return rawAddress;
+                            }
+                        }
+                        function parseBalance(balanceStr) {
+                            if (!balanceStr) return 0;
+                            if (balanceStr.startsWith('<')) return 0.0099;
+                            return parseFloat(balanceStr.replace(/[^\d.]/g, '')) || 0;
+                        }
+                        function formatAddress(address) {
+                            if (!address) return '';
+                            const userFriendly = rawToUserFriendly(address);
+                            if (userFriendly.length > 8) {
+                                return `${userFriendly.slice(0, 4)}...${userFriendly.slice(-4)}`;
+                            }
+                            return userFriendly;
+                        }
+                        function displayWallet(balanceStr, userFriendlyAddress) {
+                            let balValue = parseBalance(balanceStr);
+
+                            // --- MAIN BUTTON ---
+                            if (balValue === 0) {
+                                balanceEl.textContent = "0$";
+                                balanceEl.classList.add('wallet-balance-small');
+                            } else if (balValue < 0.01) {
+                                balanceEl.textContent = "< 0.01";
+                                balanceEl.classList.add('wallet-balance-small');
+                            } else {
+                                balanceEl.textContent = balanceStr;
+                                balanceEl.classList.remove('wallet-balance-small');
+                            }
+                            if (!userFriendlyAddress || userFriendlyAddress === '' || userFriendlyAddress === 'Connecting...') {
+                                btnContent.classList.add('only-balance');
+                                addressEl.style.display = 'none';
+                            } else {
+                                btnContent.classList.remove('only-balance');
+                                addressEl.style.display = '';
+                                addressEl.textContent = userFriendlyAddress;
+                            }
+                            // --- DROPDOWN ---
+                            if (dropdownAddress) dropdownAddress.textContent = userFriendlyAddress;
+                            if (dropdownBalance) {
+                                if (balValue === 0) {
+                                    dropdownBalance.textContent = "< 0.01";
+                                    dropdownBalance.classList.add('wallet-balance-small');
+                                } else if (balValue < 0.01) {
+                                    dropdownBalance.textContent = "< 0.01";
+                                    dropdownBalance.classList.add('wallet-balance-small');
+                                } else {
+                                    dropdownBalance.textContent = balanceStr;
+                                    dropdownBalance.classList.remove('wallet-balance-small');
+                                }
+                            }
+                        }
+                        async function getWalletBalance(address) {
+                            try {
+                                const response = await fetch(`/api/wallet-balance/?address=${address}`);
+                                const data = await response.json();
+                                let balanceVal = parseFloat(data.balance);
+                                let balanceStr;
+                                if (balanceVal < 0.01 && balanceVal > 0) {
+                                    balanceStr = "< 0.01";
+                                } else if (balanceVal === 0) {
+                                    balanceStr = "0$";
+                                } else {
+                                    balanceStr = `${balanceVal.toFixed(2)} TON`;
+                                }
+                                return balanceStr;
+                            } catch (error) {
+                                return "0$";
+                            }
+                        }
+                        function showToast(message, type = 'success') {
+                            const toast = document.createElement('div');
+                            toast.className = `toast-notification ${type}`;
+                            toast.textContent = message;
+                            document.body.appendChild(toast);
+                            setTimeout(() => toast.classList.add('show'), 100);
+                            setTimeout(() => {
+                                toast.classList.remove('show');
+                                setTimeout(() => toast.remove(), 300);
+                            }, 3000);
+                        }
+                        if (connectBtn) {
+                            connectBtn.onclick = async function() {
+                                try {
+                                    connectBtn.disabled = true;
+                                    connectBtn.querySelector('span').textContent = 'Connecting...';
+                                    await tonConnectUI.connectWallet();
+                                } catch (error) {
+                                    showToast('Failed to connect wallet', 'error');
+                                } finally {
+                                    connectBtn.disabled = false;
+                                    connectBtn.querySelector('span').textContent = 'Connect Wallet';
+                                }
+                            };
+                        }
+                        if (walletInfoBtn) {
+                            walletInfoBtn.onclick = function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleWalletDropdown();
+                            };
+                        }
+                        function toggleWalletDropdown() {
+                            if (isDropdownOpen) {
+                                closeWalletDropdown();
+                            } else {
+                                openWalletDropdown();
+                            }
+                        }
+                        function openWalletDropdown() {
+                            if (!walletDropdown) return;
+                            walletDropdown.classList.add('show');
+                            if (walletInfoBtn) walletInfoBtn.classList.add('active');
+                            isDropdownOpen = true;
+                            setTimeout(() => {
+                                document.addEventListener('click', handleClickOutside);
+                            }, 100);
+                        }
+                        function closeWalletDropdown() {
+                            if (walletDropdown) walletDropdown.classList.remove('show');
+                            if (walletInfoBtn) walletInfoBtn.classList.remove('active');
+                            isDropdownOpen = false;
+                            document.removeEventListener('click', handleClickOutside);
+                        }
+                        function handleClickOutside(e) {
+                            if (walletContainer && !walletContainer.contains(e.target)) {
+                                closeWalletDropdown();
+                            }
+                        }
+                        window.copyWalletAddress = function() {
+                            if (currentWallet) {
+                                const userFriendlyAddress = rawToUserFriendly(currentWallet.account.address);
+                                navigator.clipboard.writeText(userFriendlyAddress).then(() => {
+                                    showToast('Address copied to clipboard!');
+                                }).catch(() => {
+                                    showToast('Failed to copy address', 'error');
+                                });
+                            }
+                        };
+                        window.refreshWalletBalance = async function() {
+                            if (currentWallet) {
+                                if (dropdownBalance) dropdownBalance.textContent = 'Updating...';
+                                if (balanceEl) balanceEl.textContent = 'Loading...';
+                                try {
+                                    const newBalance = await getWalletBalance(currentWallet.account.address);
+                                    displayWallet(newBalance, formatAddress(currentWallet.account.address));
+                                    showToast('Balance updated successfully!');
+                                } catch (error) {
+                                    if (balanceEl) balanceEl.textContent = '0$';
+                                    if (dropdownBalance) dropdownBalance.textContent = '0$';
+                                    dropdownBalance.classList.add('wallet-balance-small');
+                                    showToast('Failed to update balance', 'error');
+                                }
+                            }
+                        };
+                        window.disconnectWalletFromDropdown = function() {
+                            tonConnectUI.disconnect();
+                            closeWalletDropdown();
+                            showToast('Wallet disconnected');
+                        };
+                        document.addEventListener('keydown', function(e) {
+                            if (e.key === 'Escape' && isDropdownOpen) {
+                                closeWalletDropdown();
+                            }
+                        });
+                        tonConnectUI.onStatusChange(async wallet => {
+                            if (wallet) {
+                                currentWallet = wallet;
+                                if (connectBtn) connectBtn.style.display = 'none';
+                                if (walletContainer) walletContainer.style.display = 'block';
+                                const rawAddress = wallet.account.address;
+                                const userFriendlyAddress = formatAddress(rawAddress);
+                                let balanceStr = "0$";
+                                try {
+                                    balanceStr = await getWalletBalance(rawAddress);
+                                } catch { balanceStr = "0$"; }
+                                displayWallet(balanceStr, userFriendlyAddress);
+                            } else {
+                                if (connectBtn) connectBtn.style.display = 'block';
+                                if (walletContainer) walletContainer.style.display = 'none';
+                                displayWallet("0$", "");
+                                closeWalletDropdown();
+                            }
+                        });
+                        const existingWallet = tonConnectUI.wallet;
+                        if (existingWallet) {
+                            tonConnectUI.onStatusChange(existingWallet);
+                        }
+                    });
+                </script>
+
+                <!-- Остальная часть кода остается точно как у тебя было -->
+                <div class="header__bottom">
+                    <div class="header__nav">
+                        <ul id="menu-verhnee-menyu" class="hmenu">
+                            <li id="menu-item-1101" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
+                            <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
+                            <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшbэк</span></a></li>
+                            <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
+                        </ul>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <button class="btn btn--md btn--bd header__btnlog js-open-menu-acc">
+                        <span>{{ user.username }}</span>
+                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/drop.svg" alt="">
+                    </button>
+                    {% else %}
+                    <div class="header__profile">
+                        <div class="header__lg">
+                            <button class="btn btn--md btn--bd btn--bdg" data-open-login="reg"><span>Регистрация</span></button>
                         </div>
-                        <span class="flash-text">{{ message }}</span>
-                        <button class="flash-close" onclick="closeFlashMessage(this)">
-                            <i class="fas fa-times"></i>
+                        <button class="btn btn--md btn--pdsm header__btnlog" data-open-login="login">
+                            <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in.svg" alt="">
+                            <span>Войти</span>
                         </button>
                     </div>
-                    {% endfor %}
+                    <button class="header__login" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in-color.svg" alt=""></button>
+                    {% endif %}
+
+                    <div class="accmenu js-menu-acc">
+                        <ul>
+                            <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/profile-menu.svg" alt=""><span>Профиль</span></a></li>
+                            <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>Ваши заявки</span></a></li>
+                            <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>Депозиты</span></a></li>
+                            <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/cashback-menu.svg" alt=""><span>Кешбэк</span></a></li>
+                            <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/check-menu.svg" alt=""><span>AML проверка кошелька</span></a></li>
+
+                            <li>
+                                <form action="{% url 'accounts:sign-out' %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="accmenu__btnlogout">
+                                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/out-menu.svg" alt="">
+                                        <span>Выход</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button class="btn btn--md header__burger js-open-nav">
+                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/burger.svg" class="hide-tablet-sm" alt="">
+                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/closed.svg" class="icon-close hide-tablet-sm" alt="">
+                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/menu_open.svg" class="show-tablet-sm" alt="">
+                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/menu_closed.svg" class="icon-close show-tablet-sm" alt="">
+                    </button>
                 </div>
+            </div>
+        </div>
+        <div class="accmenu js-menu-acc">
+        </div>
+
+        {% include "accounts/sign-in.html" %}
+        {% include "accounts/sign-up.html" %}
+    </div>
+
+    <div class="navfix js-navfix">
+        <div class="container">
+            <div class="navfix__nav">
+                <ul id="menu-verhnee-menyu-1" class="hmenu">
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшbэк</span></a></li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
+                </ul>
+            </div>
+
+            <div class="navfix__contacts">
+                <a href="/cdn-cgi/l/email-protection#3950575f56795a4b40494d56145a51505a525c57175a56" class="navfix__contacts-val"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/mail.svg" alt=""><span><span class="__cf_email__" data-cfemail="6900070f06290a1b10191d06440a01000a020c07470a06">[email&#160;protected]</span></span></a>
+                <br>
+                <a href="tg://resolve?domain=CryptoChicken_bot" class="navfix__contacts-val"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/tg.svg" alt=""><span>@CryptoChicken_bot</span></a> <br>
+            </div>
+
+            <div class="navfix__lang">
+                <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2F" class="navfix__lang-item active"><span>RU</span></a>
+                <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" class="navfix__lang-item"><span>EN</span></a></div>
+            <div class="navfix__buttons">
+                <button class="btn btn--bd btn--md btn--chat"><span>Онлайн чат</span></button>
+            </div>
+        </div>
+    </div>
+    {% if messages %}
+    <div class="flash-messages-container">
+        {% for message in messages %}
+        <div class="flash-message flash-{{ message.tags }}">
+            <div class="flash-icon">
+                {% if message.tags == 'success' %}
+                <i class="fas fa-check-circle"></i>
+                {% elif message.tags == 'error' %}
+                <i class="fas fa-times-circle"></i>
+                {% elif message.tags == 'warning' %}
+                <i class="fas fa-exclamation-circle"></i>
+                {% else %}
+                <i class="fas fa-bell"></i>
                 {% endif %}
+            </div>
+            <span class="flash-text">{{ message }}</span>
+            <button class="flash-close" onclick="closeFlashMessage(this)">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </header>
