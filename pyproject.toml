@@ -13,6 +13,8 @@ flake8 = "^7.3.0"
 pillow = "^11.3.0"
 python-decouple = "^3.8"
 requests = "^2.32.4"
+pytoniq-core = "^0.1.44"
+httpx = "^0.28.1"
 
 
 [build-system]
