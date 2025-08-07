@@ -7,7 +7,7 @@ from core.views import (
     CashbackInfoView,
     DepositView,
     tonconnect_manifest,
-    wallet_balance,
+    WalletTonService,
 )
 
 app_name: str = "core"
@@ -19,5 +19,5 @@ urlpatterns = [
     path("cashback-info/", CashbackInfoView.as_view(), name="cashback"),
     path("deposit/", DepositView.as_view(), name="deposit"),
     path("tonconnect-manifest.json", tonconnect_manifest, name="tonconnect_manifest"),
-    path("api/wallet-balance/", wallet_balance, name="wallet_balance"),
+    path("api/wallet-balance/", WalletTonService.as_view(), name="wallet_balance"),
 ]
