@@ -19,11 +19,11 @@ from django.views.decorators.csrf import csrf_exempt
 
 def tonconnect_manifest(request):
     manifest = {
-        "url": "https://3b0a02c1acb3.ngrok-free.app",
+        "url": "https://55b1dbb21a15.ngrok-free.app",
         "name": "CryptoChicken Exchange",
-        "iconUrl": "https://3b0a02c1acb3.ngrok-free.app/static/img/logo.png",
-        "termsOfUseUrl": "https://3b0a02c1acb3.ngrok-free.app/tos/",
-        "privacyPolicyUrl": "https://3b0a02c1acb3.ngrok-free.app/privacy/",
+        "iconUrl": "https://55b1dbb21a15.ngrok-free.app/static/img/logo.png",
+        "termsOfUseUrl": "https://55b1dbb21a15.ngrok-free.app/tos/",
+        "privacyPolicyUrl": "https://55b1dbb21a15.ngrok-free.app/privacy/",
     }
 
     response = JsonResponse(manifest)
