@@ -3483,7 +3483,7 @@ footer
 .cash__item-title, .raffle__box--mobile .raffle__item-title {
     max-width: 460px;
     padding: 21px 20px;
-    background: url(images/cach-bg-title.png) no-repeat;
+    background: url('/static/img/cach-bg-title.png') no-repeat;
     background-size: 100% 100%;
 }
 
@@ -3512,7 +3512,7 @@ footer
 .cash__cont-title {
     max-width: 460px;
     padding: 21px 20px;
-    background: url(images/cach-bg-title.png) no-repeat;
+    background: url('/static/img/cach-bg-title.png') no-repeat;
     background-size: 100% 100%;
 }
 

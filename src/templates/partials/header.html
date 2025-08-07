@@ -9,18 +9,10 @@
 }
 
 .wallet-balance-display {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     color: #fff;
-    letter-spacing: 0.5px;
     transition: font-size 0.2s;
-}
-
-.wallet-balance-small {
-    font-size: 16px !important;
-    font-weight: 700;
-    color: #fff;
-    opacity: 0.9;
 }
 
 .wallet-address-display {
@@ -31,25 +23,6 @@
     margin-right: 0;
     letter-spacing: 0.5px;
 }
-
-.wallet-btn-content.only-balance {
-    justify-content: center;
-    gap: 0;
-}
-.wallet-btn-content.only-balance .wallet-balance-display {
-    font-size: 22px;
-    font-weight: 700;
-}
-.wallet-btn-content.only-balance .wallet-address-display {
-    display: none;
-}
-
-.wallet-dropdown-title .dropdown-wallet-address {
-    font-size: 15px;
-    font-weight: 700;
-    color: #fff;
-}
-
 </style>
 
 <header class="header">
@@ -59,7 +32,7 @@
                 <a href="https://crypto-chicken.co/" class="header__logo">
                     <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/logo.svg" alt="">
                 </a>
-                <div class="header__name"><a href="https://crypto-chicken.co/">CryptoChicken</a></div>
+                <div class="header__name"><a href="{% url 'core:index' %}">CryptoChicken</a></div>
             </div>
             <div class="header__right">
                 <div class="header__top">
@@ -117,249 +90,12 @@
                     </div>
                 </div>
                 <div id="ton-connect-header" style="display: none;"></div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                            manifestUrl: 'https://3b0a02c1acb3.ngrok-free.app/tonconnect-manifest.json',
-                            buttonRootId: 'ton-connect-header'
-                        });
-                        window.headerTonConnectUI = tonConnectUI;
-
-                        const connectBtn = document.getElementById('header-connect-btn');
-                        const walletContainer = document.getElementById('wallet-button-container');
-                        const walletInfoBtn = document.getElementById('header-wallet-info');
-                        const walletDropdown = document.getElementById('wallet-dropdown');
-                        const balanceEl = document.querySelector('.wallet-balance-display');
-                        const addressEl = document.querySelector('.wallet-address-display');
-                        const btnContent = document.querySelector('.wallet-btn-content');
-                        const dropdownAddress = document.getElementById('dropdown-wallet-address');
-                        const dropdownBalance = document.getElementById('dropdown-wallet-balance');
-                        let currentWallet = null;
-                        let isDropdownOpen = false;
-
-                        function rawToUserFriendly(rawAddress) {
-                            try {
-                                if (!rawAddress || !rawAddress.includes(':')) return rawAddress;
-                                const [workchain, hash] = rawAddress.split(':');
-                                const hashBytes = [];
-                                for (let i = 0; i < hash.length; i += 2) {
-                                    hashBytes.push(parseInt(hash.substr(i, 2), 16));
-                                }
-                                const addressBytes = [0x51, parseInt(workchain), ...hashBytes];
-                                let crc = 0;
-                                for (let i = 0; i < addressBytes.length; i++) {
-                                    crc ^= addressBytes[i] << 8;
-                                    for (let j = 0; j < 8; j++) {
-                                        crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
-                                    }
-                                }
-                                crc &= 0xFFFF;
-                                const fullAddress = [...addressBytes, crc >> 8, crc & 0xFF];
-                                const base64 = btoa(String.fromCharCode.apply(null, fullAddress))
-                                    .replace(/\+/g, '-')
-                                    .replace(/\//g, '_')
-                                    .replace(/=/g, '');
-                                return base64;
-                            } catch (error) {
-                                return rawAddress;
-                            }
-                        }
-                        function parseBalance(balanceStr) {
-                            if (!balanceStr) return 0;
-                            if (balanceStr.startsWith('<')) return 0.0099;
-                            return parseFloat(balanceStr.replace(/[^\d.]/g, '')) || 0;
-                        }
-                        function formatAddress(address) {
-                            if (!address) return '';
-                            const userFriendly = rawToUserFriendly(address);
-                            if (userFriendly.length > 8) {
-                                return `${userFriendly.slice(0, 4)}...${userFriendly.slice(-4)}`;
-                            }
-                            return userFriendly;
-                        }
-                        function displayWallet(balanceStr, userFriendlyAddress) {
-                            let balValue = parseBalance(balanceStr);
-
-                            // --- MAIN BUTTON ---
-                            if (balValue === 0) {
-                                balanceEl.textContent = "0$";
-                                balanceEl.classList.add('wallet-balance-small');
-                            } else if (balValue < 0.01) {
-                                balanceEl.textContent = "< 0.01";
-                                balanceEl.classList.add('wallet-balance-small');
-                            } else {
-                                balanceEl.textContent = balanceStr;
-                                balanceEl.classList.remove('wallet-balance-small');
-                            }
-                            if (!userFriendlyAddress || userFriendlyAddress === '' || userFriendlyAddress === 'Connecting...') {
-                                btnContent.classList.add('only-balance');
-                                addressEl.style.display = 'none';
-                            } else {
-                                btnContent.classList.remove('only-balance');
-                                addressEl.style.display = '';
-                                addressEl.textContent = userFriendlyAddress;
-                            }
-                            // --- DROPDOWN ---
-                            if (dropdownAddress) dropdownAddress.textContent = userFriendlyAddress;
-                            if (dropdownBalance) {
-                                if (balValue === 0) {
-                                    dropdownBalance.textContent = "< 0.01";
-                                    dropdownBalance.classList.add('wallet-balance-small');
-                                } else if (balValue < 0.01) {
-                                    dropdownBalance.textContent = "< 0.01";
-                                    dropdownBalance.classList.add('wallet-balance-small');
-                                } else {
-                                    dropdownBalance.textContent = balanceStr;
-                                    dropdownBalance.classList.remove('wallet-balance-small');
-                                }
-                            }
-                        }
-                        async function getWalletBalance(address) {
-                            try {
-                                const response = await fetch(`/api/wallet-balance/?address=${address}`);
-                                const data = await response.json();
-                                let balanceVal = parseFloat(data.balance);
-                                let balanceStr;
-                                if (balanceVal < 0.01 && balanceVal > 0) {
-                                    balanceStr = "< 0.01";
-                                } else if (balanceVal === 0) {
-                                    balanceStr = "0$";
-                                } else {
-                                    balanceStr = `${balanceVal.toFixed(2)} TON`;
-                                }
-                                return balanceStr;
-                            } catch (error) {
-                                return "0$";
-                            }
-                        }
-                        function showToast(message, type = 'success') {
-                            const toast = document.createElement('div');
-                            toast.className = `toast-notification ${type}`;
-                            toast.textContent = message;
-                            document.body.appendChild(toast);
-                            setTimeout(() => toast.classList.add('show'), 100);
-                            setTimeout(() => {
-                                toast.classList.remove('show');
-                                setTimeout(() => toast.remove(), 300);
-                            }, 3000);
-                        }
-                        if (connectBtn) {
-                            connectBtn.onclick = async function() {
-                                try {
-                                    connectBtn.disabled = true;
-                                    connectBtn.querySelector('span').textContent = 'Connecting...';
-                                    await tonConnectUI.connectWallet();
-                                } catch (error) {
-                                    showToast('Failed to connect wallet', 'error');
-                                } finally {
-                                    connectBtn.disabled = false;
-                                    connectBtn.querySelector('span').textContent = 'Connect Wallet';
-                                }
-                            };
-                        }
-                        if (walletInfoBtn) {
-                            walletInfoBtn.onclick = function(e) {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                toggleWalletDropdown();
-                            };
-                        }
-                        function toggleWalletDropdown() {
-                            if (isDropdownOpen) {
-                                closeWalletDropdown();
-                            } else {
-                                openWalletDropdown();
-                            }
-                        }
-                        function openWalletDropdown() {
-                            if (!walletDropdown) return;
-                            walletDropdown.classList.add('show');
-                            if (walletInfoBtn) walletInfoBtn.classList.add('active');
-                            isDropdownOpen = true;
-                            setTimeout(() => {
-                                document.addEventListener('click', handleClickOutside);
-                            }, 100);
-                        }
-                        function closeWalletDropdown() {
-                            if (walletDropdown) walletDropdown.classList.remove('show');
-                            if (walletInfoBtn) walletInfoBtn.classList.remove('active');
-                            isDropdownOpen = false;
-                            document.removeEventListener('click', handleClickOutside);
-                        }
-                        function handleClickOutside(e) {
-                            if (walletContainer && !walletContainer.contains(e.target)) {
-                                closeWalletDropdown();
-                            }
-                        }
-                        window.copyWalletAddress = function() {
-                            if (currentWallet) {
-                                const userFriendlyAddress = rawToUserFriendly(currentWallet.account.address);
-                                navigator.clipboard.writeText(userFriendlyAddress).then(() => {
-                                    showToast('Address copied to clipboard!');
-                                }).catch(() => {
-                                    showToast('Failed to copy address', 'error');
-                                });
-                            }
-                        };
-                        window.refreshWalletBalance = async function() {
-                            if (currentWallet) {
-                                if (dropdownBalance) dropdownBalance.textContent = 'Updating...';
-                                if (balanceEl) balanceEl.textContent = 'Loading...';
-                                try {
-                                    const newBalance = await getWalletBalance(currentWallet.account.address);
-                                    displayWallet(newBalance, formatAddress(currentWallet.account.address));
-                                    showToast('Balance updated successfully!');
-                                } catch (error) {
-                                    if (balanceEl) balanceEl.textContent = '0$';
-                                    if (dropdownBalance) dropdownBalance.textContent = '0$';
-                                    dropdownBalance.classList.add('wallet-balance-small');
-                                    showToast('Failed to update balance', 'error');
-                                }
-                            }
-                        };
-                        window.disconnectWalletFromDropdown = function() {
-                            tonConnectUI.disconnect();
-                            closeWalletDropdown();
-                            showToast('Wallet disconnected');
-                        };
-                        document.addEventListener('keydown', function(e) {
-                            if (e.key === 'Escape' && isDropdownOpen) {
-                                closeWalletDropdown();
-                            }
-                        });
-                        tonConnectUI.onStatusChange(async wallet => {
-                            if (wallet) {
-                                currentWallet = wallet;
-                                if (connectBtn) connectBtn.style.display = 'none';
-                                if (walletContainer) walletContainer.style.display = 'block';
-                                const rawAddress = wallet.account.address;
-                                const userFriendlyAddress = formatAddress(rawAddress);
-                                let balanceStr = "0$";
-                                try {
-                                    balanceStr = await getWalletBalance(rawAddress);
-                                } catch { balanceStr = "0$"; }
-                                displayWallet(balanceStr, userFriendlyAddress);
-                            } else {
-                                if (connectBtn) connectBtn.style.display = 'block';
-                                if (walletContainer) walletContainer.style.display = 'none';
-                                displayWallet("0$", "");
-                                closeWalletDropdown();
-                            }
-                        });
-                        const existingWallet = tonConnectUI.wallet;
-                        if (existingWallet) {
-                            tonConnectUI.onStatusChange(existingWallet);
-                        }
-                    });
-                </script>
-
-                <!-- Остальная часть кода остается точно как у тебя было -->
                 <div class="header__bottom">
                     <div class="header__nav">
                         <ul id="menu-verhnee-menyu" class="hmenu">
                             <li id="menu-item-1101" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
                             <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
-                            <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшbэк</span></a></li>
+                            <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшбэк</span></a></li>
                             <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
                         </ul>
                     </div>
@@ -384,7 +120,7 @@
                     <div class="accmenu js-menu-acc">
                         <ul>
                             <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/profile-menu.svg" alt=""><span>Профиль</span></a></li>
-                            <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>Ваши заявки</span></a></li>
+                            <li><a href=""><img src="https://crypto-chicken.co/ваши-wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>заявки</span></a></li>
                             <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/order-menu.svg" alt=""><span>Депозиты</span></a></li>
                             <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/cashback-menu.svg" alt=""><span>Кешбэк</span></a></li>
                             <li><a href=""><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/check-menu.svg" alt=""><span>AML проверка кошелька</span></a></li>
@@ -465,4 +201,7 @@
         {% endfor %}
     </div>
     {% endif %}
+
 </header>
+
+<script src="{% static 'js/wallet-manager/ton-wallet.js' %}"></script>
