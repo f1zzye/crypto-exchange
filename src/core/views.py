@@ -1,8 +1,6 @@
 from decimal import Decimal
 
-from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from common.mixins import TitleMixin
@@ -10,20 +8,23 @@ from core.utils.captcha import CaptchaGenerator
 
 from exchange.models import Token, ExchangeOrder, Pool
 from django.db import models
-import requests
+from django.views import View
+from django.utils.decorators import method_decorator
+from pytoniq_core import Address
+import httpx
+from http import HTTPStatus
 
-
-import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+
 def tonconnect_manifest(request):
     manifest = {
-        "url": "https://3b0a02c1acb3.ngrok-free.app",
+        "url": "https://4ed6817024dd.ngrok-free.app",
         "name": "CryptoChicken Exchange",
-        "iconUrl": "https://3b0a02c1acb3.ngrok-free.app/static/img/logo.png",
-        "termsOfUseUrl": "https://3b0a02c1acb3.ngrok-free.app/tos/",
-        "privacyPolicyUrl": "https://3b0a02c1acb3.ngrok-free.app/privacy/",
+        "iconUrl": "https://4ed6817024dd.ngrok-free.app/static/img/logo.png",
+        "termsOfUseUrl": "https://4ed6817024dd.ngrok-free.app/tos/",
+        "privacyPolicyUrl": "https://4ed6817024dd.ngrok-free.app/privacy/",
     }
 
     response = JsonResponse(manifest)
@@ -34,27 +35,80 @@ def tonconnect_manifest(request):
 
     return response
 
-@csrf_exempt
-def wallet_balance(request):
-    address = request.GET.get("address")
-    if not address:
-        return JsonResponse({"error": "No address provided"}, status=400)
 
-    toncenter_url = f"https://toncenter.com/api/v2/getAddressBalance?address={address}"
+@method_decorator(csrf_exempt, name="dispatch")
+class WalletTonService(View):
 
-    try:
-        res = requests.get(toncenter_url, timeout=10)
-        data = res.json()
+    def get(self, request) -> JsonResponse:
+        address = request.GET["address"]
+        if not address:
+            return JsonResponse({"error": "No address provided"}, status=HTTPStatus.BAD_REQUEST)
 
-        if data.get("ok"):
-            balance_ton = float(data.get("result", 0)) / 1e9
-            return JsonResponse({"balance": f"{balance_ton:.2f} TON"})
+        try:
+            address_data = self._process_address(address)
+            balance = self._get_balance(address_data["user_friendly"])
+
+            return JsonResponse(
+                {
+                    "balance": balance,
+                    "userFriendlyAddress": address_data["user_friendly"],
+                    "shortAddress": address_data["short"],
+                }
+            )
+
+        except ValueError:
+            return JsonResponse(
+                {
+                    "balance": "0.00 TON",
+                    "userFriendlyAddress": address,
+                    "shortAddress": address,
+                }
+            )
+
+    @staticmethod
+    def _process_address(address: str) -> dict:
+        addr_obj = Address(address)
+        user_friendly = addr_obj.to_str(
+            is_user_friendly=True, is_bounceable=True, is_url_safe=True
+        )
+
+        short = (
+            f"{user_friendly[:4]}...{user_friendly[-4:]}"
+            if len(user_friendly) > 8
+            else user_friendly
+        )
+
+        return {"user_friendly": user_friendly, "short": short}
+
+    @staticmethod
+    def _format_balance(balance_nano: int) -> str:
+        balance_ton = balance_nano / 1e9
+
+        if balance_ton == 0:
+            return "0$"
+        elif balance_ton < 0.01:
+            return "< 0.01"
         else:
-            return JsonResponse({"balance": "0.00 TON"})
+            return f"{balance_ton:.2f} TON"
 
-    except Exception as e:
-        print(f"Error fetching balance: {e}")
-        return JsonResponse({"balance": "0.00 TON"})
+    @staticmethod
+    def _get_balance(user_friendly_address: str) -> str:
+        try:
+            url = f"https://toncenter.com/api/v2/getAddressBalance?address={user_friendly_address}"
+
+            with httpx.Client(timeout=10.0) as client:
+                response = client.get(url)
+                response.raise_for_status()
+                data = response.json()
+
+            if data["ok"]:
+                balance_nano = int(data["result"])
+                return WalletTonService._format_balance(balance_nano)
+            else:
+                return "0$"
+
+        except (httpx.RequestError, KeyError, ValueError):
+            return "0$"
 
 
 class IndexView(TitleMixin, TemplateView):
