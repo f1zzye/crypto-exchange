@@ -13,18 +13,20 @@ from django.utils.decorators import method_decorator
 from pytoniq_core import Address
 import httpx
 from http import HTTPStatus
+from django.conf import settings
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 
 def tonconnect_manifest(request):
+
     manifest = {
-        "url": "https://5cc323479e51.ngrok-free.app",
+        "url": settings.NGROK_URL,
         "name": "CryptoChicken Exchange",
-        "iconUrl": "https://5cc323479e51.ngrok-free.app/static/img/logo.png",
-        "termsOfUseUrl": "https://5cc323479e51.ngrok-free.app/tos/",
-        "privacyPolicyUrl": "https://5cc323479e51.ngrok-free.app/privacy/",
+        "iconUrl": f"{settings.NGROK_URL}/static/img/logo.png",
+        "termsOfUseUrl": f"{settings.NGROK_URL}/tos/",
+        "privacyPolicyUrl": f"{settings.NGROK_URL}/privacy/",
     }
 
     response = JsonResponse(manifest)
