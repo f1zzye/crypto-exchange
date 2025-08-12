@@ -1,0 +1,254 @@
+#include "imports/stdlib.fc";
+
+;; Константы
+const int BASIS_POINTS_DENOMINATOR = 10000;
+const int MIN_LIQUIDITY = 1000;
+const int MIN_TON_AMOUNT = 100000000; ;; минимум 0.1 TON для операций
+
+;; Коды операций
+const int OP_DEPLOY_POOL = 0x1;
+const int OP_ADD_LIQUIDITY = 0x2;
+const int OP_SWAP_TON_FOR_USDT = 0x3;
+const int OP_SWAP_USDT_FOR_TON = 0x4;
+
+;; Jetton операции
+const int OP_TRANSFER = 0xf8a7ea5;
+const int OP_TRANSFER_NOTIFICATION = 0x7362d09c;
+
+;; Ошибки
+const int ERROR_NOT_DEPLOYED = 400;
+const int ERROR_ALREADY_DEPLOYED = 401;
+const int ERROR_UNAUTHORIZED = 402;
+const int ERROR_INSUFFICIENT_LIQUIDITY = 403;
+const int ERROR_INVALID_AMOUNT = 404;
+
+;; Структура данных: deployed, admin, usdt_master, reserve_ton, reserve_usdt, fee_basis_points
+(int, slice, slice, int, int, int) load_data() inline {
+    slice ds = get_data().begin_parse();
+    return (
+        ds~load_uint(1),    ;; deployed
+        ds~load_msg_addr(), ;; admin
+        ds~load_msg_addr(), ;; usdt_master (может быть пустым до деплоя)
+        ds~load_uint(128),  ;; reserve_ton
+        ds~load_uint(128),  ;; reserve_usdt
+        ds~load_uint(16)    ;; fee_basis_points
+    );
+}
+
+() save_data(int deployed, slice admin, slice usdt_master, int reserve_ton, int reserve_usdt, int fee_basis_points) impure inline {
+    set_data(begin_cell()
+        .store_uint(deployed, 1)
+        .store_slice(admin)
+        .store_slice(usdt_master)
+        .store_uint(reserve_ton, 128)
+        .store_uint(reserve_usdt, 128)
+        .store_uint(fee_basis_points, 16)
+        .end_cell());
+}
+
+;; Расчет выхода с учетом комиссии (формула x*y=k)
+int calculate_output_amount(int amount_in, int reserve_in, int reserve_out, int fee_basis_points) inline {
+    throw_if(ERROR_INVALID_AMOUNT, amount_in <= 0);
+    throw_if(ERROR_INSUFFICIENT_LIQUIDITY, (reserve_in <= 0) | (reserve_out <= 0));
+    
+    ;; Вычитаем комиссию
+    int fee_amount = (amount_in * fee_basis_points) / BASIS_POINTS_DENOMINATOR;
+    int amount_in_after_fee = amount_in - fee_amount;
+    
+    ;; Формула AMM: (amount_in_after_fee * reserve_out) / (reserve_in + amount_in_after_fee)
+    int numerator = amount_in_after_fee * reserve_out;
+    int denominator = reserve_in + amount_in_after_fee;
+    
+    return numerator / denominator;
+}
+
+;; Отправка USDT
+() send_usdt(slice usdt_master, slice to, int amount, int query_id) impure inline {
+    cell msg_body = begin_cell()
+        .store_uint(OP_TRANSFER, 32)
+        .store_uint(query_id, 64)
+        .store_coins(amount)
+        .store_slice(to)
+        .store_slice(to) ;; response_destination
+        .store_uint(0, 1) ;; custom_payload
+        .store_coins(1) ;; forward_ton_amount
+        .store_uint(0, 1) ;; forward_payload
+        .end_cell();
+    
+    send_raw_message(begin_cell()
+        .store_uint(0x18, 6)
+        .store_slice(usdt_master)
+        .store_coins(50000000) ;; 0.05 TON для газа
+        .store_uint(1, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+        .store_ref(msg_body)
+        .end_cell(), 1);
+}
+
+;; Функция проверки равенства адресов
+int addresses_equal(slice addr1, slice addr2) inline {
+    return equal_slice_bits(addr1, addr2);
+}
+
+;; Основная функция получения сообщений
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    if (in_msg_body.slice_empty?()) { return (); }
+    
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+    if (flags & 1) { return (); } ;; игнорируем bounced сообщения
+    
+    slice sender_address = cs~load_msg_addr();
+    
+    (int deployed, slice admin, slice usdt_master, int reserve_ton, int reserve_usdt, int fee_basis_points) = load_data();
+    
+    int op = in_msg_body~load_uint(32);
+    int query_id = in_msg_body~load_uint(64);
+    
+    if (op == OP_DEPLOY_POOL) {
+        ;; Только админ может задеплоить пул
+        throw_unless(ERROR_UNAUTHORIZED, addresses_equal(sender_address, admin));
+        throw_if(ERROR_ALREADY_DEPLOYED, deployed);
+        
+        slice new_usdt_master = in_msg_body~load_msg_addr();
+        int new_fee_basis_points = in_msg_body~load_uint(16);
+        
+        ;; Деплоим пул
+        save_data(1, admin, new_usdt_master, 0, 0, new_fee_basis_points);
+        
+        return ();
+    }
+    
+    if (op == OP_ADD_LIQUIDITY) {
+        ;; ИСПРАВЛЕНО: проверяем deployed ПЕРВЫМ
+        throw_unless(ERROR_NOT_DEPLOYED, deployed);
+        ;; Только админ может добавлять ликвидность
+        throw_unless(ERROR_UNAUTHORIZED, addresses_equal(sender_address, admin));
+        
+        int usdt_amount = in_msg_body~load_coins();
+        int ton_amount = msg_value - 50000000; ;; вычитаем газ
+        
+        ;; Строгая проверка с минимумом
+        throw_if(ERROR_INVALID_AMOUNT, ton_amount < MIN_TON_AMOUNT);
+        throw_if(ERROR_INVALID_AMOUNT, usdt_amount <= 0);
+        
+        ;; Обновляем резервы
+        reserve_ton += ton_amount;
+        reserve_usdt += usdt_amount;
+        
+        save_data(deployed, admin, usdt_master, reserve_ton, reserve_usdt, fee_basis_points);
+        
+        return ();
+    }
+    
+    if (op == OP_SWAP_TON_FOR_USDT) {
+        ;; ИСПРАВЛЕНО: проверяем deployed ПЕРВЫМ
+        throw_unless(ERROR_NOT_DEPLOYED, deployed);
+        
+        int min_usdt_out = in_msg_body~load_coins();
+        slice recipient = in_msg_body~load_msg_addr();
+        
+        int ton_amount_in = msg_value - 50000000; ;; вычитаем газ
+        ;; Строгая проверка с минимумом
+        throw_if(ERROR_INVALID_AMOUNT, ton_amount_in < MIN_TON_AMOUNT);
+        
+        ;; Рассчитываем сколько USDT отдать
+        int usdt_amount_out = calculate_output_amount(ton_amount_in, reserve_ton, reserve_usdt, fee_basis_points);
+        throw_if(ERROR_INSUFFICIENT_LIQUIDITY, usdt_amount_out < min_usdt_out);
+        
+        ;; Обновляем резервы
+        reserve_ton += ton_amount_in;
+        reserve_usdt -= usdt_amount_out;
+        
+        save_data(deployed, admin, usdt_master, reserve_ton, reserve_usdt, fee_basis_points);
+        
+        ;; Отправляем USDT
+        send_usdt(usdt_master, recipient, usdt_amount_out, query_id);
+        
+        return ();
+    }
+    
+    if (op == OP_TRANSFER_NOTIFICATION) {
+        ;; Получили USDT - это swap USDT -> TON
+        throw_unless(ERROR_NOT_DEPLOYED, deployed);
+        
+        int usdt_amount_in = in_msg_body~load_coins();
+        slice from_address = in_msg_body~load_msg_addr();
+        
+        ;; Проверяем что это от USDT контракта
+        throw_unless(ERROR_UNAUTHORIZED, addresses_equal(sender_address, usdt_master));
+        
+        ;; Читаем payload для получения параметров swap
+        slice payload = in_msg_body~load_ref().begin_parse();
+        
+        if (payload.slice_empty?()) {
+            ;; Обычный transfer, игнорируем
+            return ();
+        }
+        
+        int swap_op = payload~load_uint(32);
+        
+        if (swap_op == OP_SWAP_USDT_FOR_TON) {
+            int min_ton_out = payload~load_coins();
+            slice recipient = payload~load_msg_addr();
+            
+            ;; Рассчитываем сколько TON отдать
+            int ton_amount_out = calculate_output_amount(usdt_amount_in, reserve_usdt, reserve_ton, fee_basis_points);
+            throw_if(ERROR_INSUFFICIENT_LIQUIDITY, ton_amount_out < min_ton_out);
+            
+            ;; Обновляем резервы
+            reserve_usdt += usdt_amount_in;
+            reserve_ton -= ton_amount_out;
+            
+            save_data(deployed, admin, usdt_master, reserve_ton, reserve_usdt, fee_basis_points);
+            
+            ;; Отправляем TON
+            send_raw_message(begin_cell()
+                .store_uint(0x10, 6)
+                .store_slice(recipient)
+                .store_coins(ton_amount_out)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .end_cell(), 1);
+        }
+        
+        return ();
+    }
+}
+
+;; Getter методы
+
+;; Получить информацию о пуле
+(int, slice, slice, int, int, int) get_pool_info() method_id {
+    (int deployed, slice admin, slice usdt_master, int reserve_ton, int reserve_usdt, int fee_basis_points) = load_data();
+    return (deployed, admin, usdt_master, reserve_ton, reserve_usdt, fee_basis_points);
+}
+
+;; Получить резервы
+(int, int) get_reserves() method_id {
+    (int deployed, slice admin, slice usdt_master, int reserve_ton, int reserve_usdt, int fee_basis_points) = load_data();
+    return (reserve_ton, reserve_usdt);
+}
+
+;; Рассчитать выход для swap
+int get_amount_out(int amount_in, int is_ton_in) method_id {
+    (int deployed, slice admin, slice usdt_master, int reserve_ton, int reserve_usdt, int fee_basis_points) = load_data();
+    
+    throw_unless(ERROR_NOT_DEPLOYED, deployed);
+    
+    if (is_ton_in) {
+        return calculate_output_amount(amount_in, reserve_ton, reserve_usdt, fee_basis_points);
+    } else {
+        return calculate_output_amount(amount_in, reserve_usdt, reserve_ton, fee_basis_points);
+    }
+}
+
+;; Получить комиссию
+int get_fee() method_id {
+    (int deployed, slice admin, slice usdt_master, int reserve_ton, int reserve_usdt, int fee_basis_points) = load_data();
+    return fee_basis_points;
+}
+
+;; Проверить задеплоен ли пул
+int is_deployed() method_id {
+    (int deployed, slice admin, slice usdt_master, int reserve_ton, int reserve_usdt, int fee_basis_points) = load_data();
+    return deployed;
+}

@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const config = {
-        manifestUrl: 'https://5cc323479e51.ngrok-free.app/tonconnect-manifest.json',
+        manifestUrl: `${window.location.origin}/tonconnect-manifest.json`,
         buttonRootId: 'ton-connect-header',
         apiEndpoint: '/api/wallet-balance/'
     };
 
-    const elements = {
+    const headerElements = {
         connectBtn: document.getElementById('header-connect-btn'),
         walletContainer: document.getElementById('wallet-button-container'),
         walletInfoBtn: document.getElementById('header-wallet-info'),
@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdownBalance: document.getElementById('dropdown-wallet-balance')
     };
 
+    const indexElements = {
+        connectBtn: document.getElementById('custom-connect-btn'),
+        disconnectBtn: document.getElementById('custom-disconnect-btn'),
+        walletField: document.querySelector('input[name="wallet_address"]')
+    };
+
     let currentWallet = null;
     let isDropdownOpen = false;
 
@@ -24,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         manifestUrl: config.manifestUrl,
         buttonRootId: config.buttonRootId
     });
+
     window.headerTonConnectUI = tonConnectUI;
 
     function parseBalance(balanceStr) {
@@ -38,13 +45,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const data = await response.json();
+
             return {
                 balance: data.balance || "0.00 TON",
                 userFriendlyAddress: data.userFriendlyAddress || address,
                 shortAddress: data.shortAddress || address
             };
         } catch (error) {
-            console.error('Error fetching wallet data:', error);
+            showFlashMessage('Ошибка загрузки данных кошелька', 'error');
+
             return {
                 balance: "0.00 TON",
                 userFriendlyAddress: address,
@@ -57,24 +66,46 @@ document.addEventListener('DOMContentLoaded', function() {
         const balValue = parseBalance(balanceStr);
         const isSmallBalance = balValue === 0 || balValue < 0.01;
 
-        if (elements.balanceEl) {
-            elements.balanceEl.textContent = isSmallBalance ? (balValue === 0 ? "0$" : "< 0.01") : balanceStr;
-            elements.balanceEl.classList.toggle('wallet-balance-small', isSmallBalance);
+        if (headerElements.balanceEl) {
+            headerElements.balanceEl.textContent = isSmallBalance ? (balValue === 0 ? "0$" : "< 0.01") : balanceStr;
+            headerElements.balanceEl.classList.toggle('wallet-balance-small', isSmallBalance);
         }
 
         const hasValidAddress = userFriendlyAddress && userFriendlyAddress !== '' && userFriendlyAddress !== 'Connecting...';
-        if (elements.btnContent) {
-            elements.btnContent.classList.toggle('only-balance', !hasValidAddress);
+        if (headerElements.btnContent) {
+            headerElements.btnContent.classList.toggle('only-balance', !hasValidAddress);
         }
-        if (elements.addressEl) {
-            elements.addressEl.style.display = hasValidAddress ? '' : 'none';
-            if (hasValidAddress) elements.addressEl.textContent = userFriendlyAddress;
+        if (headerElements.addressEl) {
+            headerElements.addressEl.style.display = hasValidAddress ? '' : 'none';
+            if (hasValidAddress) headerElements.addressEl.textContent = userFriendlyAddress;
         }
 
-        if (elements.dropdownAddress) elements.dropdownAddress.textContent = userFriendlyAddress;
-        if (elements.dropdownBalance) {
-            elements.dropdownBalance.textContent = isSmallBalance ? "< 0.01" : balanceStr;
-            elements.dropdownBalance.classList.toggle('wallet-balance-small', isSmallBalance);
+        if (headerElements.dropdownAddress) headerElements.dropdownAddress.textContent = userFriendlyAddress;
+        if (headerElements.dropdownBalance) {
+            headerElements.dropdownBalance.textContent = isSmallBalance ? "< 0.01" : balanceStr;
+            headerElements.dropdownBalance.classList.toggle('wallet-balance-small', isSmallBalance);
+        }
+    }
+
+    function updateAllButtons(connected) {
+        if (headerElements.connectBtn) {
+            headerElements.connectBtn.style.display = connected ? 'none' : 'inline-flex';
+        }
+        if (headerElements.walletContainer) {
+            headerElements.walletContainer.style.display = connected ? 'block' : 'none';
+        }
+
+        if (indexElements.connectBtn) {
+            indexElements.connectBtn.style.display = connected ? 'none' : 'inline-flex';
+            indexElements.connectBtn.disabled = false;
+            indexElements.connectBtn.innerHTML = '<span>Connect Wallet</span>';
+        }
+        if (indexElements.disconnectBtn) {
+            indexElements.disconnectBtn.style.display = connected ? 'inline-flex' : 'none';
+        }
+
+        if (indexElements.walletField) {
+            indexElements.walletField.value = connected && currentWallet ? currentWallet.account.address : '';
         }
     }
 
@@ -83,115 +114,145 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function openWalletDropdown() {
-        if (!elements.walletDropdown) return;
+        if (!headerElements.walletDropdown) return;
 
-        elements.walletDropdown.classList.add('show');
-        elements.walletInfoBtn?.classList.add('active');
+        headerElements.walletDropdown.classList.add('show');
+        headerElements.walletInfoBtn?.classList.add('active');
         isDropdownOpen = true;
 
         setTimeout(() => document.addEventListener('click', handleClickOutside), 100);
     }
 
     function closeWalletDropdown() {
-        elements.walletDropdown?.classList.remove('show');
-        elements.walletInfoBtn?.classList.remove('active');
+        headerElements.walletDropdown?.classList.remove('show');
+        headerElements.walletInfoBtn?.classList.remove('active');
         isDropdownOpen = false;
         document.removeEventListener('click', handleClickOutside);
     }
 
     function handleClickOutside(e) {
-        if (elements.walletContainer && !elements.walletContainer.contains(e.target)) {
+        if (headerElements.walletContainer && !headerElements.walletContainer.contains(e.target)) {
             closeWalletDropdown();
         }
     }
 
     async function connectWallet() {
-        if (!elements.connectBtn) return;
-
         try {
-            elements.connectBtn.disabled = true;
-            elements.connectBtn.querySelector('span').textContent = 'Connecting...';
+            if (headerElements.connectBtn) {
+                headerElements.connectBtn.disabled = true;
+                headerElements.connectBtn.querySelector('span').textContent = 'Connecting...';
+            }
+            if (indexElements.connectBtn) {
+                indexElements.connectBtn.disabled = true;
+                indexElements.connectBtn.textContent = 'Connecting...';
+            }
+
             await tonConnectUI.connectWallet();
+
         } catch (error) {
-            showFlashMessage('Failed to connect wallet', 'error');
+            if (error.message.includes('User rejected')) {
+                showFlashMessage('Подключение отклонено пользователем', 'warning');
+            } else if (error.message.includes('timeout')) {
+                showFlashMessage('Время ожидания истекло. Попробуйте снова', 'error');
+            } else {
+                showFlashMessage('Ошибка подключения кошелька', 'error');
+            }
         } finally {
-            elements.connectBtn.disabled = false;
-            elements.connectBtn.querySelector('span').textContent = 'Connect Wallet';
+            if (headerElements.connectBtn) {
+                headerElements.connectBtn.disabled = false;
+                headerElements.connectBtn.querySelector('span').textContent = 'Connect Wallet';
+            }
+            if (indexElements.connectBtn) {
+                indexElements.connectBtn.disabled = false;
+                indexElements.connectBtn.innerHTML = '<span>Connect Wallet</span>';
+            }
         }
     }
 
-    elements.connectBtn?.addEventListener('click', connectWallet);
-    elements.walletInfoBtn?.addEventListener('click', (e) => {
+    async function disconnectWallet() {
+        try {
+            await tonConnectUI.disconnect();
+            closeWalletDropdown();
+            showFlashMessage('Кошелек успешно отключен', 'success');
+        } catch (error) {
+            showFlashMessage('Ошибка отключения кошелька', 'error');
+        }
+    }
+
+    headerElements.connectBtn?.addEventListener('click', connectWallet);
+    headerElements.walletInfoBtn?.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         toggleWalletDropdown();
     });
 
+    indexElements.connectBtn?.addEventListener('click', connectWallet);
+    indexElements.disconnectBtn?.addEventListener('click', disconnectWallet);
+
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && isDropdownOpen) closeWalletDropdown();
+        if (e.key === 'Escape' && isDropdownOpen) {
+            closeWalletDropdown();
+        }
     });
 
     window.copyWalletAddress = async function() {
         if (!currentWallet?.userFriendlyAddress) {
-            showFlashMessage('No wallet address to copy', 'error');
+            showFlashMessage('Нет адреса кошелька для копирования', 'error');
             return;
         }
 
         try {
             await navigator.clipboard.writeText(currentWallet.userFriendlyAddress);
-            showFlashMessage('Address copied to clipboard!', 'success');
-        } catch {
-            showFlashMessage('Failed to copy address', 'error');
+            showFlashMessage('Адрес кошелька скопирован!', 'success');
+        } catch (error) {
+            showFlashMessage('Ошибка копирования адреса', 'error');
+            prompt('Скопируйте адрес вручную:', currentWallet.userFriendlyAddress);
         }
     };
 
     window.refreshWalletBalance = async function() {
         if (!currentWallet) {
-            showFlashMessage('No wallet connected', 'error');
+            showFlashMessage('Кошелек не подключен', 'error');
             return;
         }
 
-        if (elements.balanceEl) elements.balanceEl.textContent = 'Loading...';
-        if (elements.dropdownBalance) elements.dropdownBalance.textContent = 'Updating...';
+        if (headerElements.balanceEl) headerElements.balanceEl.textContent = 'Loading...';
+        if (headerElements.dropdownBalance) headerElements.dropdownBalance.textContent = 'Updating...';
 
         try {
             const walletData = await fetchWalletData(currentWallet.account.address);
             Object.assign(currentWallet, walletData);
             displayWallet(walletData.balance, walletData.shortAddress);
-            showFlashMessage('Balance updated successfully!', 'success');
-        } catch {
-            if (elements.balanceEl) elements.balanceEl.textContent = '0$';
-            if (elements.dropdownBalance) {
-                elements.dropdownBalance.textContent = '0$';
-                elements.dropdownBalance.classList.add('wallet-balance-small');
+        } catch (error) {
+            if (headerElements.balanceEl) headerElements.balanceEl.textContent = '0$';
+            if (headerElements.dropdownBalance) {
+                headerElements.dropdownBalance.textContent = '0$';
+                headerElements.dropdownBalance.classList.add('wallet-balance-small');
             }
-            showFlashMessage('Failed to update balance', 'error');
+
+            showFlashMessage('Ошибка обновления баланса', 'error');
         }
     };
 
-    window.disconnectWalletFromDropdown = function() {
-        tonConnectUI.disconnect();
-        closeWalletDropdown();
-        showFlashMessage('Wallet disconnected', 'info');
-    };
+    window.disconnectWalletFromDropdown = disconnectWallet;
 
     tonConnectUI.onStatusChange(async wallet => {
         currentWallet = wallet;
 
         if (wallet) {
-            if (elements.connectBtn) elements.connectBtn.style.display = 'none';
-            if (elements.walletContainer) elements.walletContainer.style.display = 'block';
+            showFlashMessage('Кошелек успешно подключен!', 'success');
+            updateAllButtons(true);
 
             try {
                 const walletData = await fetchWalletData(wallet.account.address);
                 Object.assign(currentWallet, walletData);
                 displayWallet(walletData.balance, walletData.shortAddress);
-            } catch {
+            } catch (error) {
                 displayWallet("0.00 TON", wallet.account.address);
+                showFlashMessage('Данные кошелька загружены частично', 'warning');
             }
         } else {
-            if (elements.connectBtn) elements.connectBtn.style.display = 'inline-flex';
-            if (elements.walletContainer) elements.walletContainer.style.display = 'none';
+            updateAllButtons(false);
             displayWallet("0$", "");
             closeWalletDropdown();
         }
@@ -201,4 +262,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (existingWallet) {
         tonConnectUI.onStatusChange(existingWallet);
     }
+
+    tonConnectUI.onError = (error) => {
+        showFlashMessage(`Ошибка TON Connect: ${error.message}`, 'error');
+    };
 });
