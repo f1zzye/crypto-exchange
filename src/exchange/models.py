@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from decimal import Decimal
 import uuid
+from django.utils import timezone
 
 
 class TimestampMixin(models.Model):
@@ -99,6 +100,109 @@ class Pool(TimestampMixin):
         verbose_name="Fee rate (%)",
         help_text="Trading fee percentage (e.g., 0.3000 for 0.3%)",
     )
+
+    contract_address = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        unique=True,
+        verbose_name="TON Contract Address",
+        help_text="Deployed smart contract address in TON blockchain",
+    )
+
+    is_contract_deployed = models.BooleanField(
+        default=False,
+        verbose_name="Contract Deployed",
+        help_text="Whether the TON smart contract has been successfully deployed",
+    )
+
+    contract_deployed_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="Contract Deployed At",
+        help_text="Timestamp when the contract was deployed",
+    )
+
+    deployment_tx_hash = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Deployment Transaction Hash",
+        help_text="Transaction hash of the contract deployment",
+    )
+
+    deployment_error = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Deployment Error",
+        help_text="Error message if contract deployment failed",
+    )
+
+    is_pool_activated = models.BooleanField(
+        default=False,
+        verbose_name="Pool Activated",
+        help_text="Whether the pool has been activated (OP_DEPLOY_POOL called)",
+    )
+
+    pool_activated_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="Pool Activated At",
+        help_text="Timestamp when the pool was activated",
+    )
+
+    activation_tx_hash = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Pool Activation Transaction Hash",
+        help_text="Transaction hash of the pool activation",
+    )
+
+    is_liquidity_added = models.BooleanField(
+        default=False,
+        verbose_name="Initial Liquidity Added",
+        help_text="Whether initial liquidity has been added to the contract",
+    )
+
+    liquidity_added_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="Liquidity Added At",
+        help_text="Timestamp when initial liquidity was added",
+    )
+
+    liquidity_tx_hash = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Liquidity Transaction Hash",
+        help_text="Transaction hash of the liquidity addition",
+    )
+
+    last_sync_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="Last Sync At",
+        help_text="Last time contract state was synchronized with blockchain",
+    )
+
+    admin_wallet_address = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Admin Wallet Address",
+        help_text="TON wallet address of the pool administrator",
+    )
+
+    usdt_master_address = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="USDT Master Contract Address",
+        help_text="Address of the USDT jetton master contract",
+    )
+
     admin_notes = models.TextField(blank=True, null=True, verbose_name="Admin notes")
 
     is_active = models.BooleanField(default=True, verbose_name="Is active")
@@ -127,6 +231,37 @@ class Pool(TimestampMixin):
 
     def generate_pool_name(self):
         self.name = f"{self.token1.symbol}/{self.token2.symbol}"
+
+    @property
+    def fee_basis_points(self):
+        """Конвертация процентов в базисные пункты для контракта"""
+        return int(self.fee_percentage * 100)
+
+    @property
+    def contract_status(self):
+        """Текстовый статус контракта"""
+        if self.is_liquidity_added:
+            return "fully_operational"
+        elif self.is_pool_activated:
+            return "activated"
+        elif self.is_contract_deployed:
+            return "deployed"
+        elif self.deployment_error:
+            return "failed"
+        else:
+            return "pending"
+
+    @property
+    def contract_status_display(self):
+        """Человекочитаемый статус контракта"""
+        status_map = {
+            "fully_operational": "🟢 Fully Operational",
+            "activated": "🟡 Pool Activated",
+            "deployed": "🔵 Contract Deployed",
+            "failed": "🔴 Deployment Failed",
+            "pending": "⏳ Pending Deployment",
+        }
+        return status_map.get(self.contract_status, "❓ Unknown")
 
     @property
     def exchange_rate_token1_to_token2(self):
@@ -170,23 +305,71 @@ class Pool(TimestampMixin):
 
         return numerator / denominator
 
-        # формула используеться для вычисления количества выходного B токена исходя из того сколько токена А внесет пользователь
+    def mark_contract_deployed(self, contract_address, tx_hash):
+        """Отметить контракт как задеплоенный"""
+        self.contract_address = contract_address
+        self.is_contract_deployed = True
+        self.contract_deployed_at = timezone.now()
+        self.deployment_tx_hash = tx_hash
+        self.deployment_error = None
+        self.save(
+            update_fields=[
+                "contract_address",
+                "is_contract_deployed",
+                "contract_deployed_at",
+                "deployment_tx_hash",
+                "deployment_error",
+            ]
+        )
 
-        # Пользователь хочет обменять 1000 USDT на TON
-        # Пул: 30000 USDT / 10000 TON, комиссия 1.3%
+    def mark_pool_activated(self, tx_hash):
+        """Отметить пул как активированный"""
+        self.is_pool_activated = True
+        self.pool_activated_at = timezone.now()
+        self.activation_tx_hash = tx_hash
+        self.save(
+            update_fields=[
+                "is_pool_activated",
+                "pool_activated_at",
+                "activation_tx_hash",
+            ]
+        )
 
-        # input_amount = Decimal("1000")  # 1000 USDT от пользователя
-        # fee_percentage = Decimal("1.3")  # 1.3% комиссия пула
-        # fee_multiplier = 100 - 1.3 = 98.7  # 98.7% остается пользователю
-        #
-        # # Формула AMM:
-        # numerator = 1000 * 98.7 * 10000 = 987, 000, 000
-        # denominator = (30000 * 100) + (1000 * 98.7) = 3, 000, 000 + 98, 700 = 3, 0
-        # 98, 700
-        #
-        # output = 987, 000, 000 / 3, 0
-        # 98, 700 ≈ 318.5
-        # TON
+    def mark_liquidity_added(self, tx_hash):
+        """Отметить ликвидность как добавленную"""
+        self.is_liquidity_added = True
+        self.liquidity_added_at = timezone.now()
+        self.liquidity_tx_hash = tx_hash
+        self.save(
+            update_fields=[
+                "is_liquidity_added",
+                "liquidity_added_at",
+                "liquidity_tx_hash",
+            ]
+        )
+
+    def sync_reserves_from_contract(self, ton_reserve_nano, usdt_reserve_micro):
+        """
+        Синхронизировать резервы из контракта в token1_amount и token2_amount
+        """
+        # Конвертируем из blockchain единиц в обычные
+        self.token1_amount = Decimal(str(ton_reserve_nano)) / Decimal(
+            "1000000000"
+        )  # из nanotons
+        self.token2_amount = Decimal(str(usdt_reserve_micro)) / Decimal(
+            "1000000"
+        )  # из micro USDT
+        self.last_sync_at = timezone.now()
+
+        self.save(update_fields=["token1_amount", "token2_amount", "last_sync_at"])
+
+    def get_contract_amounts(self):
+        """
+        Получить суммы в единицах контракта (nanotons и micro USDT)
+        """
+        ton_nano = int(self.token1_amount * Decimal("1000000000"))  # в nanotons
+        usdt_micro = int(self.token2_amount * Decimal("1000000"))  # в micro USDT
+        return ton_nano, usdt_micro
 
 
 class ExchangeOrder(TimestampMixin):
