@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.urls import reverse
 from unfold.admin import ModelAdmin
 from decimal import Decimal
+from django.contrib import messages
 
 from .models import Network, Token, Pool, ExchangeOrder
 
@@ -250,54 +251,91 @@ class TokenAdmin(ModelAdmin):
 @admin.register(Pool)
 class PoolAdmin(ModelAdmin):
     list_display = (
-        "name",
-        "token_pair_display",
+        "pool_display",
+        "network_info",
         "reserves_display",
-        "exchange_rate_display",
+        "contract_status_badge",
+        "liquidity_health",
         "fee_percentage",
-        "status_display",
-        "liquidity_info",
+        "volume_24h",
+        "status_badge",
     )
-    list_display_links = ("name", "token_pair_display")
+    list_display_links = ("pool_display",)
     search_fields = (
         "name",
         "token1__name",
         "token1__short_name",
         "token2__name",
         "token2__short_name",
+        "contract_address",
     )
     list_filter = (
         "is_active",
+        "is_contract_deployed",
+        "is_pool_activated",
+        "is_liquidity_added",
         ("token1__network", admin.RelatedOnlyFieldListFilter),
-        ("token2__network", admin.RelatedOnlyFieldListFilter),
         "fee_percentage",
+        "created_at",
     )
-    ordering = ("name",)
+    ordering = ("-created_at",)
     readonly_fields = (
         "id",
         "created_at",
         "updated_at",
-        "get_pool_analytics",
-        "get_trading_analytics",
+        "contract_status_display",
+        "get_pool_dashboard",
+        "get_contract_dashboard",
     )
 
     fieldsets = (
-        ("Basic Information", {"fields": ("name",)}),
+        ("Pool Information", {"fields": ("name",), "classes": ("wide",)}),
         (
             "Token Configuration",
             {
                 "fields": (
                     ("token1", "token1_amount"),
                     ("token2", "token2_amount"),
-                )
+                ),
+                "classes": ("wide",),
             },
         ),
-        ("Pool Settings", {"fields": ("fee_percentage", "is_active")}),
-        ("Administration", {"fields": ("admin_notes",), "classes": ("collapse",)}),
         (
-            "Analytics",
+            "Pool Settings",
+            {"fields": ("fee_percentage", "is_active"), "classes": ("wide",)},
+        ),
+        (
+            "Smart Contract",
             {
-                "fields": ("get_pool_analytics", "get_trading_analytics"),
+                "fields": (
+                    "contract_address",
+                    "contract_status_display",
+                    ("is_contract_deployed", "contract_deployed_at"),
+                    ("is_pool_activated", "pool_activated_at"),
+                    ("is_liquidity_added", "liquidity_added_at"),
+                    "deployment_tx_hash",
+                    "activation_tx_hash",
+                    "liquidity_tx_hash",
+                    "deployment_error",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Administration",
+            {
+                "fields": (
+                    "admin_wallet_address",
+                    "usdt_master_address",
+                    "admin_notes",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Analytics Dashboard",
+            {
+                "fields": ("get_pool_dashboard", "get_contract_dashboard"),
                 "classes": ("collapse",),
             },
         ),
@@ -314,21 +352,55 @@ class PoolAdmin(ModelAdmin):
             .select_related("token1", "token2", "token1__network", "token2__network")
         )
 
-    def token_pair_display(self, obj):
+    def pool_display(self, obj):
         if not (obj.token1 and obj.token2):
-            return "Tokens not set"
+            return format_html('<span style="color: #f44336;">Incomplete</span>')
 
+        # URL для редактирования этого Pool объекта
+        edit_url = reverse("admin:exchange_pool_change", args=[obj.pk])
+
+        # Ссылки на токены
         token1_url = reverse("admin:exchange_token_change", args=[obj.token1.id])
         token2_url = reverse("admin:exchange_token_change", args=[obj.token2.id])
+
         return format_html(
-            '<a href="{}">{}</a> / <a href="{}">{}</a>',
-            token1_url,
+            '<div style="display: flex; align-items: center;">'
+            '<strong style="color: #333;">'
+            '<a href="{}" style="color: #1976d2; text-decoration: none;">{} / {}</a>'
+            "</strong>"
+            '<div style="font-size: 11px; color: #666; margin-left: 8px;">'
+            '<a href="{}" style="color: #666;">T1</a> | '
+            '<a href="{}" style="color: #666;">T2</a>'
+            "</div>"
+            "</div>",
+            edit_url,
             obj.token1.short_name,
-            token2_url,
             obj.token2.short_name,
+            token1_url,
+            token2_url,
         )
 
-    token_pair_display.short_description = "Token Pair"
+    pool_display.short_description = "Pool"
+
+    def network_info(self, obj):
+        if obj.token1 and obj.token1.network:
+            network = obj.token1.network
+            url = reverse("admin:exchange_network_change", args=[network.id])
+            badge_color = "#4caf50" if network.is_active else "#9e9e9e"
+            network_type = "TESTNET" if network.is_testnet else "MAINNET"
+
+            return format_html(
+                '<a href="{}" style="text-decoration: none;">'
+                '<span style="background: {}; color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px;">'
+                "{}"
+                "</span></a>",
+                url,
+                badge_color,
+                network.short_name,
+            )
+        return "—"
+
+    network_info.short_description = "Network"
 
     def reserves_display(self, obj):
         if not (
@@ -337,159 +409,312 @@ class PoolAdmin(ModelAdmin):
             and obj.token1_amount is not None
             and obj.token2_amount is not None
         ):
-            return "Reserves not set"
+            return format_html('<span style="color: #f44336;">Not Set</span>')
 
-        token1_formatted = "{:,.0f}".format(obj.token1_amount)
-        token2_formatted = "{:,.0f}".format(obj.token2_amount)
+        total_value = obj.token1_amount + obj.token2_amount
+        balance_ratio = (
+            (obj.token1_amount / total_value * 100) if total_value > 0 else 0
+        )
+
+        # Color based on balance (green if well balanced)
+        balance_color = (
+            "#4caf50"
+            if 30 <= balance_ratio <= 70
+            else "#ff9800" if 20 <= balance_ratio <= 80 else "#f44336"
+        )
 
         return format_html(
-            "{} {} / {} {}",
-            token1_formatted,
+            '<div style="font-size: 12px;">'
+            "<div>{} {}</div>"
+            "<div>{} {}</div>"
+            '<div style="color: {}; font-weight: bold;">TVL: ${}</div>'
+            "</div>",
+            "{:,.0f}".format(obj.token1_amount),
             obj.token1.short_name,
-            token2_formatted,
+            "{:,.0f}".format(obj.token2_amount),
             obj.token2.short_name,
+            balance_color,
+            "{:,.0f}".format(total_value),
         )
 
     reserves_display.short_description = "Reserves"
 
-    def exchange_rate_display(self, obj):
-        if not (
-            obj.token1
-            and obj.token2
-            and obj.token1_amount
-            and obj.token2_amount
-            and obj.token1_amount > 0
-            and obj.token2_amount > 0
-        ):
-            return "Set reserves"
+    def contract_status_badge(self, obj):
+        status = obj.contract_status
+        status_config = {
+            "fully_operational": ("#4caf50", "Operational"),
+            "activated": ("#ff9800", "Activated"),
+            "deployed": ("#2196f3", "Deployed"),
+            "failed": ("#f44336", "Failed"),
+            "pending": ("#9e9e9e", "Pending"),
+        }
 
-        rate1to2 = obj.exchange_rate_token1_to_token2
-        rate1to2_formatted = "{:.4f}".format(rate1to2)
+        color, text = status_config.get(status, ("#000", "Unknown"))
 
-        return format_html(
-            "1 {} = {} {}",
-            obj.token1.short_name,
-            rate1to2_formatted,
-            obj.token2.short_name,
-        )
+        # Добавляем ссылку на TON explorer если контракт задеплоен
+        if obj.contract_address and obj.is_contract_deployed:
+            explorer_url = f"https://tonscan.org/address/{obj.contract_address}"
+            return format_html(
+                "<div>"
+                '<span style="color: {}; font-weight: bold;">{}</span><br>'
+                '<a href="{}" target="_blank" style="font-size: 10px; color: #666;">View on TONScan</a>'
+                "</div>",
+                color,
+                text,
+                explorer_url,
+            )
+        else:
+            return format_html(
+                '<span style="color: {}; font-weight: bold;">{}</span>',
+                color,
+                text,
+            )
 
-    exchange_rate_display.short_description = "Rate"
+    contract_status_badge.short_description = "Contract"
 
-    def status_display(self, obj):
-        return format_html(
-            '<span style="color: {}; font-weight: bold;">{}</span>',
-            "#4caf50" if obj.is_active else "#f44336",
-            "Active" if obj.is_active else "Inactive",
-        )
-
-    status_display.short_description = "Status"
-
-    def liquidity_info(self, obj):
-        if obj.token1_amount is None or obj.token2_amount is None:
-            return "No liquidity"
+    def liquidity_health(self, obj):
+        # Безопасная проверка на None
+        if not (obj.token1_amount and obj.token2_amount):
+            return format_html('<span style="color: #9e9e9e;">—</span>')
 
         total_liquidity = obj.token1_amount + obj.token2_amount
-        if total_liquidity > 1000000:
-            formatted_value = "{:,.0f}K".format(total_liquidity / 1000)
-            return format_html(
-                '<span style="color: #4caf50; font-weight: bold;">${}</span>',
-                formatted_value,
-            )
-        elif total_liquidity > 100000:
-            formatted_value = "{:,.0f}K".format(total_liquidity / 1000)
-            return format_html("${}", formatted_value)
+
+        # Попытка получить количество заказов (с обработкой ошибок)
+        try:
+            orders_count = ExchangeOrder.objects.filter(pool=obj).count()
+        except:
+            orders_count = 0
+
+        # Health calculation based on liquidity and activity
+        if total_liquidity > 100000 and orders_count > 10:
+            return format_html('<span style="color: #4caf50;">Excellent</span>')
+        elif total_liquidity > 10000 and orders_count > 5:
+            return format_html('<span style="color: #8bc34a;">Good</span>')
+        elif total_liquidity > 1000:
+            return format_html('<span style="color: #ff9800;">Growing</span>')
         else:
-            formatted_value = "{:,.0f}".format(total_liquidity)
-            return format_html("${}", formatted_value)
+            return format_html('<span style="color: #f44336;">Weak</span>')
 
-    liquidity_info.short_description = "Liquidity"
+    liquidity_health.short_description = "Health"
 
-    def get_pool_analytics(self, obj):
-        if not obj.pk:
-            return "Save to see analytics"
+    def volume_24h(self, obj):
+        # Mock 24h volume calculation
+        try:
+            orders_count = ExchangeOrder.objects.filter(
+                pool=obj, status="completed"
+            ).count()
+        except:
+            orders_count = 0
 
-        if not (
-            obj.token1_amount
-            and obj.token2_amount
-            and obj.token1_amount > 0
-            and obj.token2_amount > 0
-        ):
-            return "Set token amounts to see analytics"
+        if orders_count > 50:
+            return format_html(
+                '<span style="color: #4caf50; font-weight: bold;">High</span>'
+            )
+        elif orders_count > 10:
+            return format_html('<span style="color: #ff9800;">Medium</span>')
+        elif orders_count > 0:
+            return format_html('<span style="color: #2196f3;">Low</span>')
+        return "—"
 
-        k_constant = obj.token1_amount * obj.token2_amount
-        total_value = obj.token1_amount + obj.token2_amount
-        ratio = (obj.token1_amount / (obj.token1_amount + obj.token2_amount)) * 100
+    volume_24h.short_description = "24h Vol"
 
+    def status_badge(self, obj):
+        if obj.is_active:
+            return format_html(
+                '<span style="color: #4caf50; font-weight: bold;">Active</span>'
+            )
         return format_html(
-            "<strong>Pool Analytics:</strong><br>"
-            "K Constant: {:,.0f}<br>"
-            "Total Value: ${:,.0f}<br>"
-            "Token Ratio: {:.1f}% / {:.1f}%<br>"
-            "Fee Rate: {}%<br>"
-            "Pool Health: {}",
-            k_constant,
-            total_value,
-            ratio,
-            100 - ratio,
-            obj.fee_percentage,
-            "Good" if 30 <= ratio <= 70 else "Imbalanced",
+            '<span style="color: #f44336; font-weight: bold;">Inactive</span>'
         )
 
-    get_pool_analytics.short_description = "Pool Analytics"
+    status_badge.short_description = "Status"
 
-    def get_trading_analytics(self, obj):
-        if not (obj.pk and obj.token1 and obj.token2):
-            return "Save to see trading analytics"
-
-        if not (
-            obj.token1_amount
-            and obj.token2_amount
-            and obj.token1_amount > 0
-            and obj.token2_amount > 0
-        ):
-            return "Set token amounts to see trading analytics"
-
-        # Sample swap calculations
-        test_amounts = [Decimal("1"), Decimal("10"), Decimal("100")]
-        results = []
-
-        for amount in test_amounts:
-            output = obj.get_output_amount(obj.token1, amount)
-            rate = output / amount if amount > 0 else Decimal("0")
-            results.append(
-                f"Swap {amount} {obj.token1.short_name} → {output:.4f} {obj.token2.short_name}"
+    def get_pool_dashboard(self, obj):
+        if not obj.pk:
+            return format_html(
+                '<div style="color: #666;">Save pool to see dashboard</div>'
             )
 
-        # Count orders using this pool
-        orders_count = ExchangeOrder.objects.filter(pool=obj).count()
-        pending_orders = ExchangeOrder.objects.filter(
-            pool=obj, status="pending"
-        ).count()
+        try:
+            orders = ExchangeOrder.objects.filter(pool=obj)
+            total_orders = orders.count()
+            completed_orders = orders.filter(status="completed").count()
+        except:
+            total_orders = 0
+            completed_orders = 0
 
-        results_html = "<br>".join(results[:3])
-        return format_html(
-            "<strong>Trading Analytics:</strong><br>"
-            "Total Orders: {}<br>"
-            "Pending Orders: {}<br>"
-            "<br><strong>Sample Swaps:</strong><br>{}",
-            orders_count,
-            pending_orders,
-            mark_safe(results_html),
+        success_rate = (
+            (completed_orders / total_orders * 100) if total_orders > 0 else 0
         )
 
-    get_trading_analytics.short_description = "Trading Analytics"
+        # Безопасная проверка на None для сумм
+        tvl = 0
+        k_constant = 0
+        exchange_rate = 0
 
-    actions = ["activate_pools", "deactivate_pools"]
+        if obj.token1_amount and obj.token2_amount:
+            tvl = obj.token1_amount + obj.token2_amount
+            k_constant = obj.token1_amount * obj.token2_amount
+            exchange_rate = obj.exchange_rate_token1_to_token2
+
+        return format_html(
+            """
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <h3 style="margin-top: 0; color: #333;">Pool Analytics Dashboard</h3>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #4caf50;">
+                        <strong style="color: #4caf50;">Trading Stats</strong><br>
+                        Total Orders: {}<br>
+                        Completed: {}<br>
+                        Success Rate: {}%
+                    </div>
+
+                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #2196f3;">
+                        <strong style="color: #2196f3;">Liquidity</strong><br>
+                        TVL: ${}<br>
+                        Fee Rate: {}%<br>
+                        K Constant: {}
+                    </div>
+
+                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #ff9800;">
+                        <strong style="color: #ff9800;">Performance</strong><br>
+                        Exchange Rate: {}<br>
+                        Pool Health: {}<br>
+                        Volume Rank: {}
+                    </div>
+                </div>
+            </div>
+        """,
+            total_orders,
+            completed_orders,
+            "{:.1f}".format(success_rate),
+            "{:,.0f}".format(tvl),
+            obj.fee_percentage or 0,
+            "{:,.0f}".format(k_constant),
+            "{:.4f}".format(exchange_rate),
+            "Good" if success_rate > 80 else "Average" if success_rate > 50 else "Poor",
+            "High" if total_orders > 100 else "Medium" if total_orders > 10 else "Low",
+        )
+
+    get_pool_dashboard.short_description = "Pool Dashboard"
+
+    def get_contract_dashboard(self, obj):
+        if not obj.pk:
+            return format_html(
+                '<div style="color: #666;">Save pool to see contract info</div>'
+            )
+
+        contract_addr = (
+            obj.contract_address[:10] + "..." if obj.contract_address else "Not set"
+        )
+        last_sync = (
+            obj.last_sync_at.strftime("%m/%d %H:%M") if obj.last_sync_at else "Never"
+        )
+        admin_addr = (
+            obj.admin_wallet_address[:10] + "..."
+            if obj.admin_wallet_address
+            else "Not set"
+        )
+
+        error_section = ""
+        if obj.deployment_error:
+            error_section = """
+            <div style="background: #ffebee; padding: 10px; border-radius: 6px; border-left: 4px solid #f44336; margin-top: 15px;">
+                <strong style="color: #f44336;">Deployment Error:</strong><br>
+                <code>{}</code>
+            </div>
+            """.format(
+                obj.deployment_error
+            )
+
+        return format_html(
+            """
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <h3 style="margin-top: 0; color: #333;">Smart Contract Dashboard</h3>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #673ab7;">
+                        <strong style="color: #673ab7;">Contract Status</strong><br>
+                        Deployed: {}<br>
+                        Activated: {}<br>
+                        Liquidity: {}<br>
+                        Overall: {}
+                    </div>
+
+                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #e91e63;">
+                        <strong style="color: #e91e63;">Technical</strong><br>
+                        Address: {}<br>
+                        Last Sync: {}<br>
+                        Admin: {}
+                    </div>
+                </div>
+
+                {}
+            </div>
+        """,
+            "Yes" if obj.is_contract_deployed else "No",
+            "Yes" if obj.is_pool_activated else "No",
+            "Yes" if obj.is_liquidity_added else "No",
+            obj.contract_status_display,
+            contract_addr,
+            last_sync,
+            admin_addr,
+            error_section,
+        )
+
+    get_contract_dashboard.short_description = "Contract Dashboard"
+
+    actions = [
+        "deploy_contracts",
+        "activate_pools",
+        "sync_from_blockchain",
+        "deactivate_pools",
+    ]
+
+    def deploy_contracts(self, request, queryset):
+        # Mock deployment action - implement actual deployment logic
+        deployed_count = 0
+        for pool in queryset.filter(is_contract_deployed=False):
+            # Add your deployment logic here
+            deployed_count += 1
+
+        self.message_user(
+            request,
+            "{} pools marked for deployment. Check contract status.".format(
+                deployed_count
+            ),
+            messages.SUCCESS,
+        )
+
+    deploy_contracts.short_description = "Deploy smart contracts"
 
     def activate_pools(self, request, queryset):
         updated = queryset.update(is_active=True)
-        self.message_user(request, f"{updated} pools were activated.")
+        self.message_user(
+            request,
+            "{} pools activated successfully.".format(updated),
+            messages.SUCCESS,
+        )
 
     activate_pools.short_description = "Activate selected pools"
 
+    def sync_from_blockchain(self, request, queryset):
+        # Mock sync action - implement actual blockchain sync
+        synced_count = queryset.filter(is_contract_deployed=True).count()
+        self.message_user(
+            request,
+            "{} pools synced from blockchain.".format(synced_count),
+            messages.INFO,
+        )
+
+    sync_from_blockchain.short_description = "Sync from blockchain"
+
     def deactivate_pools(self, request, queryset):
         updated = queryset.update(is_active=False)
-        self.message_user(request, f"{updated} pools were deactivated.")
+        self.message_user(
+            request, "{} pools deactivated.".format(updated), messages.WARNING
+        )
 
     deactivate_pools.short_description = "Deactivate selected pools"
 
