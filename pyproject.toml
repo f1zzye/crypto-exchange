@@ -15,6 +15,9 @@ python-decouple = "^3.8"
 requests = "^2.32.4"
 httpx = "^0.28.1"
 pytoniq-core = "^0.1.44"
+pytoniq = "^0.1.41"
+tonsdk = "^1.0.15"
+celery = "^5.5.3"
 
 
 [build-system]
