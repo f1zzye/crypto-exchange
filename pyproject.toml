@@ -15,9 +15,14 @@ python-decouple = "^3.8"
 requests = "^2.32.4"
 httpx = "^0.28.1"
 pytoniq-core = "^0.1.44"
-pytoniq = "^0.1.41"
+pytoniq = "0.1.38"
 tonsdk = "^1.0.15"
-celery = "^5.5.3"
+celery = {version = "5.3.4", extras = ["django"]}
+toncli = "^0.0.43"
+cryptography = "^45.0.6"
+aiohttp = "^3.12.15"
+django-celery-results = "2.5.0"
+django-celery-beat = "^2.8.1"
 
 
 [build-system]
