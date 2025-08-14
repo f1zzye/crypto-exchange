@@ -1,17 +1,18 @@
-from django.shortcuts import redirect, render
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login, authenticate
-from django.views.generic import CreateView, TemplateView
+from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LogoutView, PasswordResetConfirmView
-from django.urls import reverse_lazy, reverse
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import Http404, JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from django.contrib.auth.tokens import default_token_generator
-from django.http import JsonResponse, Http404
-from .forms import UserRegisterForm
+from django.views.generic import CreateView, TemplateView
+
 from common.mixins import TitleMixin
 
+from .forms import UserRegisterForm
 from .services.emails import send_confirmation_email
 
 User = get_user_model()

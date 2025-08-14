@@ -1,5 +1,6 @@
-from config.settings.base import *  # noqa
 from decouple import config
+
+from config.settings.base import *  # noqa
 
 DEBUG: bool = True
 

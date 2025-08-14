@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 from unfold.admin import ModelAdmin
 
 from .models import Profile
-from django.utils.translation import gettext_lazy as _
 
 
 class ProfileAdmin(admin.StackedInline):

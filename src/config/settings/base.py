@@ -1,7 +1,8 @@
 from pathlib import Path
+
+from decouple import config
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -175,9 +176,9 @@ UNFOLD = {
     },
 }
 
-NODEJS_API_URL = 'http://localhost:3000'
+NODEJS_API_URL = config("NODEJS_API_URL", default="http://localhost:3000/api/v1")
 
-DEFAULT_ADMIN_WALLET = 'EQB6B3_azSTKuDr9Mivhl0hifQ0jg48PzfYiLLv_wCYBGwcR'
+DEFAULT_ADMIN_WALLET = config("DEFAULT_ADMIN_WALLET", default="0x0000000000000000000000000000000000000000")
 
 LOGGING = {
     'version': 1,

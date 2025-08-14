@@ -1,8 +1,6 @@
 from django.urls import path
-from exchange.views import (
-    calculate_exchange_api,
-    OrderSuccessView,
-)
+
+from exchange.views import OrderSuccessView, calculate_exchange_api
 
 app_name: str = "exchange"
 

@@ -1,13 +1,12 @@
-from django.contrib import admin
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
+from decimal import Decimal
+
+from django.contrib import admin, messages
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.html import format_html
 from unfold.admin import ModelAdmin
-from decimal import Decimal
-from django.contrib import messages
 
-from .models import Network, Token, Pool, ExchangeOrder
+from .models import ExchangeOrder, Network, Pool, Token
 
 
 class TokenInline(admin.TabularInline):
@@ -870,8 +869,9 @@ class ExchangeOrderAdmin(ModelAdmin):
         if not obj.pk:
             return "Save to see analytics"
 
-        from django.utils import timezone
         import datetime
+
+        from django.utils import timezone
 
         # Time analysis
         processing_time = obj.updated_at - obj.created_at
@@ -976,6 +976,7 @@ class ExchangeOrderAdmin(ModelAdmin):
 
     def export_selected_orders(self, request, queryset):
         import csv
+
         from django.http import HttpResponse
 
         response = HttpResponse(content_type="text/csv")

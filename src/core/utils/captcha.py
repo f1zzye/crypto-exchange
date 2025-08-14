@@ -1,7 +1,8 @@
-import random
-from PIL import Image, ImageDraw, ImageFont
-import io
 import base64
+import io
+import random
+
+from PIL import Image, ImageDraw, ImageFont
 
 
 class CaptchaGenerator:

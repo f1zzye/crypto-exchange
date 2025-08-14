@@ -1,11 +1,14 @@
 import json
 from decimal import Decimal
-from common.mixins import TitleMixin
+
+from django.db import models
 from django.http import JsonResponse
 from django.views.generic import TemplateView
-from exchange.models import Token, ExchangeOrder, Pool
-from django.db import models
-from .models import Token, Pool
+
+from common.mixins import TitleMixin
+from exchange.models import ExchangeOrder, Pool, Token
+
+from .models import Pool, Token
 
 
 class OrderSuccessView(TitleMixin, TemplateView):

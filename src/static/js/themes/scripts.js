@@ -1,5 +1,3 @@
-
-
 const changeHeight = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
@@ -539,13 +537,10 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     const formContainer = document.querySelector(".deposits__form");
 
-    // Р¤СѓРЅРєС†РёСЏ СЃРѕР·РґР°РЅРёСЏ Рё РІСЃС‚Р°РІРєРё СЃРѕРѕР±С‰РµРЅРёСЏ
     function showMessage(type, message) {
-        // РЈРґР°Р»РёРј РїСЂРµРґС‹РґСѓС‰РёРµ СЃРѕРѕР±С‰РµРЅРёСЏ
         const oldMessages = formContainer.querySelectorAll(".result-message");
         oldMessages.forEach((el) => el.remove());
 
-        // РЎРѕР·РґР°С‘Рј РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚
         const div = document.createElement("div");
         div.classList.add(
             "result-message",
@@ -553,10 +548,8 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         div.innerHTML = `<div class="message-text">${message}</div>`;
 
-        // Р”РѕР±Р°РІР»СЏРµРј РІ DOM
         formContainer.prepend(div);
 
-        // РџСЂРѕРєСЂСѓС‚РєР° Рє СЃРѕРѕР±С‰РµРЅРёСЋ
         window.scrollTo({
             top: formContainer.offsetTop,
             behavior: "smooth",
@@ -570,7 +563,6 @@ document.addEventListener("DOMContentLoaded", function () {
             submitButton.setAttribute("disabled", true);
         },
         onSubmit: () => {
-            // РЈРґР°Р»РёС‚СЊ СЃС‚Р°СЂС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ РїРµСЂРµРґ РѕС‚РїСЂР°РІРєРѕР№
             const oldMessages =
                 formContainer.querySelectorAll(".result-message");
             oldMessages.forEach((el) => el.remove());
@@ -599,65 +591,4 @@ document.addEventListener("DOMContentLoaded", function () {
             // ...
         },
     });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById("deposit-modal");
-
-    if (modal) {
-        const openBtn = document.getElementById("open-modal");
-        const overlay = modal.querySelector(".modal__overlay");
-        const closeBtn = modal.querySelector(".modal__close");
-
-        const header = document.querySelector(".header") || document.body;
-
-        function getScrollbarWidth() {
-            const scrollDiv = document.createElement("div");
-            scrollDiv.style.visibility = "hidden";
-            scrollDiv.style.overflow = "scroll";
-            scrollDiv.style.msOverflowStyle = "scrollbar";
-            scrollDiv.style.width = "100px";
-            scrollDiv.style.position = "absolute";
-            scrollDiv.style.top = "-9999px";
-            document.body.appendChild(scrollDiv);
-
-            const innerDiv = document.createElement("div");
-            innerDiv.style.width = "100%";
-            scrollDiv.appendChild(innerDiv);
-
-            const scrollbarWidth = scrollDiv.offsetWidth - innerDiv.offsetWidth;
-            document.body.removeChild(scrollDiv);
-
-            return scrollbarWidth;
-        }
-
-        function openModal() {
-            const scrollbarWidth = getScrollbarWidth();
-            document.body.style.paddingRight = scrollbarWidth + "px";
-            header.style.paddingRight = scrollbarWidth + "px";
-            document.body.style.overflow = "hidden";
-            modal.classList.add("modal--visible");
-        }
-
-        function closeModal(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            modal.classList.remove("modal--visible");
-            document.body.style.overflow = "";
-            document.body.style.paddingRight = "";
-            header.style.paddingRight = "";
-            sessionStorage.setItem("deposits-modal-closed", "true");
-        }
-
-        if (!sessionStorage.getItem("deposits-modal-closed")) {
-            openModal();
-        }
-
-        if (closeBtn) {
-            closeBtn.addEventListener("click", closeModal);
-        }
-
-        overlay.addEventListener("click", closeModal);
-        openBtn?.addEventListener("click", openModal);
-    }
 });

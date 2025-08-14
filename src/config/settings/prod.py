@@ -1,6 +1,5 @@
 from config.settings.base import *
 
-
 DEBUG: bool = False
 
 SECRET_KEY: str = "django-insecure-!@#%$^&*()_+1234567890-=qwertyuiopasdfghjklzxcvbnm"

@@ -1,22 +1,20 @@
 from decimal import Decimal
+from http import HTTPStatus
 
+import httpx
+from django.conf import settings
+from django.db import models
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from pytoniq_core import Address
 
 from common.mixins import TitleMixin
 from core.utils.captcha import CaptchaGenerator
-
-from exchange.models import Token, ExchangeOrder, Pool
-from django.db import models
-from django.views import View
-from django.utils.decorators import method_decorator
-from pytoniq_core import Address
-import httpx
-from http import HTTPStatus
-from django.conf import settings
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from exchange.models import ExchangeOrder, Pool, Token
 
 
 def tonconnect_manifest(request):

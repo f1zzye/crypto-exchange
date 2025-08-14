@@ -1,16 +1,25 @@
 import logging
-import requests
+from http import HTTPStatus
+
+import httpx
+from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.conf import settings
 from django.utils import timezone
+
 from exchange.models import Pool
 
 logger = logging.getLogger(__name__)
 
 
+DEFAULT_TIMEOUT: int = 300
+TON_SYMBOL: str = 'TON'
+USDT_SYMBOL: str = 'USDT'
+MAX_ERROR_LENGTH: int = 500
+
+
 @receiver(post_save, sender=Pool)
-def auto_deploy_pool_contract(sender, instance, created, **kwargs):
+def auto_deploy_pool_contract(sender, instance, created, **kwargs) -> None:
     if created and not instance.is_contract_deployed:
         logger.info(f"Starting auto-deployment for pool: {instance}")
 
@@ -20,7 +29,7 @@ def auto_deploy_pool_contract(sender, instance, created, **kwargs):
 
             if success:
                 update_pool_with_deployment_result(instance, result)
-                logger.info(f"Pool {instance} deployed: {result.get('contract_address')}")
+                logger.info(f"Pool {instance} deployed: {result['contract_address']}")
             else:
                 handle_deployment_error(instance, result)
                 logger.error(f"Pool {instance} deployment failed: {result}")
@@ -30,11 +39,11 @@ def auto_deploy_pool_contract(sender, instance, created, **kwargs):
             logger.exception(f"Deployment error for pool {instance}")
 
 
-def prepare_deployment_payload(pool_instance):
-    token1_symbol = getattr(pool_instance.token1, 'short_name', 'TON')
-    token2_symbol = getattr(pool_instance.token2, 'short_name', 'USDT')
+def prepare_deployment_payload(pool_instance: Pool) -> dict[str, str | float]:
+    token1_symbol = getattr(pool_instance.token1, 'short_name', TON_SYMBOL)
+    token2_symbol = getattr(pool_instance.token2, 'short_name', USDT_SYMBOL)
 
-    if token1_symbol != 'TON' and token2_symbol == 'TON':
+    if token1_symbol != TON_SYMBOL and token2_symbol == TON_SYMBOL:
         token1_symbol, token2_symbol = token2_symbol, token1_symbol
 
     return {
@@ -47,32 +56,32 @@ def prepare_deployment_payload(pool_instance):
     }
 
 
-def send_deployment_request(payload):
+def send_deployment_request(payload: dict) -> tuple[bool, dict | str]:
     try:
         nodejs_api_url = getattr(settings, 'NODEJS_API_URL', 'http://localhost:3000')
 
-        response = requests.post(
+        response = httpx.post(
             f'{nodejs_api_url}/api/deploy-pool',
             json=payload,
             headers={'Content-Type': 'application/json'},
-            timeout=300
+            timeout=DEFAULT_TIMEOUT
         )
 
-        if response.status_code == 200:
+        if response.status_code == HTTPStatus.OK:
             result = response.json()
             return result.get('success', False), result
         else:
             return False, f'HTTP {response.status_code}: {response.text}'
 
-    except requests.exceptions.Timeout:
+    except httpx.TimeoutException:
         return False, 'Deployment timeout'
-    except requests.exceptions.ConnectionError:
+    except httpx.RequestError:
         return False, 'Cannot connect to Node.js API'
     except Exception as e:
         return False, str(e)
 
 
-def update_pool_with_deployment_result(pool_instance, deployment_result):
+def update_pool_with_deployment_result(pool_instance, deployment_result) -> None:
     try:
         now = timezone.now()
         pool_info = deployment_result.get('pool_info', {})
@@ -86,11 +95,11 @@ def update_pool_with_deployment_result(pool_instance, deployment_result):
             'last_sync_at': now,
         }
 
-        if pool_info.get('admin') and not pool_instance.admin_wallet_address:
-            update_fields['admin_wallet_address'] = pool_info.get('admin')
+        if pool_info['admin'] and not pool_instance.admin_wallet_address:
+            update_fields['admin_wallet_address'] = pool_info['admin']
 
-        if pool_info.get('usdt_master') and not pool_instance.usdt_master_address:
-            update_fields['usdt_master_address'] = pool_info.get('usdt_master')
+        if pool_info['usdt_master'] and not pool_instance.usdt_master_address:
+            update_fields['usdt_master_address'] = pool_info['usdt_master']
 
         for field, value in update_fields.items():
             setattr(pool_instance, field, value)
@@ -104,9 +113,9 @@ def update_pool_with_deployment_result(pool_instance, deployment_result):
         pool_instance.save(update_fields=['deployment_error'])
 
 
-def handle_deployment_error(pool_instance, error_message):
+def handle_deployment_error(pool_instance, error_message) -> None:
     try:
-        pool_instance.deployment_error = str(error_message)[:500]
+        pool_instance.deployment_error = str(error_message)[:MAX_ERROR_LENGTH]
         pool_instance.is_contract_deployed = False
         pool_instance.contract_deployed_at = None
         pool_instance.save(update_fields=[

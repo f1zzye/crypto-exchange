@@ -1,14 +1,7 @@
 from django.urls import path
 
-from core.views import (
-    IndexView,
-    AMLRulesView,
-    RaffleView,
-    CashbackInfoView,
-    DepositView,
-    tonconnect_manifest,
-    WalletTonService,
-)
+from core.views import (AMLRulesView, CashbackInfoView, DepositView, IndexView,
+                        RaffleView, WalletTonService, tonconnect_manifest)
 
 app_name: str = "core"
 
