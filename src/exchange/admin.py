@@ -450,13 +450,12 @@ class PoolAdmin(ModelAdmin):
 
         color, text = status_config.get(status, ("#000", "Unknown"))
 
-        # Добавляем ссылку на TON explorer если контракт задеплоен
         if obj.contract_address and obj.is_contract_deployed:
-            explorer_url = f"https://tonscan.org/address/{obj.contract_address}"
+            explorer_url = f"https://testnet.tonviewer.com/{obj.contract_address}"
             return format_html(
                 "<div>"
                 '<span style="color: {}; font-weight: bold;">{}</span><br>'
-                '<a href="{}" target="_blank" style="font-size: 10px; color: #666;">View on TONScan</a>'
+                '<a href="{}" target="_blank" style="font-size: 10px; color: #666;">View on TONviewer</a>'
                 "</div>",
                 color,
                 text,

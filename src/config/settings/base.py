@@ -176,29 +176,31 @@ UNFOLD = {
     },
 }
 
-NODEJS_API_URL = config("NODEJS_API_URL", default="http://localhost:3000/api/v1")
+NODEJS_API_URL = config("NODEJS_API_URL", default="http://localhost:3000")
 
-DEFAULT_ADMIN_WALLET = config("DEFAULT_ADMIN_WALLET", default="0x0000000000000000000000000000000000000000")
+DEFAULT_ADMIN_WALLET = config(
+    "DEFAULT_ADMIN_WALLET", default="EQB6B3_azSTKuDr9999999999Q0jg48PzfYiLLv_wCYBGwcR"
+)
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'pool_deployments.log',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "pool_deployments.log",
         },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
         },
     },
-    'loggers': {
-        'pools.signals': {
-            'handlers': ['file', 'console'],
-            'level': 'INFO',
-            'propagate': True,
+    "loggers": {
+        "pools.signals": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": True,
         },
     },
 }
