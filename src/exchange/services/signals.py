@@ -11,7 +11,6 @@ from exchange.models import Pool
 
 logger = logging.getLogger(__name__)
 
-
 DEFAULT_TIMEOUT: int = 300
 TON_SYMBOL: str = "TON"
 USDT_SYMBOL: str = "USDT"
@@ -29,7 +28,8 @@ def auto_deploy_pool_contract(sender, instance, created, **kwargs) -> None:
 
             if success:
                 update_pool_with_deployment_result(instance, result)
-                logger.info(f"Pool {instance} deployed: {result['contract_address']}")
+                contract_address = result.get("data", {}).get("contractAddress", "Unknown")
+                logger.info(f"Pool {instance} deployed: {contract_address}")
             else:
                 handle_deployment_error(instance, result)
                 logger.error(f"Pool {instance} deployment failed: {result}")
@@ -85,27 +85,35 @@ def send_deployment_request(payload: dict) -> tuple[bool, dict | str]:
 def update_pool_with_deployment_result(pool_instance, deployment_result) -> None:
     try:
         now = timezone.now()
-        pool_info = deployment_result.get("pool_info", {})
+        data = deployment_result.get("data", {})
+
+        if not data.get("fullyInitialized", False):
+            raise Exception("Pool deployment not fully initialized")
 
         update_fields = {
-            "contract_address": deployment_result.get("contract_address"),
-            "deployment_tx_hash": deployment_result.get("transaction_hash"),
-            "is_contract_deployed": True,
+            "contract_address": data.get("contractAddress"),
+            "deployment_tx_hash": data.get("transactionHash"),
+            "is_contract_deployed": data.get("deployed", True),
             "contract_deployed_at": now,
             "deployment_error": None,
             "last_sync_at": now,
         }
 
-        if pool_info["admin"] and not pool_instance.admin_wallet_address:
-            update_fields["admin_wallet_address"] = pool_info["admin"]
+        admin_address = data.get("adminAddress")
+        if admin_address and not pool_instance.admin_wallet_address:
+            update_fields["admin_wallet_address"] = admin_address
 
-        if pool_info["usdt_master"] and not pool_instance.usdt_master_address:
-            update_fields["usdt_master_address"] = pool_info["usdt_master"]
+        token_master_address = data.get("tokenMasterAddress")
+        if token_master_address and not pool_instance.usdt_master_address:
+            update_fields["usdt_master_address"] = token_master_address
 
+        fields_to_update = []
         for field, value in update_fields.items():
-            setattr(pool_instance, field, value)
+            if value is not None:
+                setattr(pool_instance, field, value)
+                fields_to_update.append(field)
 
-        pool_instance.save(update_fields=list(update_fields.keys()))
+        pool_instance.save(update_fields=fields_to_update)
         logger.info(f"Pool {pool_instance} updated successfully")
 
     except Exception as e:
