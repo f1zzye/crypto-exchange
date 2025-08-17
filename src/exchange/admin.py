@@ -285,6 +285,7 @@ class PoolAdmin(ModelAdmin):
         "contract_status_display",
         "get_pool_dashboard",
         "get_contract_dashboard",
+        "get_liquidity_submit_button",
     )
 
     fieldsets = (
@@ -293,11 +294,15 @@ class PoolAdmin(ModelAdmin):
             "Token Configuration",
             {
                 "fields": (
-                    ("token1", "token1_amount"),
-                    ("token2", "token2_amount"),
+                    ("token1",),
+                    ("token2",),
                 ),
                 "classes": ("wide",),
             },
+        ),
+        (
+            "Adding Liquidity",
+            {"fields": ("token1_amount", "token2_amount", "get_liquidity_submit_button"), "classes": ("wide",)},
         ),
         (
             "Pool Settings",
@@ -312,9 +317,6 @@ class PoolAdmin(ModelAdmin):
                     ("is_contract_deployed", "contract_deployed_at"),
                     ("is_pool_activated", "pool_activated_at"),
                     ("is_liquidity_added", "liquidity_added_at"),
-                    "deployment_tx_hash",
-                    "activation_tx_hash",
-                    "liquidity_tx_hash",
                     "deployment_error",
                 ),
                 "classes": ("collapse",),
@@ -350,6 +352,93 @@ class PoolAdmin(ModelAdmin):
             .get_queryset(request)
             .select_related("token1", "token2", "token1__network", "token2__network")
         )
+
+    def get_liquidity_submit_button(self, obj):
+        if not obj.pk:
+            return format_html(
+                '<div style="color: #666;">Save pool first to add liquidity</div>'
+            )
+
+        if not (obj.token1 and obj.token2):
+            return format_html(
+                '<div style="color: #f44336;">Please configure tokens first</div>'
+            )
+
+        # Check if pool has contract deployed and activated
+        can_add_liquidity = obj.is_contract_deployed and obj.is_pool_activated
+
+        if not can_add_liquidity:
+            return format_html(
+                '''
+                <div style="background: #fff3cd; padding: 10px; border-radius: 6px; border: 1px solid #ffeaa7;">
+                    <span style="color: #856404;">⚠️ Pool must be deployed and activated before adding liquidity</span><br>
+                    <small>Current status: {}</small>
+                </div>
+                ''',
+                obj.contract_status_display
+            )
+
+        token1_name = obj.token1.short_name if obj.token1 else "Token1"
+        token2_name = obj.token2.short_name if obj.token2 else "Token2"
+
+        return format_html(
+            '''
+            <div style="margin-top: 10px;">
+                <button 
+                    type="button" 
+                    onclick="submitLiquidity('{}', '{}', '{}')"
+                    style="
+                        background: linear-gradient(45deg, #007bff, #0056b3); 
+                        color: white; 
+                        border: none; 
+                        padding: 12px 30px; 
+                        border-radius: 6px; 
+                        font-size: 16px; 
+                        font-weight: bold; 
+                        cursor: pointer; 
+                        width: 100%;
+                        transition: all 0.3s ease;
+                    "
+                    onmouseover="this.style.background='linear-gradient(45deg, #0056b3, #003d82)'"
+                    onmouseout="this.style.background='linear-gradient(45deg, #007bff, #0056b3)'"
+                >
+                     Submit Liquidity
+                </button>
+
+                <script>
+                function submitLiquidity(poolId, token1Name, token2Name) {{
+                    const token1Amount = document.querySelector('input[name="token1_amount"]').value;
+                    const token2Amount = document.querySelector('input[name="token2_amount"]').value;
+
+                    if (!token1Amount || !token2Amount) {{
+                        alert('Please enter amounts for both tokens');
+                        return;
+                    }}
+
+                    if (parseFloat(token1Amount) <= 0 || parseFloat(token2Amount) <= 0) {{
+                        alert('Please enter valid positive amounts');
+                        return;
+                    }}
+
+                    // Show confirmation
+                    if (confirm(`Add liquidity:\\n${{token1Name}}: ${{token1Amount}}\\n${{token2Name}}: ${{token2Amount}}\\n\\nProceed?`)) {{
+                        // Here you would make an AJAX call to your liquidity endpoint
+                        alert('Liquidity addition initiated! The amounts will be saved when you save the pool.');
+
+                        // Optionally trigger form submission or AJAX call here
+                        // Example: 
+                        // fetch('/admin/add-liquidity/', {{...}})
+                    }}
+                }}
+                </script>
+            </div>
+            ''',
+            obj.pk,
+            token1_name,
+            token2_name
+        )
+
+    get_liquidity_submit_button.short_description = ""
 
     def pool_display(self, obj):
         if not (obj.token1 and obj.token2):
@@ -403,10 +492,10 @@ class PoolAdmin(ModelAdmin):
 
     def reserves_display(self, obj):
         if not (
-            obj.token1
-            and obj.token2
-            and obj.token1_amount is not None
-            and obj.token2_amount is not None
+                obj.token1
+                and obj.token2
+                and obj.token1_amount is not None
+                and obj.token2_amount is not None
         ):
             return format_html('<span style="color: #f44336;">Not Set</span>')
 

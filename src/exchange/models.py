@@ -124,14 +124,6 @@ class Pool(TimestampMixin):
         help_text="Timestamp when the contract was deployed",
     )
 
-    deployment_tx_hash = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        verbose_name="Deployment Transaction Hash",
-        help_text="Transaction hash of the contract deployment",
-    )
-
     deployment_error = models.TextField(
         blank=True,
         null=True,
@@ -152,14 +144,6 @@ class Pool(TimestampMixin):
         help_text="Timestamp when the pool was activated",
     )
 
-    activation_tx_hash = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        verbose_name="Pool Activation Transaction Hash",
-        help_text="Transaction hash of the pool activation",
-    )
-
     is_liquidity_added = models.BooleanField(
         default=False,
         verbose_name="Initial Liquidity Added",
@@ -171,14 +155,6 @@ class Pool(TimestampMixin):
         null=True,
         verbose_name="Liquidity Added At",
         help_text="Timestamp when initial liquidity was added",
-    )
-
-    liquidity_tx_hash = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        verbose_name="Liquidity Transaction Hash",
-        help_text="Transaction hash of the liquidity addition",
     )
 
     last_sync_at = models.DateTimeField(
@@ -231,7 +207,7 @@ class Pool(TimestampMixin):
         super().save(*args, **kwargs)
 
     def generate_pool_name(self):
-        self.name = f"{self.token1.symbol}/{self.token2.symbol}"
+        self.name = f"{self.token1.short_name}/{self.token2.short_name}"
 
     @property
     def fee_basis_points(self):
@@ -306,46 +282,40 @@ class Pool(TimestampMixin):
 
         return numerator / denominator
 
-    def mark_contract_deployed(self, contract_address, tx_hash):
+    def mark_contract_deployed(self, contract_address):
         """Отметить контракт как задеплоенный"""
         self.contract_address = contract_address
         self.is_contract_deployed = True
         self.contract_deployed_at = timezone.now()
-        self.deployment_tx_hash = tx_hash
         self.deployment_error = None
         self.save(
             update_fields=[
                 "contract_address",
                 "is_contract_deployed",
                 "contract_deployed_at",
-                "deployment_tx_hash",
                 "deployment_error",
             ]
         )
 
-    def mark_pool_activated(self, tx_hash):
+    def mark_pool_activated(self):
         """Отметить пул как активированный"""
         self.is_pool_activated = True
         self.pool_activated_at = timezone.now()
-        self.activation_tx_hash = tx_hash
         self.save(
             update_fields=[
                 "is_pool_activated",
                 "pool_activated_at",
-                "activation_tx_hash",
             ]
         )
 
-    def mark_liquidity_added(self, tx_hash):
+    def mark_liquidity_added(self):
         """Отметить ликвидность как добавленную"""
         self.is_liquidity_added = True
         self.liquidity_added_at = timezone.now()
-        self.liquidity_tx_hash = tx_hash
         self.save(
             update_fields=[
                 "is_liquidity_added",
                 "liquidity_added_at",
-                "liquidity_tx_hash",
             ]
         )
 
@@ -353,13 +323,8 @@ class Pool(TimestampMixin):
         """
         Синхронизировать резервы из контракта в token1_amount и token2_amount
         """
-        # Конвертируем из blockchain единиц в обычные
-        self.token1_amount = Decimal(str(ton_reserve_nano)) / Decimal(
-            "1000000000"
-        )  # из nanotons
-        self.token2_amount = Decimal(str(usdt_reserve_micro)) / Decimal(
-            "1000000"
-        )  # из micro USDT
+        self.token1_amount = Decimal(str(ton_reserve_nano)) / Decimal("1000000000")
+        self.token2_amount = Decimal(str(usdt_reserve_micro)) / Decimal("1000000")
         self.last_sync_at = timezone.now()
 
         self.save(update_fields=["token1_amount", "token2_amount", "last_sync_at"])
@@ -368,8 +333,8 @@ class Pool(TimestampMixin):
         """
         Получить суммы в единицах контракта (nanotons и micro USDT)
         """
-        ton_nano = int(self.token1_amount * Decimal("1000000000"))  # в nanotons
-        usdt_micro = int(self.token2_amount * Decimal("1000000"))  # в micro USDT
+        ton_nano = int(self.token1_amount * Decimal("1000000000"))
+        usdt_micro = int(self.token2_amount * Decimal("1000000"))
         return ton_nano, usdt_micro
 
 

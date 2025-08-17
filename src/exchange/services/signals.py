@@ -28,7 +28,9 @@ def auto_deploy_pool_contract(sender, instance, created, **kwargs) -> None:
 
             if success:
                 update_pool_with_deployment_result(instance, result)
-                contract_address = result.get("data", {}).get("contractAddress", "Unknown")
+                contract_address = result.get("data", {}).get(
+                    "contractAddress", "Unknown"
+                )
                 logger.info(f"Pool {instance} deployed: {contract_address}")
             else:
                 handle_deployment_error(instance, result)
@@ -92,10 +94,10 @@ def update_pool_with_deployment_result(pool_instance, deployment_result) -> None
 
         update_fields = {
             "contract_address": data.get("contractAddress"),
-            "deployment_tx_hash": data.get("transactionHash"),
             "is_contract_deployed": data.get("deployed", True),
             "contract_deployed_at": now,
-            "deployment_error": None,
+            "is_pool_activated": True,
+            "pool_activated_at": now,
             "last_sync_at": now,
         }
 
@@ -114,7 +116,7 @@ def update_pool_with_deployment_result(pool_instance, deployment_result) -> None
                 fields_to_update.append(field)
 
         pool_instance.save(update_fields=fields_to_update)
-        logger.info(f"Pool {pool_instance} updated successfully")
+        logger.info(f"Pool {pool_instance} deployed and activated successfully")
 
     except Exception as e:
         logger.error(f"Error updating pool {pool_instance}: {e}")
@@ -127,11 +129,15 @@ def handle_deployment_error(pool_instance, error_message) -> None:
         pool_instance.deployment_error = str(error_message)[:MAX_ERROR_LENGTH]
         pool_instance.is_contract_deployed = False
         pool_instance.contract_deployed_at = None
+        pool_instance.is_pool_activated = False
+        pool_instance.pool_activated_at = None
         pool_instance.save(
             update_fields=[
                 "deployment_error",
                 "is_contract_deployed",
                 "contract_deployed_at",
+                "is_pool_activated",
+                "pool_activated_at",
             ]
         )
         logger.error(f"Error recorded for pool {pool_instance}: {error_message}")
