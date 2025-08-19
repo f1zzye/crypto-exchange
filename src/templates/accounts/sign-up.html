@@ -2,7 +2,7 @@
     <button class="pauth__close js-pauth-close"></button>
     <div class="register__popup">
         <div class="section__head text--center">
-            <div class="title text--white">Регистрация</div>
+            <div class="title text--white">Реєстрація</div>
         </div>
         <form method="post" action="{% url 'accounts:sign-up' %}" id="signupForm" class="ajax_post_form">
             {% csrf_token %}
@@ -14,7 +14,7 @@
                     name="username"
                     class="input input--nbd"
                     required
-                    placeholder="Логин*"
+                    placeholder="Логін*"
                     value="{{ form.username.value|default_if_none:'' }}"
                 >
                 <div class="input__bg"></div>
@@ -50,7 +50,7 @@
                     id="confirmPassword"
                     name="password2"
                     class="input input--nbd"
-                    placeholder="Пароль еще раз*"
+                    placeholder="Пароль ще раз*"
                     autocomplete="off"
                     value="{{ form.password2.value|default_if_none:'' }}"
                 >
@@ -59,14 +59,14 @@
             <label class="form__policy">
                 <input type="checkbox" name="check_rule" value="1">
                 <span class="form__policy-sq"></span>
-                <span class="form__policy-t">С <a href="/tos/" target="_blank" rel="noreferrer noopener">правилами сервиса</a> ознакомлен и согласен</span>
+                <span class="form__policy-t">З <a href="/tos/" target="_blank" rel="noreferrer noopener">правилами сервісу</a> ознайомлений і погоджуюсь</span>
             </label>
             <div class="form__submit">
-                <button type="submit" name="register" class="btn btn--wall"><span>Регистрация</span></button>
+                <button type="submit" name="register" class="btn btn--wall"><span>Реєстрація</span></button>
             </div>
             <div class="pauth__enter">
-                <div class="pauth__enter-t">У вас есть аккаунт?</div>
-                <button class="btn btn--bd btn--bdg" type="button" data-open-login="login"><span>Войти</span></button>
+                <div class="pauth__enter-t">У вас є аккаунт?</div>
+                <button class="btn btn--bd btn--bdg" type="button" data-open-login="login"><span>Увійти</span></button>
             </div>
             <div class="resultgo"></div>
         </form>

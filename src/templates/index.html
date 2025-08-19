@@ -1,580 +1,576 @@
 {% extends 'partials/base.html' %}
+{% load i18n %}
 {% load static %}
 
 {% block content %}
 
 <body>
 
-    <div class="wrapper">
+   <div class="wrapper">
 
-        {% include 'partials/header.html' %}
+    {% include 'partials/header.html' %}
 
+    <main class="content__wrapper">
+    <section class="calc">
+        <div class="container">
 
-        <main class="content__wrapper">
-            <section class="calc">
-                <div class="container">
+            <form method="post" class="ajax_post_bids" action="">
+                {% csrf_token %}
 
-                    <form method="post" class="ajax_post_bids" action="">
-                        {% csrf_token %}
+                <input type="hidden" name="give_token_id" id="hidden_give_token_id" value="">
+                <input type="hidden" name="receive_token_id" id="hidden_receive_token_id" value="">
+                <input type="hidden" name="sum2" id="hidden_sum2" value="">
 
-                        <input type="hidden" name="give_token_id" id="hidden_give_token_id" value="">
-                        <input type="hidden" name="receive_token_id" id="hidden_receive_token_id" value="">
-                        <input type="hidden" name="sum2" id="hidden_sum2" value="">
-
-                        <div class="exch_ajax_wrap">
-                            <div class="exch_ajax_wrap_abs"></div>
-                            <div id="exch_html" class="calc__cols">
-                                <input type="hidden" name="direction_id" class="js_direction_id" value="1977" />
-                                <div class="calc__left">
-                                    <div class="calc__col js-calc-col js-calc-col-1">
-                                        <div class="calc__col-head">
-                                            <div class="calc__col-title title">Отдаете</div>
-                                        </div>
-                                        <div class="calc__body">
-                                            <div class="form__input calc__irow">
-                                                <div class="hexch_curs_input js_wrap_error">
-                                                    <input type="text" name="sum1" cash-id="sum" data-decimal="10" class="js_sum_val js_decimal js_sum1 cache_data input input--nbd js-sum-val" autocomplete="off" value="500" required />
-                                                    <div class="input__bg"></div>
-                                                    <div class="calc__iicon">
-                                                        <img src="{% if tokens.0.image %}{{ tokens.0.image.url }}{% else %}https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png{% endif %}" class="js-sum-icon" alt="">
-                                                        <span class="calc__iicon-name js-sum-name">
-                                                            {% if tokens.0 %}{{ tokens.0.name }} {{ tokens.0.network.short_name }}{% else %}Tether TRC20 USDT{% endif %}
-                                                        </span>
-                                                        <button type="button" class="calc__iicon-toggle js-calc-table-toggle"></button>
-                                                    </div>
-                                                    <div class="js_error js_sum1_error"></div>
-                                                </div>
+                <div class="exch_ajax_wrap">
+                    <div class="exch_ajax_wrap_abs"></div>
+                    <div id="exch_html" class="calc__cols">
+                        <input type="hidden" name="direction_id" class="js_direction_id" value="1977" />
+                        <div class="calc__left">
+                            <div class="calc__col js-calc-col js-calc-col-1">
+                                <div class="calc__col-head">
+                                    <div class="calc__col-title title">{% trans "Віддаєте" %}</div>
+                                </div>
+                                <div class="calc__body">
+                                    <div class="form__input calc__irow">
+                                        <div class="hexch_curs_input js_wrap_error">
+                                            <input type="text" name="sum1" cash-id="sum" data-decimal="10" class="js_sum_val js_decimal js_sum1 cache_data input input--nbd js-sum-val" autocomplete="off" value="500" required />
+                                            <div class="input__bg"></div>
+                                            <div class="calc__iicon">
+                                                <img src="{% if tokens.0.image %}{{ tokens.0.image.url }}{% else %}https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png{% endif %}" class="js-sum-icon" alt="">
+                                                <span class="calc__iicon-name js-sum-name">
+                                                    {% if tokens.0 %}{{ tokens.0.name }} {{ tokens.0.network.short_name }}{% else %}Tether TRC20 USDT{% endif %}
+                                                </span>
+                                                <button type="button" class="calc__iicon-toggle js-calc-table-toggle"></button>
                                             </div>
-                                            <div class="calc__tags">
-                                                <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
-                                                <div class="calc__tags-sep"></div>
-                                                <div class="calc__tags-btn js-calc-type" data-type="0">Crypto</div>
-                                                <div class="calc__tags-sep"></div>
-                                                <div class="calc__tags-btn js-calc-type" data-type="0">Bank</div>
-                                                <div class="calc__tags-sep"></div>
-                                            </div>
-
-                                            <div class="calc__table js-calc-table">
-                                                <div class="calc__search">
-                                                    <input type="text" name="s1" class="input js-calc-search" placeholder="Введите валюту">
-                                                </div>
-                                                <div class="calc__items js-content-scroll">
-                                                    <select name="give_token_select" class="js_my_sel" autocomplete="off" id="select_give" required>
-                                                        {% for token in tokens %}
-                                                        <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-name="{{ token.name }} {{ token.network.short_name }}" data-short-name="{{ token.short_name }}">
-                                                            {{ token.name }} {{ token.network.short_name }}
-                                                        </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            <div class="js_error js_sum1_error"></div>
                                         </div>
                                     </div>
+                                    <div class="calc__tags">
+                                        <div class="calc__tags-btn js-calc-type active" data-type="0">{% trans "Всі" %}</div>
+                                        <div class="calc__tags-sep"></div>
+                                        <div class="calc__tags-btn js-calc-type" data-type="0">{% trans "Crypto" %}</div>
+                                        <div class="calc__tags-sep"></div>
+                                        <div class="calc__tags-btn js-calc-type" data-type="0">{% trans "Bank" %}</div>
+                                        <div class="calc__tags-sep"></div>
+                                    </div>
 
-                                    <button type="button" class="calc__reverse js-calc-reverse">
-                                        <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/assets/images/icons/reverse.svg" alt="">
-                                    </button>
-
-                                    <div class="calc__col js-calc-col js-calc-col-2">
-                                        <div class="calc__col-head">
-                                            <div class="calc__col-title title">Получите</div>
-                                            <div class="calc__course">Курс: <span class="js_course_html">Выберите токены</span></div>
+                                    <div class="calc__table js-calc-table">
+                                        <div class="calc__search">
+                                            <input type="text" name="s1" class="input js-calc-search" placeholder="{% trans "Введіть валюту" %}">
                                         </div>
-                                        <div class="calc__body">
-                                            <div class="form__input calc__irow">
-                                                <div class="hexch_curs_input js_wrap_error">
-                                                    <input type="text" name="sum2_display" data-decimal="10" class="js_sum_val js_decimal js_sum2c input input--nbd js-sum-val" autocomplete="off" value="0" readonly />
-                                                    <div class="input__bg"></div>
-                                                    <div class="calc__iicon">
-                                                        <img src="{% if tokens.1.image %}{{ tokens.1.image.url }}{% else %}https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png{% endif %}" class="js-sum-icon" alt="">
-                                                        <span class="calc__iicon-name js-sum-name">
-                                                            {% if tokens.1 %}{{ tokens.1.name }} {{ tokens.1.network.short_name }}{% else %}Выберите токен{% endif %}
-                                                        </span>
-                                                        <button type="button" class="calc__iicon-toggle js-calc-table-toggle"></button>
-                                                    </div>
-                                                    <div class="js_error js_sum2_error"></div>
-                                                </div>
-                                            </div>
-                                            <div class="calc__tags">
-                                                <div class="calc__tags-btn js-calc-type active" data-type="0">Все</div>
-                                                <div class="calc__tags-sep"></div>
-                                                <div class="calc__tags-btn js-calc-type" data-type="0">Crypto</div>
-                                                <div class="calc__tags-sep"></div>
-                                                <div class="calc__tags-btn js-calc-type" data-type="0">Bank</div>
-                                                <div class="calc__tags-sep"></div>
-                                            </div>
-                                            <div class="calc__table js-calc-table">
-                                                <div class="calc__search">
-                                                    <input type="text" name="s2" class="input js-calc-search" placeholder="Введите валюту">
-                                                </div>
-                                                <div class="calc__items js-content-scroll">
-                                                    <select name="receive_token_select" class="js_my_sel" autocomplete="off" id="select_get" required>
-                                                        {% for token in tokens %}
-                                                        <option value="{{ token.id }}" {% if forloop.counter == 2 %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-name="{{ token.name }} {{ token.network.short_name }}" data-short-name="{{ token.short_name }}">
-                                                            {{ token.name }} {{ token.network.short_name }}
-                                                        </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                            </div>
+                                        <div class="calc__items js-content-scroll">
+                                            <select name="give_token_select" class="js_my_sel" autocomplete="off" id="select_give" required>
+                                                {% for token in tokens %}
+                                                <option value="{{ token.id }}" {% if forloop.first %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-name="{{ token.name }} {{ token.network.short_name }}" data-short-name="{{ token.short_name }}">
+                                                    {{ token.name }} {{ token.network.short_name }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="calc__form">
-                                    <div class="calc__form-tt">Персональные данные</div>
+                            <button type="button" class="calc__reverse js-calc-reverse">
+                                <img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/assets/images/icons/reverse.svg" alt="">
+                            </button>
 
-                                    <div class="xchange_pers">
-                                        <div class="xchange_pers_ins">
-                                            <div class="xchange_pers_div">
-                                                <div class="xchange_pers_div_ins">
-                                                    <div class="xchange_pers_line js_line_wrapper">
-                                                        <div class="xchange_pers_line_ins">
-                                                            <div class="xchange_pers_label">
-                                                                <div class="xchange_pers_label_ins">
-                                                                    <label for="cf6">
-                                                                        <span class="xchange_label">E-mail<span class="req">*</span>:</span>
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="xchange_pers_input js_wrap_error js_window_wrap">
-                                                                <div class="form__input">
-                                                                    <input name="cf6" cash-id="cf6" id="cf6" autocomplete="off" type="email" value="" class="js_cf6 cache_data check_cache input" placeholder="E-mail*" title="Введите ваш действующий e-mail. Все корректировки по заявке принимаются только с вашей почты." required />
-                                                                    <div class="input__bg"></div>
-                                                                </div>
-                                                                <div class="info_window js_window">
-                                                                    <div class="info_window_ins">
-                                                                        <div class="info_window_abs"></div>
-                                                                        <p>Введите ваш действующий e-mail.<br />
-                                                                            Все корректировки по заявке принимаются только с вашей почты.</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="js_error js_cf6_error"></div>
-                                                                <div class="clear"></div>
-                                                            </div>
+                            <div class="calc__col js-calc-col js-calc-col-2">
+                                <div class="calc__col-head">
+                                    <div class="calc__col-title title">{% trans "Отримаєте" %}</div>
+                                    <div class="calc__course">{% trans "Курс:" %} <span class="js_course_html">{% trans "Виберіть токени" %}</span></div>
+                                </div>
+                                <div class="calc__body">
+                                    <div class="form__input calc__irow">
+                                        <div class="hexch_curs_input js_wrap_error">
+                                            <input type="text" name="sum2_display" data-decimal="10" class="js_sum_val js_decimal js_sum2c input input--nbd js-sum-val" autocomplete="off" value="0" readonly />
+                                            <div class="input__bg"></div>
+                                            <div class="calc__iicon">
+                                                <img src="{% if tokens.1.image %}{{ tokens.1.image.url }}{% else %}https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png{% endif %}" class="js-sum-icon" alt="">
+                                                <span class="calc__iicon-name js-sum-name">
+                                                    {% if tokens.1 %}{{ tokens.1.name }} {{ tokens.1.network.short_name }}{% else %}{% trans "Виберіть токен" %}{% endif %}
+                                                </span>
+                                                <button type="button" class="calc__iicon-toggle js-calc-table-toggle"></button>
+                                            </div>
+                                            <div class="js_error js_sum2_error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="calc__tags">
+                                        <div class="calc__tags-btn js-calc-type active" data-type="0">{% trans "Всі" %}</div>
+                                        <div class="calc__tags-sep"></div>
+                                        <div class="calc__tags-btn js-calc-type" data-type="0">{% trans "Crypto" %}</div>
+                                        <div class="calc__tags-sep"></div>
+                                        <div class="calc__tags-btn js-calc-type" data-type="0">{% trans "Bank" %}</div>
+                                        <div class="calc__tags-sep"></div>
+                                    </div>
+                                    <div class="calc__table js-calc-table">
+                                        <div class="calc__search">
+                                            <input type="text" name="s2" class="input js-calc-search" placeholder="{% trans "Введіть валюту" %}">
+                                        </div>
+                                        <div class="calc__items js-content-scroll">
+                                            <select name="receive_token_select" class="js_my_sel" autocomplete="off" id="select_get" required>
+                                                {% for token in tokens %}
+                                                <option value="{{ token.id }}" {% if forloop.counter == 2 %}selected='selected' {% endif %} data-ctypes="stable" data-img="{% if token.image %}{{ token.image.url }}{% endif %}" data-logo="{% if token.image %}{{ token.image.url }}{% endif %}" data-name="{{ token.name }} {{ token.network.short_name }}" data-short-name="{{ token.short_name }}">
+                                                    {{ token.name }} {{ token.network.short_name }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="calc__form">
+                            <div class="calc__form-tt">{% trans "Персональні дані" %}</div>
+
+                            <div class="xchange_pers">
+                                <div class="xchange_pers_ins">
+                                    <div class="xchange_pers_div">
+                                        <div class="xchange_pers_div_ins">
+                                            <div class="xchange_pers_line js_line_wrapper">
+                                                <div class="xchange_pers_line_ins">
+                                                    <div class="xchange_pers_label">
+                                                        <div class="xchange_pers_label_ins">
+                                                            <label for="cf6">
+                                                                <span class="xchange_label">{% trans "E-mail" %}<span class="req">*</span>:</span>
+                                                            </label>
                                                         </div>
                                                     </div>
-                                                    <div class="clear"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="notice_message">
-                                        <div class="notice_message_ins">
-                                            <div class="notice_message_abs"></div>
-                                            <div class="notice_message_close"></div>
-                                            <div class="notice_message_text">
-                                                <div class="notice_message_text_ins">
-                                                    <div class="text">
-                                                        <p>Данная операция производится в автоматическом режиме.<br />
-                                                            В целях противодействия легализации доходов, полученных преступным путем, проводится <strong>AML-проверка</strong>.<br />
-                                                            Курс фиксируется при достижении 20 подтверждений в сети и покупке монет на бирже.</p>
+                                                    <div class="xchange_pers_input js_wrap_error js_window_wrap">
+                                                        <div class="form__input">
+                                                            <input name="cf6" cash-id="cf6" id="cf6" autocomplete="off" type="email" value="" class="js_cf6 cache_data check_cache input" placeholder="{% trans "E-mail*" %}" title="{% trans "Введіть вашу дійсну електронну пошту. Всі коригування по заявці приймаються лише з вашої пошти." %}" required />
+                                                            <div class="input__bg"></div>
+                                                        </div>
+                                                        <div class="info_window js_window">
+                                                            <div class="info_window_ins">
+                                                                <div class="info_window_abs"></div>
+                                                                <p>{% trans "Введіть вашу дійсну електронну пошту." %}<br />
+                                                                    {% trans "Всі коригування по заявці приймаються лише з вашої пошти." %}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="js_error js_cf6_error"></div>
+                                                        <div class="clear"></div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="calc__form-policy">
-                                        <div class="hexch_checkdata_div">
-                                            <label class="form__policy">
-                                                <input type="checkbox" name="check_rule" autocomplete="off" value="1" required />
-                                                <span class="form__policy-sq"></span>
-                                                <span class="form__policy-t">
-                                                    Я прочитал и согласен с <a href="/tos/" target="_blank">условиями</a>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="exchange_checkpersdata">
-                                            <label class="form__policy">
-                                                <input type="checkbox" name="add_rules" autocomplete="off" value="1" required />
-                                                <span class="form__policy-sq"></span>
-                                                <span class="form__policy-t">
-                                                    Согласен с правилами <a href="/aml/" target="_blank">AML проверки</a>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="hexch_checkdata_div">
-                                            <label class="form__policy">
-                                                <input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" />
-                                                <span class="form__policy-sq"></span>
-                                                <span class="form__policy-t">
-                                                    Не запоминать введенные данные
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div class="captcha_div">
-                                            <div class="captcha_title">Введите ответ</div>
-                                            <div class="captcha_body" style="display: flex; align-items: center;">
-                                                <div class="captcha_divimg">
-                                                    <img src="{{ captcha.img1 }}" class="captcha1" alt="" />
-                                                </div>
-                                                <div class="captcha_divznak">
-                                                    <span class="captcha_sym">{{ captcha.operation }}</span>
-                                                </div>
-                                                <div class="captcha_divimg">
-                                                    <img src="{{ captcha.img2 }}" class="captcha2" alt="" />
-                                                </div>
-                                                <div class="captcha_divznak">=</div>
-                                                <div class="form__input" style="position: relative;">
-                                                    <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" required />
-                                                    <div class="input__bg"></div>
-                                                    <button type="button" class="captcha_reload_icon" title="Обновить капчу" onclick="reloadCaptcha(event)" style="
-                                    position: absolute;
-                                    top: 50%;
-                                    right: -36px;
-                                    transform: translateY(-50%);
-                                    background: none;
-                                    border: none;
-                                    cursor: pointer;
-                                    padding: 0;">
-                                                        <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
-                                                    </button>
                                                 </div>
                                                 <div class="clear"></div>
                                             </div>
-                                            {% if error %}
-                                            <div style="color: #dc3545; text-align: center; margin-top: 10px;">{{ error }}</div>
-                                            {% endif %}
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                        <div class="calc__form-submit">
-                                            <button type="submit" class="btn btn--wall">
-                                                <span>Обменять сейчас</span>
-                                            </button>
-
-                                            <div style="margin: 20px 0;">
-                                                <button id="custom-connect-btn" class="btn btn--wall" style="margin-right: 10px;">
-                                                    <span>Connect Wallet</span>
-                                                </button>
-                                                <button id="custom-disconnect-btn" class="btn btn--wall" style="display: none;">
-                                                    <span>Disconnect</span>
-                                                </button>
-
+                            <div class="notice_message">
+                                <div class="notice_message_ins">
+                                    <div class="notice_message_abs"></div>
+                                    <div class="notice_message_close"></div>
+                                    <div class="notice_message_text">
+                                        <div class="notice_message_text_ins">
+                                            <div class="text">
+                                                <p>{% trans "Дана операція проводиться в автоматичному режимі." %}<br />
+                                                    {% trans "З метою протидії легалізації доходів, отриманих злочинним шляхом, здійснюється" %} <strong>{% trans "AML-перевірка" %}</strong>.<br />
+                                                    {% trans "Курс фіксується при досягненні 20 підтверджень у мережі та купівлі монет на біржі." %}</p>
                                             </div>
-
-                                            <div id="wallet-status" style="margin: 10px 0;"></div>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-            </section>
 
-            <section class="raffle section__mg">
-                <div class="container">
-                    <div class="section__head h-cols">
-                        <h2 class="section__title">Участвуй в розыгрыше</h2>
-                        <div class="section__action hide-tablet-sm">
-                            <a href="https://crypto-chicken.co/raffle/" target="_blank" class="btn btn--bd hide-desktop"><span>Подробнее о розыгрыше</span></a>
-                        </div>
-                    </div>
+                            <div class="calc__form-policy">
+                                <div class="hexch_checkdata_div">
+                                    <label class="form__policy">
+                                        <input type="checkbox" name="check_rule" autocomplete="off" value="1" required />
+                                        <span class="form__policy-sq"></span>
+                                        <span class="form__policy-t">
+                                            {% trans "Я прочитав і погоджуюсь з" %} <a href="/tos/" target="_blank">{% trans "умовами" %}</a>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="exchange_checkpersdata">
+                                    <label class="form__policy">
+                                        <input type="checkbox" name="add_rules" autocomplete="off" value="1" required />
+                                        <span class="form__policy-sq"></span>
+                                        <span class="form__policy-t">
+                                            {% trans "Погоджуюсь з правилами" %} <a href="/aml/" target="_blank">{% trans "AML перевірки" %}</a>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="hexch_checkdata_div">
+                                    <label class="form__policy">
+                                        <input type="checkbox" id="not_check_data" name="not_check_data" autocomplete="off" value="1" />
+                                        <span class="form__policy-sq"></span>
+                                        <span class="form__policy-t">
+                                            {% trans "Не запам'ятовувати введені дані" %}
+                                        </span>
+                                    </label>
+                                </div>
 
-                    <div class="raffle__cols--mobile">
-                        <div class="raffle__box--mobile box">
-                            <div class="raffle__item-title">
-                                <div class="title">Соверши обмен на нашем сайте и участвуй в розыгрыше!</div>
-                            </div>
-                            <div class="raffle__item-text">
-                                Каждый пользователь, совершая обмен на CryptoChicken, автоматически становится участником розыгрыша и имеет шанс получить денежное вознаграждение
-                            </div>
-                            <div class="raffle__item-img">
-                                <img src="{% static 'img/index/raffle-icon-2.svg' %}" alt="">
-                            </div>
-
-                            <div class="raffle__boxes--mobile">
-                                <div class="raffle__box--mobile">
-                                    <div class="raffle__box-text raffle__box-title title">Победители июня</div>
-                                    <div class="raffle__box-winners">
-                                        <div class="raffle__winners-list">
-                                            <div class="raffle__winner-item"><span class="raffle__winner-name">fueg****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                            <div class="raffle__winner-item"><span class="raffle__winner-name">sups****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                            <div class="raffle__winner-item"><span class="raffle__winner-name">tr20****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                            <div class="raffle__winner-item"><span class="raffle__winner-name">fina****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                            <div class="raffle__winner-item"><span class="raffle__winner-name">supr****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                <div class="captcha_div">
+                                    <div class="captcha_title">{% trans "Введіть відповідь" %}</div>
+                                    <div class="captcha_body" style="display: flex; align-items: center;">
+                                        <div class="captcha_divimg">
+                                            <img src="{{ captcha.img1 }}" class="captcha1" alt="" />
                                         </div>
+                                        <div class="captcha_divznak">
+                                            <span class="captcha_sym">{{ captcha.operation }}</span>
+                                        </div>
+                                        <div class="captcha_divimg">
+                                            <img src="{{ captcha.img2 }}" class="captcha2" alt="" />
+                                        </div>
+                                        <div class="captcha_divznak">=</div>
+                                        <div class="form__input" style="position: relative;">
+                                            <input type="text" class="captcha_divpole captcha_value input" name="number" maxlength="4" autocomplete="off" value="" id="captcha-input" required />
+                                            <div class="input__bg"></div>
+                                            <button type="button" class="captcha_reload_icon" title="{% trans "Оновити капчу" %}" onclick="reloadCaptcha(event)" style="
+                                                position: absolute;
+                                                top: 50%;
+                                                right: -36px;
+                                                transform: translateY(-50%);
+                                                background: none;
+                                                border: none;
+                                                cursor: pointer;
+                                                padding: 0;">
+                                                <i class="fa-solid fa-rotate-right" style="color: #e1bd3d; font-size: 1.7em;"></i>
+                                            </button>
+                                        </div>
+                                        <div class="clear"></div>
                                     </div>
+                                    {% if error %}
+                                    <div style="color: #dc3545; text-align: center; margin-top: 10px;">{{ error }}</div>
+                                    {% endif %}
                                 </div>
-                                <div class="raffle__box--mobile">
-                                    <div class="raffle__box-val">
-                                        <span>369.11<img class="raffle__fund-icon" src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt=""></span>
+
+                                <div class="calc__form-submit">
+                                    <button type="submit" class="btn btn--wall">
+                                        <span>{% trans "Обміняти зараз" %}</span>
+                                    </button>
+
+                                    <div style="margin: 20px 0;">
+                                        <button id="custom-connect-btn" class="btn btn--wall" style="margin-right: 10px;">
+                                            <span>{% trans "Підключити гаманець" %}</span>
+                                        </button>
+                                        <button id="custom-disconnect-btn" class="btn btn--wall" style="display: none;">
+                                            <span>{% trans "Відключити" %}</span>
+                                        </button>
                                     </div>
-                                    <div class="raffle__box-text">Банк розыгрыша</div>
-                                </div>
-                                <div class="raffle__box--mobile raffle__timer--mobile">
-                                    <div class="raffle__box-text raffle__box-title title">До розыгрыша осталось:</div>
-                                    <div class="raffle__timer">
-                                        <div class="js-countdown" id="countdown-mobile" data-to="2025-08-01" data-locale="ru_RU"></div>
-                                    </div>
+
+                                    <div id="wallet-status" style="margin: 10px 0;"></div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
 
-                            <div class="raffle__item-buttons">
-                                <a href="https://crypto-chicken.co/raffle/" class="btn btn--bd btn--bdg btn--wall">
-                                    <span>Подробнее о розыгрыше</span>
-                                </a>
+    <section class="raffle section__mg">
+        <div class="container">
+            <div class="section__head h-cols">
+                <h2 class="section__title">{% trans "Бери участь у розіграші" %}</h2>
+                <div class="section__action hide-tablet-sm">
+                    <a href="{% url 'core:raffle' %}" target="_blank" class="btn btn--bd hide-desktop"><span>{% trans "Детальніше про розіграш" %}</span></a>
+                </div>
+            </div>
+
+            <div class="raffle__cols--mobile">
+                <div class="raffle__box--mobile box">
+                    <div class="raffle__item-title">
+                        <div class="title">{% trans "Здійсни обмін на нашому сайті та бери участь у розіграші!" %}</div>
+                    </div>
+                    <div class="raffle__item-text">
+                        {% trans "Кожен користувач, здійснюючи обмін на CryptoChicken, автоматично стає учасником розіграшу та має шанс отримати грошову винагороду" %}
+                    </div>
+                    <div class="raffle__item-img">
+                        <img src="{% static 'img/index/raffle-icon-2.svg' %}" alt="">
+                    </div>
+
+                    <div class="raffle__boxes--mobile">
+                        <div class="raffle__box--mobile">
+                            <div class="raffle__box-text raffle__box-title title">{% trans "Переможці червня" %}</div>
+                            <div class="raffle__box-winners">
+                                <div class="raffle__winners-list">
+                                    <div class="raffle__winner-item"><span class="raffle__winner-name">fueg****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                    <div class="raffle__winner-item"><span class="raffle__winner-name">sups****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                    <div class="raffle__winner-item"><span class="raffle__winner-name">tr20****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                    <div class="raffle__winner-item"><span class="raffle__winner-name">fina****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                    <div class="raffle__winner-item"><span class="raffle__winner-name">supr****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="raffle__box--mobile">
+                            <div class="raffle__box-val">
+                                <span>369.11<img class="raffle__fund-icon" src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt=""></span>
+                            </div>
+                            <div class="raffle__box-text">{% trans "Банк розіграшу" %}</div>
+                        </div>
+                        <div class="raffle__box--mobile raffle__timer--mobile">
+                            <div class="raffle__box-text raffle__box-title title">{% trans "До розіграшу залишилось:" %}</div>
+                            <div class="raffle__timer">
+                                <div class="js-countdown" id="countdown-mobile" data-to="2025-08-01" data-locale="uk_UA"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="hide-mobile">
-                        <div class="raffle__boxes">
-                            <div class="raffle__box box raffle__timer fadeInUp wow" data-wow-delay="0.3s">
-                                <div class="js-countdown" id="countdown" data-to="2025-08-01" data-locale="ru_RU"></div>
-                            </div>
-                            <div class="raffle__box box fadeInUp wow" data-wow-delay="0.5s">
-                                <div class="raffle__box-val">
-                                    <span>369.11<img class="raffle__fund-icon" src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt=""></span>
-                                </div>
-                                <div class="raffle__box-text">Банк розыгрыша</div>
-                            </div>
-                            <div class="raffle__box box fadeInUp wow" data-wow-delay="0.7s">
-                                <div class="raffle__box-title title">Победители июня</div>
-                                <div class="raffle__box-winners">
-                                    <div class="raffle__winners-list">
-                                        <div class="raffle__winner-item"><span class="raffle__winner-name">fueg****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                        <div class="raffle__winner-item"><span class="raffle__winner-name">sups****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                        <div class="raffle__winner-item"><span class="raffle__winner-name">tr20****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                        <div class="raffle__winner-item"><span class="raffle__winner-name">fina****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                        <div class="raffle__winner-item"><span class="raffle__winner-name">supr****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="raffle__items box fadeInUp wow" data-wow-delay="0.1s">
-                            <div class="raffle__item">
-                                <div class="raffle__item-icon"><img src="{% static 'img/index/raffle/raffle-icon-2.svg' %}" alt=""></div>
-                                <div class="raffle__item-title title">Создай заявку</div>
-                                <div class="raffle__item-text">Создай заявку на любую сумму</div>
-                            </div>
-                            <div class="raffle__item">
-                                <div class="raffle__item-icon"><img src="{% static 'img/index/raffle/raffle-icon-1.svg' %}" alt=""></div>
-                                <div class="raffle__item-title title">Соверши обмен</div>
-                                <div class="raffle__item-text">Соверши обмен валюты на нашем сайте</div>
-                            </div>
-                            <div class="raffle__item">
-                                <div class="raffle__item-icon"><img src="{% static 'img/index/raffle/raffle-icon-3.svg' %}" alt=""></div>
-                                <div class="raffle__item-title title">Участвуй в розыгрыше</div>
-                                <div class="raffle__item-text">Розыгрыш проводится в последний день месяца автоматически по ID заявки</div>
-                            </div>
-                        </div>
-
+                    <div class="raffle__item-buttons">
+                        <a href="https://crypto-chicken.co/raffle/" class="btn btn--bd btn--bdg btn--wall">
+                            <span>{% trans "Детальніше про розіграш" %}</span>
+                        </a>
                     </div>
                 </div>
-            </section>
-            <section class="cash section__mg">
-                <div class="container">
-                    <div class="cash__cols">
-                        <div class="cash__col fadeInUp wow" data-wow-delay="0.1s">
-                            <div class="section__head">
-                                <h2 class="section__title">Получи кэшбэк</h2>
-                            </div>
-                            <div class="cash__item box">
-                                <div class="cash__item-title">
-                                    <div class="title">Соверши обмен на нашем сайте и получи кэшбэк с каждой операции!</div>
-                                </div>
-                                <div class="cash__item-text">
-                                    Каждый авторизованный пользователь, совершая обмен на нашем сайте CryptoChicken, получает кэшбек 0,03% от суммы обмена на свой партнерский аккаунт. </div>
-                                <div class="cash__item-buttons">
-                                    <a href="https://crypto-chicken.co/cashback-info/" class="btn btn--bd btn--bdg btn--wall">
-                                        <span>Подробнее о программе</span>
-                                    </a>
-                                </div>
-                                <div class="cash__item-img">
-                                    <img src="{% static 'img/index/cashback/cash-img-3.png' %}" alt="">
-                                </div>
-                            </div>
+            </div>
+
+            <div class="hide-mobile">
+                <div class="raffle__boxes">
+                    <div class="raffle__box box raffle__timer fadeInUp wow" data-wow-delay="0.3s">
+                        <div class="js-countdown" id="countdown" data-to="2025-08-01" data-locale="uk_UA"></div>
+                    </div>
+                    <div class="raffle__box box fadeInUp wow" data-wow-delay="0.5s">
+                        <div class="raffle__box-val">
+                            <span>369.11<img class="raffle__fund-icon" src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt=""></span>
                         </div>
-                        <div class="cash__col fadeInUp wow" data-wow-delay="0.3s">
-                            <div class="section__head">
-                                <h2 class="section__title">Проверь кошелек</h2>
-                            </div>
-                            <div class="cash__item box">
-                                <div class="cash__item-title">
-                                    <div class="title">Проверь свой кошелек перед отправкой средств!</div>
-                                </div>
-                                <div class="cash__item-text">
-                                    По результатам проверки на основании сигналов кошелька придут данные шкалы риска, и ответ из службы поддержки биржи. </div>
-                                <div class="cash__item-buttons">
-                                    <a href="https://crypto-chicken.co/aml-check/" class="btn btn--bd btn--bdg btn--wall">
-                                        <span>Подробнее об AML проверке</span>
-                                    </a>
-                                </div>
-                                <div class="cash__item-img">
-                                    <img src="{% static 'img/index/cashback/cash-img-2.png' %}" alt="">
-                                </div>
+                        <div class="raffle__box-text">{% trans "Банк розіграшу" %}</div>
+                    </div>
+                    <div class="raffle__box box fadeInUp wow" data-wow-delay="0.7s">
+                        <div class="raffle__box-title title">{% trans "Переможці червня" %}</div>
+                        <div class="raffle__box-winners">
+                            <div class="raffle__winners-list">
+                                <div class="raffle__winner-item"><span class="raffle__winner-name">fueg****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                <div class="raffle__winner-item"><span class="raffle__winner-name">sups****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                <div class="raffle__winner-item"><span class="raffle__winner-name">tr20****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                <div class="raffle__winner-item"><span class="raffle__winner-name">fina****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
+                                <div class="raffle__winner-item"><span class="raffle__winner-name">supr****</span><span class="raffle__winner-amount">30.74<img src="https://crypto-chicken.co/wp-content/uploads/USDT-TRX-2.png" alt="" class="raffle__winner-icon"></span></div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </section>
-
-            <section class="advant section__mg">
-                <div class="container">
+                <div class="raffle__items box fadeInUp wow" data-wow-delay="0.1s">
+                    <div class="raffle__item">
+                        <div class="raffle__item-icon"><img src="{% static 'img/index/raffle/raffle-icon-2.svg' %}" alt=""></div>
+                        <div class="raffle__item-title title">{% trans "Створи заявку" %}</div>
+                        <div class="raffle__item-text">{% trans "Створи заявку на будь-яку суму" %}</div>
+                    </div>
+                    <div class="raffle__item">
+                        <div class="raffle__item-icon"><img src="{% static 'img/index/raffle/raffle-icon-1.svg' %}" alt=""></div>
+                        <div class="raffle__item-title title">{% trans "Здійсни обмін" %}</div>
+                        <div class="raffle__item-text">{% trans "Здійсни обмін валюти на нашому сайті" %}</div>
+                    </div>
+                    <div class="raffle__item">
+                        <div class="raffle__item-icon"><img src="{% static 'img/index/raffle/raffle-icon-3.svg' %}" alt=""></div>
+                        <div class="raffle__item-title title">{% trans "Бери участь у розіграші" %}</div>
+                        <div class="raffle__item-text">{% trans "Розіграш проводиться в останній день місяця автоматично за ID заявки" %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="cash section__mg">
+        <div class="container">
+            <div class="cash__cols">
+                <div class="cash__col fadeInUp wow" data-wow-delay="0.1s">
                     <div class="section__head">
-                        <h2 class="section__title">Преимущества</h2>
-                        <div class="section__intro">обмена с CryptoСhicken</div>
+                        <h2 class="section__title">{% trans "Отримай кешбек" %}</h2>
                     </div>
-
-                    <div class="advant__items">
-                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.1s">
-                            <div class="advant__item-head">
-                                <div class="advant__item-title title">Быстрые операции</div>
-                                <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-1.svg' %}" alt=""></div>
-                            </div>
-                            <div class="advant__item-text">Мы обеспечиваем мгновенные электронные транзакции, которые позволяют легко и быстро приобретать или реализовывать криптовалюту прямо из дома.</div>
+                    <div class="cash__item box">
+                        <div class="cash__item-title">
+                            <div class="title">{% trans "Здійсни обмін на нашому сайті та отримай кешбек з кожної операції!" %}</div>
                         </div>
-                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.3s">
-                            <div class="advant__item-head">
-                                <div class="advant__item-title title">Простота использования</div>
-                                <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-2.svg' %}" alt=""></div>
-                            </div>
-                            <div class="advant__item-text">Сайт обладает интуитивно понятным интерфейсом, который позволяет пользователям мгновенно создавать аккаунты и безопасно проводить операции обмена, получая криптовалюту на свои кошельки.</div>
+                        <div class="cash__item-text">
+                            {% trans "Кожен авторизований користувач, здійснюючи обмін на нашому сайті CryptoChicken, отримує кешбек 0,03% від суми обміну на свій партнерський акаунт." %}
                         </div>
-                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.35s">
-                            <div class="advant__item-head">
-                                <div class="advant__item-title title">Высокий уровень безопасности</div>
-                                <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-3.svg' %}" alt=""></div>
-                            </div>
-                            <div class="advant__item-text">Сайт защищен технологиями шифрования, поэтому обеспечивает конфиденциальность личной информации (пароли, номера, карты) пользователей, а так же мы не храним данные на наших серверах.</div>
+                        <div class="cash__item-buttons">
+                            <a href="https://crypto-chicken.co/cashback-info/" class="btn btn--bd btn--bdg btn--wall">
+                                <span>{% trans "Детальніше про програму" %}</span>
+                            </a>
                         </div>
-                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.1s">
-                            <div class="advant__item-head">
-                                <div class="advant__item-title title">Выгодный <br> обменный курс</div>
-                                <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-4.svg' %}" alt=""></div>
-                            </div>
-                            <div class="advant__item-text">У нас всегда предлагается наиболее выгодный обменный курс для криптовалюты, обеспечивая максимальные выгоды для наших клиентов.</div>
-                        </div>
-                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.3s">
-                            <div class="advant__item-head">
-                                <div class="advant__item-title title">Компетентная поддержка</div>
-                                <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-5.svg' %}" alt=""></div>
-                            </div>
-                            <div class="advant__item-text">Наша команда готова быстро и эффективно решать все вопросы и проблемы, с которыми сталкиваются наши пользователи. Нам важно, чтобы ни одно обращение не осталось без внимания.</div>
-                        </div>
-                        <div class="advant__item box fadeInUp wow" data-wow-delay="0.7s">
-                            <div class="advant__item-head">
-                                <div class="advant__item-title title">Широкий выбор направлений обмена</div>
-                                <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-6.svg' %}" alt=""></div>
-                            </div>
-                            <div class="advant__item-text">На нашей платформе представлено широкое разнообразие направлений для обмена большинства известных криптовалют, включая Bitcoin, Ethereum, Litecoin и многие другие.</div>
+                        <div class="cash__item-img">
+                            <img src="{% static 'img/index/cashback/cash-img-3.png' %}" alt="">
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <section class="reviews section__mg">
-                <div class="container">
-                    <div class="section__head h-cols">
-                        <h2 class="section__title">Отзывы клиентов</h2>
-                        <div class="section__action hide-tablet-sm">
-                            <a href="https://www.bestchange.ru/cryptochicken-exchanger.html" target="_blank" class="btn"><span>Оставить отзыв</span></a>
-                            <a href="https://www.bestchange.ru/cryptochicken-exchanger.html" target="_blank" class="btn btn--bd hide-desktop"><span>Читать все отзывы</span></a>
-                        </div>
+                <div class="cash__col fadeInUp wow" data-wow-delay="0.3s">
+                    <div class="section__head">
+                        <h2 class="section__title">{% trans "Перевір гаманець" %}</h2>
                     </div>
-
-                    <div class="reviews__carousel swiper js-reviews-carousel">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.1s">
-                                <div class="reviews__item-head">
-                                    <div class="reviews__item-photo"><img src="{% static 'img/index/rev-w.svg' %}" alt=""></div>
-                                    <div class="reviews__item-nw">
-                                        <div class="reviews__item-name">Анастасия</div>
-                                        <div class="reviews__item-work">BestChange</div>
-                                    </div>
-                                </div>
-                                <div class="reviews__item-text">Достаточно быстрый обменник с приятным курсом, благодарю, советую.</div>
-                                <div class="reviews__item-date">15 мая 2024 12:30</div>
-                            </div>
-                            <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.3s">
-                                <div class="reviews__item-head">
-                                    <div class="reviews__item-photo"><img src="{% static 'img/index/rev-m.svg' %}" alt=""></div>
-                                    <div class="reviews__item-nw">
-                                        <div class="reviews__item-name">Алекс</div>
-                                        <div class="reviews__item-work">BestChange</div>
-                                    </div>
-                                </div>
-                                <div class="reviews__item-text">Все быстро и чётко. Оказался самый удобный из всех чем пользовался в последнее время.</div>
-                                <div class="reviews__item-date">13 мая 2024 21:08</div>
-                            </div>
-                            <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.5s">
-                                <div class="reviews__item-head">
-                                    <div class="reviews__item-photo"><img src="{% static 'img/index/rev-m-2.svg' %}" alt=""></div>
-                                    <div class="reviews__item-nw">
-                                        <div class="reviews__item-name">Максим</div>
-                                        <div class="reviews__item-work">BestChange</div>
-                                    </div>
-                                </div>
-                                <div class="reviews__item-text">Всё прошло оперативно, без задержек. Благодарю. Обращался к поддержке за уточнением нескольких вопросов — ответили быстро и по делу. Спасибо.</div>
-                                <div class="reviews__item-date">7 мая 2024 12:53</div>
-                            </div>
-                            <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.7s">
-                                <div class="reviews__item-head">
-                                    <div class="reviews__item-photo"><img src="{% static 'img/index/rev-w-2.svg' %}" alt=""></div>
-                                    <div class="reviews__item-nw">
-                                        <div class="reviews__item-name">Ar4i</div>
-                                        <div class="reviews__item-work">BestChange</div>
-                                    </div>
-                                </div>
-                                <div class="reviews__item-text">Все отлично. Быстрый перевод, без скрытых комиссий.</div>
-                                <div class="reviews__item-date">9 марта 2024 19:34</div>
-                            </div>
+                    <div class="cash__item box">
+                        <div class="cash__item-title">
+                            <div class="title">{% trans "Перевір свій гаманець перед відправкою коштів!" %}</div>
                         </div>
-                    </div>
-                    <div class="section__buttons show-tablet-sm">
-                        <a href="https://www.bestchange.com/cryptochicken-exchanger.html" class="btn btn--wmob" target="_blank"><span>Оставить отзыв</span></a>
+                        <div class="cash__item-text">
+                            {% trans "За результатами перевірки на основі сигналів гаманця прийдуть дані шкали ризику, і відповідь зі служби підтримки біржі." %}
+                        </div>
+                        <div class="cash__item-buttons">
+                            <a href="https://crypto-chicken.co/aml-check/" class="btn btn--bd btn--bdg btn--wall">
+                                <span>{% trans "Детальніше про AML перевірку" %}</span>
+                            </a>
+                        </div>
+                        <div class="cash__item-img">
+                            <img src="{% static 'img/index/cashback/cash-img-2.png' %}" alt="">
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-        </main>
+        </div>
+    </section>
 
-    </div>
+    <section class="advant section__mg">
+        <div class="container">
+            <div class="section__head">
+                <h2 class="section__title">{% trans "Переваги" %}</h2>
+                <div class="section__intro">{% trans "обміну з CryptoСhicken" %}</div>
+            </div>
 
-    <div class="popup " data-popup="call">
-        <div class="popup__content">
-            <div class="popup__bg popup-close"></div>
-            <div class="popup__container">
-                <a href="#" class="popup__close popup-close"></a>
-                <div class="popup__body">
-                    <div class="popup__head">
-                        <div class="popup__title"></div>
-                        <div class="popup__intro"></div>
+            <div class="advant__items">
+                <div class="advant__item box fadeInUp wow" data-wow-delay="0.1s">
+                    <div class="advant__item-head">
+                        <div class="advant__item-title title">{% trans "Швидкі операції" %}</div>
+                        <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-1.svg' %}" alt=""></div>
                     </div>
+                    <div class="advant__item-text">{% trans "Ми забезпечуємо миттєві електронні транзакції, які дозволяють легко та швидко купувати або продавати криптовалюту прямо з дому." %}</div>
+                </div>
+                <div class="advant__item box fadeInUp wow" data-wow-delay="0.3s">
+                    <div class="advant__item-head">
+                        <div class="advant__item-title title">{% trans "Простота використання" %}</div>
+                        <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-2.svg' %}" alt=""></div>
+                    </div>
+                    <div class="advant__item-text">{% trans "Сайт має інтуїтивно зрозумілий інтерфейс, який дозволяє користувачам миттєво створювати акаунти та безпечно проводити операції обміну, отримуючи криптовалюту на свої гаманці." %}</div>
+                </div>
+                <div class="advant__item box fadeInUp wow" data-wow-delay="0.35s">
+                    <div class="advant__item-head">
+                        <div class="advant__item-title title">{% trans "Високий рівень безпеки" %}</div>
+                        <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-3.svg' %}" alt=""></div>
+                    </div>
+                    <div class="advant__item-text">{% trans "Сайт захищений технологіями шифрування, тому забезпечує конфіденційність особистої інформації (паролі, номери, карти) користувачів, а також ми не зберігаємо дані на наших серверах." %}</div>
+                </div>
+                <div class="advant__item box fadeInUp wow" data-wow-delay="0.1s">
+                    <div class="advant__item-head">
+                        <div class="advant__item-title title">{% trans "Вигідний обмінний курс" %}</div>
+                        <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-4.svg' %}" alt=""></div>
+                    </div>
+                    <div class="advant__item-text">{% trans "У нас завжди пропонується найвигідніший обмінний курс для криптовалюти, забезпечуючи максимальні вигоди для наших клієнтів." %}</div>
+                </div>
+                <div class="advant__item box fadeInUp wow" data-wow-delay="0.3s">
+                    <div class="advant__item-head">
+                        <div class="advant__item-title title">{% trans "Компетентна підтримка" %}</div>
+                        <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-5.svg' %}" alt=""></div>
+                    </div>
+                    <div class="advant__item-text">{% trans "Наша команда готова швидко та ефективно вирішувати всі питання і проблеми, з якими стикаються наші користувачі. Нам важливо, щоб жодне звернення не залишилось без уваги." %}</div>
+                </div>
+                <div class="advant__item box fadeInUp wow" data-wow-delay="0.7s">
+                    <div class="advant__item-head">
+                        <div class="advant__item-title title">{% trans "Широкий вибір напрямків обміну" %}</div>
+                        <div class="advant__item-icon"><img src="{% static 'img/index/advantage/icon-6.svg' %}" alt=""></div>
+                    </div>
+                    <div class="advant__item-text">{% trans "На нашій платформі представлено широкий вибір напрямків для обміну більшості відомих криптовалют, включаючи Bitcoin, Ethereum, Litecoin та багато інших." %}</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <section class="reviews section__mg">
+        <div class="container">
+            <div class="section__head h-cols">
+                <h2 class="section__title">{% trans "Відгуки клієнтів" %}</h2>
+                <div class="section__action hide-tablet-sm">
+                    <a href="" target="_blank" class="btn"><span>{% trans "Залишити відгук" %}</span></a>
+                    <a href="" target="_blank" class="btn btn--bd hide-desktop"><span>{% trans "Читати всі відгуки" %}</span></a>
+                </div>
+            </div>
+
+            <div class="reviews__carousel swiper js-reviews-carousel">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.1s">
+                        <div class="reviews__item-head">
+                            <div class="reviews__item-photo"><img src="{% static 'img/index/rev-w.svg' %}" alt=""></div>
+                            <div class="reviews__item-nw">
+                                <div class="reviews__item-name">{% trans "Анастасія" %}</div>
+                                <div class="reviews__item-work">{% trans "BestChange" %}</div>
+                            </div>
+                        </div>
+                        <div class="reviews__item-text">{% trans "Досить швидкий обмінник з приємним курсом, дякую, рекомендую." %}</div>
+                        <div class="reviews__item-date">{% trans "15 травня 2024 12:30" %}</div>
+                    </div>
+                    <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.3s">
+                        <div class="reviews__item-head">
+                            <div class="reviews__item-photo"><img src="{% static 'img/index/rev-m.svg' %}" alt=""></div>
+                            <div class="reviews__item-nw">
+                                <div class="reviews__item-name">{% trans "Алекс" %}</div>
+                                <div class="reviews__item-work">{% trans "BestChange" %}</div>
+                            </div>
+                        </div>
+                        <div class="reviews__item-text">{% trans "Все швидко і чітко. Виявився найзручніший з усіх, чим користувався останнім часом." %}</div>
+                        <div class="reviews__item-date">{% trans "13 травня 2024 21:08" %}</div>
+                    </div>
+                    <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.5s">
+                        <div class="reviews__item-head">
+                            <div class="reviews__item-photo"><img src="{% static 'img/index/rev-m-2.svg' %}" alt=""></div>
+                            <div class="reviews__item-nw">
+                                <div class="reviews__item-name">{% trans "Максим" %}</div>
+                                <div class="reviews__item-work">{% trans "BestChange" %}</div>
+                            </div>
+                        </div>
+                        <div class="reviews__item-text">{% trans "Все пройшло оперативно, без затримок. Дякую. Звертався до підтримки для уточнення кількох питань — відповіли швидко і по суті. Дякую." %}</div>
+                        <div class="reviews__item-date">{% trans "7 травня 2024 12:53" %}</div>
+                    </div>
+                    <div class="swiper-slide reviews__item box fadeInUp wow" data-wow-delay="0.7s">
+                        <div class="reviews__item-head">
+                            <div class="reviews__item-photo"><img src="{% static 'img/index/rev-w-2.svg' %}" alt=""></div>
+                            <div class="reviews__item-nw">
+                                <div class="reviews__item-name">{% trans "Ar4i" %}</div>
+                                <div class="reviews__item-work">{% trans "BestChange" %}</div>
+                            </div>
+                        </div>
+                        <div class="reviews__item-text">{% trans "Все чудово. Швидкий переказ, без прихованих комісій." %}</div>
+                        <div class="reviews__item-date">{% trans "9 березня 2024 19:34" %}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="section__buttons show-tablet-sm">
+                <a href="" class="btn btn--wmob" target="_blank"><span>{% trans "Залишити відгук" %}</span></a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+</div>
+
+<div class="popup " data-popup="call">
+    <div class="popup__content">
+        <div class="popup__bg popup-close"></div>
+        <div class="popup__container">
+            <a href="#" class="popup__close popup-close"></a>
+            <div class="popup__body">
+                <div class="popup__head">
+                    <div class="popup__title"></div>
+                    <div class="popup__intro"></div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="popup " data-popup="thank">
-        <div class="popup__content">
-            <div href="" class="popup__bg popup-close"></div>
-            <div class="popup__container">
-                <a href="#" class="popup__close popup-close"></a>
-                <div class="popup__body">
-                    <div class="popup__head">
-                        <div class="popup__title"></div>
-                        <div class="popup__intro"></div>
-                    </div>
-
+<div class="popup " data-popup="thank">
+    <div class="popup__content">
+        <div href="" class="popup__bg popup-close"></div>
+        <div class="popup__container">
+            <a href="#" class="popup__close popup-close"></a>
+            <div class="popup__body">
+                <div class="popup__head">
+                    <div class="popup__title"></div>
+                    <div class="popup__intro"></div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
     <div class="walletsverify_box"></div>
 
     {% include 'partials/footer.html' %}
 
-    <!--    Автоматическое поддержание активности сессии-->
     <script type="text/javascript">
         jQuery(function($) {
 

@@ -7,94 +7,84 @@
 
     {% include 'partials/header.html' %}
 
-    <main class="content__wrapper">
-        <!--	    -->
-        <div class="breadcrumbs">
-            <div class="container">
-                <ul class="breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li class="breadcrumbs__item" itemprop="itemListElement" itemscope
-                        itemtype="https://schema.org/ListItem">
-                        <a href="https://crypto-chicken.co/" itemprop="item" class="breadcrumbs__link">
-                            <span itemprop="name">Главная</span>
-                        </a>
-                        <meta itemprop="position" content="1"/>
-                    </li>
+   <main class="content__wrapper">
+    <div class="breadcrumbs">
+        <div class="container">
+            <ul class="breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li class="breadcrumbs__item" itemprop="itemListElement" itemscope
+                    itemtype="https://schema.org/ListItem">
+                    <a href="https://crypto-chicken.co/" itemprop="item" class="breadcrumbs__link">
+                        <span itemprop="name">Головна</span>
+                    </a>
+                    <meta itemprop="position" content="1"/>
+                </li>
 
-                    <li class="breadcrumbs__item" itemprop="itemListElement" itemscope
-                        itemtype="https://schema.org/ListItem">
-                        <span itemprop="name" class="breadcrumbs__current">Депозиты</span>
-                        <meta itemprop="position" content="2"/>
-                    </li>
-                </ul>
-            </div>
+                <li class="breadcrumbs__item" itemprop="itemListElement" itemscope
+                    itemtype="https://schema.org/ListItem">
+                    <span itemprop="name" class="breadcrumbs__current">Депозити</span>
+                    <meta itemprop="position" content="2"/>
+                </li>
+            </ul>
         </div>
-        <section class="profile">
-            <div class="container">
-                <div class="acc__inner deposits anonymous post-1271 page type-page status-publish hentry">
-                    <div class="acc__body ">
+    </div>
+    <section class="profile">
+        <div class="container">
+            <div class="acc__inner deposits anonymous post-1271 page type-page status-publish hentry">
+                <div class="acc__body ">
 
-                        <div class="text">
+                    <div class="text">
 
-                            <div style="margin-bottom: 15px">
-                                <h3>Увеличьте свои криптоактивы с CryptoChicken!</h3>
-                                <p><strong>Как наши “Депозиты” обеспечивают высокую доходность ваших цифровых
-                                    активов?</strong> Высокие проценты — это результат эффективного использования
-                                    активов в услуге "Крипто-ломбард", которая генерирует значительную прибыль.</p>
-                                <p>Услуга "Крипто-ломбард" — это предоставление займов в криптовалюте под залог цифровых
-                                    активов (например, BTC, ETH). Ваши криптовалюты используются как обеспечение, что
-                                    позволяет получить необходимые средства, не продавая активы, и при этом они
-                                    продолжают оставаться в вашем владении, пока вы соблюдаете условия займа.</p>
-                                <p><strong>Почему нам можно доверять?</strong> Все обязательства по депозитам на
-                                    crypto-chicken.co несет TrueChicken Ltd., компания, зарегистрированная на
-                                    Сейшельских Островах, что гарантирует юридическую ясность и надежность.</p>
-                                <p>Начните зарабатывать с нами уже сегодня!</p>
-                                <p>Заинтересовала услуга Крипто-ломбарда? Скоро она будет доступна и на <a
-                                        href="https://crypto-chicken.co">crypto-chicken.co</a>!</p>
-                            </div>
-                            <div class="resultfalse"><span>Ошибка! Вы должны пройти авторизацию</span></div>
-
-                            <div class="clear"></div>
+                        <div style="margin-bottom: 15px">
+                            <h3>Збільшіть свої криптоактиви разом із CryptoChicken!</h3>
+                            <p><strong>Як наші “Депозити” забезпечують високу дохідність ваших цифрових активів?</strong> Високі відсотки — це результат ефективного використання активів у послузі "Крипто-ломбард", яка генерує значний прибуток.</p>
+                            <p>Послуга "Крипто-ломбард" — це надання позик у криптовалюті під заставу цифрових активів (наприклад, BTC, ETH). Ваші криптовалюти використовуються як забезпечення, що дозволяє отримати необхідні кошти, не продаючи активи, і при цьому вони залишаються у вашій власності, поки ви дотримуєтесь умов позики.</p>
+                            <p><strong>Чому нам можна довіряти?</strong> Всі зобов'язання по депозитах на crypto-chicken.co несе TrueChicken Ltd., компанія, зареєстрована на Сейшельських Островах, що гарантує юридичну прозорість та надійність.</p>
+                            <p>Почніть заробляти з нами вже сьогодні!</p>
+                            <p>Зацікавила послуга Крипто-ломбарда? Скоро вона буде доступна і на <a href="https://crypto-chicken.co">crypto-chicken.co</a>!</p>
                         </div>
+                        <div class="resultfalse"><span>Помилка! Ви повинні пройти авторизацію</span></div>
 
-                        <div class="auth__form embedded">
-                            <div class="">
-                                <div class="section__head text--center">
-                                    <div class="title text--white">Авторизация</div>
-                                </div>
-                                <form class="ajax_post_form"
-                                      action="https://crypto-chicken.co/premium_site_action-loginform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ru"
-                                      method="post">
-                                    <input type="hidden" name="return_url" value=""/>
-                                    <div class="form__input">
-                                        <input type="text" name="logmail" class="input input--nbd"
-                                               placeholder="Login/E-mail">
-                                        <div class="input__bg"></div>
-                                    </div>
-                                    <div class="form__input">
-                                        <input type="password" name="pass" class="input input--nbd" placeholder="Пароль"
-                                               autocomplete="off">
-                                        <div class="input__bg"></div>
-                                    </div>
+                        <div class="clear"></div>
+                    </div>
 
-                                    <div class="form__submit">
-                                        <button class="btn btn--wall"><span>Войти</span></button>
-                                    </div>
-                                    <div class="form__submit">
-                                        <button class="btn btn--bd btn--bdg btn--wall" type="button"
-                                                data-open-login="reg"><span>Регистрация</span></button>
-                                    </div>
-                                    <div class="pauth__links">
-                                        <a href="https://crypto-chicken.co/lostpass/" class="pauth__link">Забыли
-                                            пароль?</a>
-                                    </div>
-                                    <div class="resultgo"></div>
-                                </form>
+                    <div class="auth__form embedded">
+                        <div class="">
+                            <div class="section__head text--center">
+                                <div class="title text--white">Авторизація</div>
                             </div>
+                            <form class="ajax_post_form"
+                                  action="https://crypto-chicken.co/premium_site_action-loginform.html?meth=post&yid=451a96c1cac6&ynd=0&lang=ua"
+                                  method="post">
+                                <input type="hidden" name="return_url" value=""/>
+                                <div class="form__input">
+                                    <input type="text" name="logmail" class="input input--nbd"
+                                           placeholder="Логін/E-mail">
+                                    <div class="input__bg"></div>
+                                </div>
+                                <div class="form__input">
+                                    <input type="password" name="pass" class="input input--nbd" placeholder="Пароль"
+                                           autocomplete="off">
+                                    <div class="input__bg"></div>
+                                </div>
+
+                                <div class="form__submit">
+                                    <button class="btn btn--wall"><span>Увійти</span></button>
+                                </div>
+                                <div class="form__submit">
+                                    <button class="btn btn--bd btn--bdg btn--wall" type="button"
+                                            data-open-login="reg"><span>Реєстрація</span></button>
+                                </div>
+                                <div class="pauth__links">
+                                    <a href="https://crypto-chicken.co/lostpass/" class="pauth__link">Забули пароль?</a>
+                                </div>
+                                <div class="resultgo"></div>
+                            </form>
                         </div>
                     </div>
                 </div>
-        </section>
-    </main>
+            </div>
+    </section>
+</main>
 
     {% include 'partials/footer.html' %}
 

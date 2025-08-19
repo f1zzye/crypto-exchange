@@ -1,4 +1,5 @@
 {% extends 'partials/base.html' %}
+{% load i18n %}
 {% load static %}
 
 {% block content %}
@@ -7,38 +8,41 @@
 
   {% include 'partials/header.html' %}
 
-  <main class="content__wrapper">
+ <main class="content__wrapper">
     <section class="page">
       <div class="container">
         <div class="page_wrap box box--cont cashback-info post-1081 page type-page status-publish hentry">
 
-
           <div class="cash__cont ">
             <div class="cash__cont-title">
-              <div class="title">Соверши обмен на нашем сайте и получи кэшбэк с каждой операции!</div>
+              <div class="title">{% trans "Здійсни обмін на нашому сайті та отримай кешбек з кожної операції!" %}</div>
             </div>
             <div class="cash__cont-info">
               <div class="cash__cont-text">
-                <p>Каждый авторизированный пользователь, совершая обмен на нашем сайте CryptoChicken, получает кэшбэк
-                  0,03% от суммы обмена на свой партнерский аккаунт (За 10000USDT обмена возвращаем 3USDT).<br/>
-                  Исключение составляют направления: Stable-Stable (TRC20/ERC20/USDC/DAI), TRC/ERC20/USDC/DAI-нал,
-                  нал-TRC20. По этим направлениям кэшбэк не начисляется.</p>
-                <p>Накопленные средства можно вывести на свой кошелек USDT TRC20. Минимальная сумма для вывода 10$.</p>
-                <p>Для вывода средств, необходимо в своем кабинете на странице "кэшбэк" ввести кошелек и нажать кнопку
-                  "заказать вывод средств".</p>
+                <p>
+                  {% trans "Кожен авторизований користувач, здійснюючи обмін на нашому сайті CryptoChicken, отримує кешбек 0,03% від суми обміну на свій партнерський акаунт (За 10000USDT обміну повертаємо 3USDT)." %}
+                  <br/>
+                  {% trans "Виняток становлять напрямки: Stable-Stable (TRC20/ERC20/USDC/DAI), TRC/ERC20/USDC/DAI-готівка, готівка-TRC20. За цими напрямками кешбек не нараховується." %}
+                </p>
+                <p>
+                  {% trans "Накопичені кошти можна вивести на свій гаманець USDT TRC20. Мінімальна сума для виведення 10$." %}
+                </p>
+                <p>
+                  {% trans "Для виведення коштів необхідно у своєму кабінеті на сторінці \"кешбек\" ввести гаманець і натиснути кнопку \"замовити виведення коштів\"." %}
+                </p>
               </div>
               <div class="cash__cont-img"><img decoding="async"
                                                src="{% static 'img/cash-img-3.png' %}"
                                                alt=""/></div>
             </div>
-            <div class="cash__cont-buttons"><a class="btn btn--bd btn--bdg btn--wall" href="/ru/account-2/"><span>Личный кабинет</span></a>
+            <div class="cash__cont-buttons">
+              <a class="btn btn--bd btn--bdg btn--wall" href="/ru/account-2/"><span>{% trans "Особистий кабінет" %}</span></a>
             </div>
           </div>
         </div>
       </div>
-
     </section>
-  </main>
+</main>
 
 {% include 'partials/footer.html' %}
 
