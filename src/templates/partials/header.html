@@ -1,4 +1,8 @@
+{% load i18n %}
 {% load static %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
 
 <style>
 .wallet-btn-content {
@@ -39,64 +43,86 @@
                     <div id="header-wallet-container">
                         <button id="header-connect-btn" class="btn btn--md btn--bd" type="button">
                             <i class="fas fa-wallet"></i>
-                            <span>Connect Wallet</span>
+                            <span>{% trans "Підключити гаманець" %}</span>
                         </button>
                         <div id="wallet-button-container" style="position: relative; display: none;">
                             <button id="header-wallet-info" class="btn btn--md btn--bd" type="button">
                                 <div class="wallet-btn-content">
-                                    <span class="wallet-balance-display">Loading...</span>
-                                    <span class="wallet-address-display">Connecting...</span>
+                                    <span class="wallet-balance-display">{% trans "Завантаження..." %}</span>
+                                    <span class="wallet-address-display">{% trans "Підключення..." %}</span>
                                 </div>
                             </button>
                             <div id="wallet-dropdown" class="wallet-dropdown-modal" style="display: none;">
                                 <div class="wallet-dropdown-header">
                                     <div class="wallet-dropdown-title">
                                         <img src="{% static 'img/tonconnect-icon.png' %}" alt="Wallet" class="wallet-icon-dropdown-img">
-                                        <span class="dropdown-wallet-address" id="dropdown-wallet-address">Connecting...</span>
+                                        <span class="dropdown-wallet-address" id="dropdown-wallet-address">{% trans "Підключення..." %}</span>
                                     </div>
                                     <div class="wallet-actions-icons">
-                                        <button class="wallet-icon-btn" onclick="copyWalletAddress()" title="Copy Address">
+                                        <button class="wallet-icon-btn" onclick="copyWalletAddress()" title="{% trans "Скопіювати адресу" %}">
                                             <i class="fas fa-copy"></i>
                                         </button>
-                                        <button class="wallet-icon-btn" onclick="refreshWalletBalance()" title="Refresh Balance">
+                                        <button class="wallet-icon-btn" onclick="refreshWalletBalance()" title="{% trans "Оновити баланс" %}">
                                             <i class="fas fa-sync-alt"></i>
                                         </button>
-                                        <button class="wallet-icon-btn disconnect-btn" onclick="disconnectWalletFromDropdown()" title="Disconnect">
+                                        <button class="wallet-icon-btn disconnect-btn" onclick="disconnectWalletFromDropdown()" title="{% trans "Відключити" %}">
                                             <i class="fas fa-sign-out-alt"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="wallet-dropdown-body">
                                     <div class="wallet-balance-section-dropdown">
-                                        <div class="balance-label-dropdown">Баланс TON</div>
-                                        <div class="balance-amount-dropdown" id="dropdown-wallet-balance">Loading...</div>
+                                        <div class="balance-label-dropdown">{% trans "Баланс TON" %}</div>
+                                        <div class="balance-amount-dropdown" id="dropdown-wallet-balance">{% trans "Завантаження..." %}</div>
                                     </div>
                                 </div>
                                 <div class="wallet-dropdown-decoration"></div>
                             </div>
                         </div>
                     </div>
+
                     <div class="header__lang js-lang">
                         <div class="header__lang-current">
-                            <span>RU</span>
-                            <button class="header__lang-open js-lang-open"></button>
+                            <span>{{ LANGUAGE_CODE|upper }}</span>
+                            <button class="header__lang-open js-lang-open" type="button"></button>
                         </div>
                         <div class="header__lang-drop js-lang-drop">
+                            <form id="language-form" action="{% url 'set_language' %}" method="post" style="display: none;">
+                                {% csrf_token %}
+                                <input type="hidden" name="language" id="language-input">
+                                <input type="hidden" name="next" value="{{ request.get_full_path|slice:"3:" }}">
+                            </form>
                             <ul>
-                                <li class="current"><a href="">RU</a></li>
-                                <li><a href="" rel="nofollow">EN</a></li>
+                                {% for language in languages %}
+                                    <li {% if language.code == LANGUAGE_CODE %}class="current"{% endif %}>
+                                        <a href="javascript:void(0)"
+                                           onclick="changeLanguage('{{ language.code }}')"
+                                           {% if language.code == LANGUAGE_CODE %}class="selected"{% endif %}>
+                                            {{ language.code|upper }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
                 </div>
+
                 <div id="ton-connect-header" style="display: none;"></div>
                 <div class="header__bottom">
                     <div class="header__nav">
                         <ul id="menu-verhnee-menyu" class="hmenu">
-                            <li id="menu-item-1101" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
-                            <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
-                            <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшбэк</span></a></li>
-                            <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
+                            <li id="menu-item-1101" class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101">
+                                <a href="{% url 'core:aml' %}"><span>{% trans "AML правила" %}</span></a>
+                            </li>
+                            <li id="menu-item-1200" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200">
+                                <a href="{% url 'core:raffle' %}"><span>{% trans "Розіграш" %}</span></a>
+                            </li>
+                            <li id="menu-item-1189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189">
+                                <a href="{% url 'core:cashback' %}"><span>{% trans "Kешбек" %}</span></a>
+                            </li>
+                            <li id="menu-item-1279" class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279">
+                                <a href="{% url 'core:deposit' %}"><span>{% trans "Депозити" %}</span></a>
+                            </li>
                         </ul>
                     </div>
                     {% if user.is_authenticated %}
@@ -107,11 +133,11 @@
                     {% else %}
                     <div class="header__profile">
                         <div class="header__lg">
-                            <button class="btn btn--md btn--bd btn--bdg" data-open-login="reg"><span>Регистрация</span></button>
+                            <button class="btn btn--md btn--bd btn--bdg" data-open-login="reg"><span>{% trans "Реєстрація" %}</span></button>
                         </div>
                         <button class="btn btn--md btn--pdsm header__btnlog" data-open-login="login">
                             <img src="{% static 'img/header/in.svg' %}" alt="">
-                            <span>Войти</span>
+                            <span>{% trans "Увійти" %}</span>
                         </button>
                     </div>
                     <button class="header__login" data-open-login="login"><img src="https://crypto-chicken.co/wp-content/themes/cryptochicken-new-design/images/icons/in-color.svg" alt=""></button>
@@ -119,18 +145,18 @@
 
                     <div class="accmenu js-menu-acc">
                         <ul>
-                            <li><a href=""><img src="{% static 'img/header/profile-menu.svg' %}" alt=""><span>Профиль</span></a></li>
-                            <li><a href=""><img src="{% static 'img/header/order-menu.svg' %}" alt=""><span>заявки</span></a></li>
-                            <li><a href=""><img src="{% static 'img/header/order-menu.svg' %}" alt=""><span>Депозиты</span></a></li>
-                            <li><a href=""><img src="{% static 'img/header/cashback-menu.svg' %}" alt=""><span>Кешбэк</span></a></li>
-                            <li><a href=""><img src="{% static 'img/header/check-menu.svg' %}" alt=""><span>AML проверка кошелька</span></a></li>
+                            <li><a href=""><img src="{% static 'img/header/profile-menu.svg' %}" alt=""><span>{% trans "Профіль" %}</span></a></li>
+                            <li><a href=""><img src="{% static 'img/header/order-menu.svg' %}" alt=""><span>{% trans "Заявки" %}</span></a></li>
+                            <li><a href=""><img src="{% static 'img/header/order-menu.svg' %}" alt=""><span>{% trans "Депозити" %}</span></a></li>
+                            <li><a href=""><img src="{% static 'img/header/cashback-menu.svg' %}" alt=""><span>{% trans "Кешбек" %}</span></a></li>
+                            <li><a href=""><img src="{% static 'img/header/check-menu.svg' %}" alt=""><span>{% trans "AML перевірка гаманця" %}</span></a></li>
 
                             <li>
                                 <form action="{% url 'accounts:sign-out' %}" method="post" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="accmenu__btnlogout">
                                         <img src="{% static 'img/header/out-menu.svg' %}" alt="">
-                                        <span>Выход</span>
+                                        <span>{% trans "Вихід" %}</span>
                                     </button>
                                 </form>
                             </li>
@@ -157,27 +183,44 @@
         <div class="container">
             <div class="navfix__nav">
                 <ul id="menu-verhnee-menyu-1" class="hmenu">
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101"><a href="{% url 'core:aml' %}"><span>AML правила</span></a></li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200"><a href="{% url 'core:raffle' %}"><span>Розыгрыш</span></a></li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189"><a href="{% url 'core:cashback' %}"><span>Kэшbэк</span></a></li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279"><a href="{% url 'core:deposit' %}"><span>Депозиты</span></a></li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page  first_menu_li menu-item-1101">
+                        <a href="{% url 'core:aml' %}"><span>{% trans "AML правила" %}</span></a>
+                    </li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1200">
+                        <a href="{% url 'core:raffle' %}"><span>{% trans "Розіграш" %}</span></a>
+                    </li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1189">
+                        <a href="{% url 'core:cashback' %}"><span>{% trans "Kешбек" %}</span></a>
+                    </li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page  last_menu_li menu-item-1279">
+                        <a href="{% url 'core:deposit' %}"><span>{% trans "Депозити" %}</span></a>
+                    </li>
                 </ul>
             </div>
 
             <div class="navfix__contacts">
-                <a href="" class="navfix__contacts-val"><img src="{% static 'img/index/mail.svg' %}" alt=""><span><span class="__cf_email__" data-cfemail="6900070f06290a1b10191d06440a01000a020c07470a06">[email&#160;protected]</span></span></a>
+                <a href="" class="navfix__contacts-val"><img src="{% static 'img/index/mail.svg' %}" alt=""><span><span class="__cf_email__" data-cfemail="6900070f06290a1b10191d06440a01000a020c07470a06">{% trans "[email protected]" %}</span></span></a>
                 <br>
-                <a href="" class="navfix__contacts-val"><img src="{% static 'img/index/tg.svg' %}" alt=""><span>@CryptoChicken_bot</span></a> <br>
+                <a href="" class="navfix__contacts-val"><img src="{% static 'img/index/tg.svg' %}" alt=""><span>{% trans "@CryptoChicken_bot" %}</span></a> <br>
             </div>
 
             <div class="navfix__lang">
-                <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2F" class="navfix__lang-item active"><span>RU</span></a>
-                <a href="https://crypto-chicken.co/premium_site_action-set_site_lang.html?meth=get&yid=451a96c1cac6&ynd=0&lang=ru&return_url=https%3A%2F%2Fcrypto-chicken.co%2Fen%2F" class="navfix__lang-item"><span>EN</span></a></div>
+                <p>{% trans "Language" %}:</p>
+                {% for language in languages %}
+                    <a href="javascript:void(0)"
+                       onclick="changeLanguage('{{ language.code }}')"
+                       class="navfix__lang-item {% if language.code == LANGUAGE_CODE %}active{% endif %}">
+                        <span>{{ language.code|upper }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+
             <div class="navfix__buttons">
-                <button class="btn btn--bd btn--md btn--chat"><span>Онлайн чат</span></button>
+                <button class="btn btn--bd btn--md btn--chat"><span>{% trans "Онлайн чат" %}</span></button>
             </div>
         </div>
     </div>
+
     {% if messages %}
     <div class="flash-messages-container">
         {% for message in messages %}
@@ -201,7 +244,60 @@
         {% endfor %}
     </div>
     {% endif %}
-
 </header>
+
+<script>
+function changeLanguage(langCode) {
+    let currentPath = window.location.pathname;
+
+    if (currentPath.startsWith('/en/')) {
+        currentPath = currentPath.substring(3);
+    }
+    if (currentPath.startsWith('/uk/')) {
+        currentPath = currentPath.substring(3);
+    }
+
+    if (!currentPath || currentPath === '') {
+        currentPath = '/';
+    }
+
+    // Формируем новый URL
+    let newUrl;
+    if (langCode === 'uk') {
+        newUrl = currentPath;
+    } else {
+        newUrl = '/' + langCode + currentPath;
+    }
+
+    document.cookie = 'django_language=' + langCode + '; path=/; max-age=31536000'; // 1 год
+
+    window.location.href = newUrl;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const langSwitch = document.querySelector('.js-lang');
+    const langOpen = document.querySelector('.js-lang-open');
+    const langDrop = document.querySelector('.js-lang-drop');
+
+    if (langOpen) {
+        langOpen.addEventListener('click', function(e) {
+            e.stopPropagation();
+            langSwitch.classList.toggle('active');
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (langSwitch && !langSwitch.contains(e.target)) {
+            langSwitch.classList.remove('active');
+        }
+    });
+
+    if (langDrop) {
+        langDrop.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+});
+</script>
 
 <script src="{% static 'js/wallet-manager/ton-wallet.js' %}"></script>

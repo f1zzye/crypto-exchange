@@ -1,0 +1,1095 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-17 18:06+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1&&n%100!=11?0:n%10>=2&&n%10<=4&&(n"
+"%100<12||n%100>14)?1:n%10==0||n%10>=5||n%100>=11&&n%100<=14?2:3);\n"
+
+#: .\accounts\admin.py:30
+msgid "Authentication"
+msgstr "Автентифікація"
+
+#: .\accounts\admin.py:32
+msgid "Permissions"
+msgstr "Дозволи"
+
+#: .\accounts\admin.py:44
+msgid "Important Dates"
+msgstr "Важливі дати"
+
+#: .\accounts\forms.py:10
+msgid "Username"
+msgstr "Ім'я користувача"
+
+#: .\accounts\forms.py:11 .\templates\index.html:136
+msgid "E-mail"
+msgstr "Електронна пошта"
+
+#: .\accounts\forms.py:12
+msgid "Password"
+msgstr "Пароль"
+
+#: .\accounts\forms.py:14
+msgid "Confirm Password"
+msgstr "Підтвердити пароль"
+
+#: .\accounts\models.py:16
+msgid "email address"
+msgstr "електронна адреса"
+
+#: .\accounts\models.py:18
+msgid "username"
+msgstr "ім'я користувача"
+
+#: .\accounts\models.py:23
+msgid "A user with that username already exists."
+msgstr "Користувач з таким ім'ям вже існує."
+
+#: .\accounts\models.py:28
+msgid "staff status"
+msgstr "Статус персоналу"
+
+#: .\accounts\models.py:30
+msgid "Indicates whether the user can log in as an administrator."
+msgstr "Вказує, чи може користувач увійти як адміністратор."
+
+#: .\accounts\models.py:33
+msgid "active"
+msgstr "активний"
+
+#: .\accounts\models.py:35
+msgid "Designates whether this user should be treated as active."
+msgstr "Позначає, чи слід вважати цього користувача активним."
+
+#: .\accounts\models.py:38
+msgid "date joined"
+msgstr "дата приєднання"
+
+#: .\accounts\models.py:47
+msgid "User"
+msgstr "Користувач"
+
+#: .\accounts\models.py:48 .\config\settings\base.py:175
+#: .\config\settings\base.py:179
+msgid "Users"
+msgstr "Користувачі"
+
+#: .\accounts\models.py:70
+msgid "avatar"
+msgstr "аватар"
+
+#: .\accounts\services\emails.py:16
+msgid "Confirm your email address for CryptoChicken"
+msgstr "Підтвердьте свою електронну адресу для CryptoChicken"
+
+#: .\config\settings\base.py:87
+msgid "Ukrainian"
+msgstr "Українська"
+
+#: .\config\settings\base.py:88
+msgid "English"
+msgstr "Англійська"
+
+#: .\config\settings\base.py:138
+msgid "Navigation"
+msgstr "Навігація"
+
+#: .\config\settings\base.py:142
+msgid "Dashboard"
+msgstr "Панель керування"
+
+#: .\config\settings\base.py:149
+msgid "Blockchain"
+msgstr "Блокчейн"
+
+#: .\config\settings\base.py:153
+msgid "Pools"
+msgstr "Пули"
+
+#: .\config\settings\base.py:158
+msgid "Networks"
+msgstr "Мережі"
+
+#: .\config\settings\base.py:163
+msgid "Tokens"
+msgstr "Токени"
+
+#: .\config\settings\base.py:168
+msgid "Exchange Orders "
+msgstr "Ордери на обмін"
+
+#: .\templates\core\aml.html:18
+msgid "Головна"
+msgstr ""
+
+#: .\templates\core\aml.html:25 .\templates\core\aml.html:36
+#: .\templates\partials\footer.html:25 .\templates\partials\header.html:116
+#: .\templates\partials\header.html:188
+msgid "AML правила"
+msgstr "AML правила"
+
+#: .\templates\core\aml.html:43
+msgid "1. Вступ"
+msgstr ""
+
+#: .\templates\core\aml.html:44
+#, fuzzy
+#| msgid ""
+#| "З метою протидії легалізації доходів, отриманих злочинним шляхом, "
+#| "здійснюється"
+msgid "Політика протидії легалізації доходів, отриманих злочинним шляхом, та \\"
+msgstr "З метою протидії легалізації доходів, отриманих злочинним шляхом, здійснюється"
+
+#: .\templates\core\aml.html:45
+msgid "2. Мета внутрішнього регулювання"
+msgstr ""
+
+#: .\templates\core\aml.html:46
+msgid ""
+"Сервіс CryptoChicken дотримується практик і заходів у сфері протидії "
+"легалізації (відмиванню) доходів, отриманих злочинним шляхом, та "
+"фінансуванню тероризму (AML). Метою цих заходів є демонстрація того, що "
+"CryptoChicken серйозно ставиться до будь-яких спроб використати свій сервіс "
+"у незаконних цілях."
+msgstr ""
+
+#: .\templates\core\aml.html:47
+msgid "3. Попередження"
+msgstr ""
+
+#: .\templates\core\aml.html:48
+msgid ""
+"Сервіс CryptoChicken попереджає користувачів про заборону використання "
+"сервісу CryptoChicken для легалізації грошових коштів, отриманих злочинним "
+"шляхом, фінансування тероризму, шахрайства будь-якого виду, а також для "
+"покупки заборонених товарів і послуг."
+msgstr ""
+
+#: .\templates\core\aml.html:49
+msgid ""
+"Сервіс CryptoChicken, його адміністрація, співробітники та власники домену "
+"не несуть відповідальності за неправомірне використання сервісу третіми "
+"особами, дії зловмисників і можливу шкоду, пов’язану з використанням сервісу "
+"CryptoChicken."
+msgstr ""
+
+#: .\templates\core\aml.html:50
+msgid "4. Вимоги"
+msgstr ""
+
+#: .\templates\core\aml.html:51
+msgid ""
+"Для запобігання операціям незаконного характеру сервіс CryptoChicken "
+"встановлює певні вимоги до всіх Заявок, створюваних Користувачем:"
+msgstr ""
+
+#: .\templates\core\aml.html:52
+msgid ""
+"4.1. Відправником і отримувачем Платежу за Заявкою має бути одна і та ж "
+"особа. Використання послуг Сервісу категорично заборонено для переказів на "
+"користь третіх осіб."
+msgstr ""
+
+#: .\templates\core\aml.html:53
+msgid ""
+"4.2. Всі контактні дані, які вносить Користувач у Заявку, а також інші "
+"персональні дані, що передаються Користувачем Сервісу, мають бути "
+"актуальними і повністю достовірними."
+msgstr ""
+
+#: .\templates\core\aml.html:54
+msgid ""
+"4.3. Категорично заборонено створення Заявок Користувачем із використанням "
+"анонімних проксі-серверів, VPN, Tor або інших анонімних підключень до "
+"Інтернету."
+msgstr ""
+
+#: .\templates\core\aml.html:55
+msgid "5. Процедури Верифікації"
+msgstr ""
+
+#: .\templates\core\aml.html:56
+msgid ""
+"Одним із міжнародних стандартів запобігання незаконній діяльності є належна "
+"перевірка клієнтів (далі – Перевірка). З цією метою CryptoChicken впроваджує "
+"власні процедури перевірки згідно зі строгими стандартами протидії "
+"легалізації доходів, отриманих злочинним шляхом, і KYC."
+msgstr ""
+
+#: .\templates\core\aml.html:57
+msgid ""
+"5.1. Сервіс CryptoChicken може вимагати, щоб Користувач надав Сервісу "
+"CryptoChicken надійні, незалежні вихідні документи, дані або інформацію для "
+"проходження верифікації і підтвердження джерел походження коштів. Серед "
+"необхідного можуть бути:"
+msgstr ""
+
+#: .\templates\core\aml.html:59
+msgid ""
+"Фотографія з паспортом у розгорнутому вигляді, де чітко видно фотографію і "
+"ПІБ;"
+msgstr ""
+
+#: .\templates\core\aml.html:60
+msgid ""
+"Скан або фотографія паспорта (перша, друга сторінки і сторінка з пропискою у "
+"гарній якості);"
+msgstr ""
+
+#: .\templates\core\aml.html:61
+msgid "Підтвердження джерел походження коштів (фото, скріншоти, виписки);"
+msgstr ""
+
+#: .\templates\core\aml.html:62
+msgid ""
+"Відео, на якому особа, що відправила кошти, з паспортом у руках у "
+"розгорнутому вигляді (де чітко видно фотографію, ПІБ), говорить, що вона "
+"створила заявку ID (номер заявки) на обмінному пункті CryptoChicken, "
+"відправлені кошти є її особистими і вона несе повну юридичну "
+"відповідальність за дану криптовалюту, також на відео потрібно згадати "
+"джерело походження коштів;"
+msgstr ""
+
+#: .\templates\core\aml.html:63
+msgid ""
+"Записати відео, зняте з платформи, звідки були відправлені кошти, на відео "
+"мають бути зафіксовані хеш, адреса відправника і отримувача, сума з тикером "
+"і дата здійснення транзакції. Тривалість відео має бути не менше 10 секунд."
+msgstr ""
+
+#: .\templates\core\aml.html:65
+msgid ""
+"5.2. У разі блокування через високий ризик або офіційне розслідування, кошти "
+"будуть утримані до моменту проходження верифікації або завершення "
+"розслідування. Для таких цілей Сервіс CryptoChicken залишає за собою право "
+"збирати ідентифікаційну інформацію Користувача для дотримання Політики AML/"
+"KYC."
+msgstr ""
+
+#: .\templates\core\aml.html:66
+msgid ""
+"5.3. Сервіс CryptoChicken здійснить заходи щодо підтвердження достовірності "
+"документів і інформації, наданої Користувачами. Всі юридичні методи для "
+"подвійної перевірки ідентифікаційної інформації будуть застосовуватися, і "
+"Сервіс CryptoChicken залишає за собою право розслідувати випадки певних "
+"Користувачів, особи яких були визначені як небезпечні або підозрілі."
+msgstr ""
+
+#: .\templates\core\aml.html:67
+msgid ""
+"5.4. Сервіс CryptoChicken залишає за собою право перевіряти особу "
+"Користувача на постійній основі, особливо, коли його ідентифікаційна "
+"інформація була змінена або його діяльність здалася підозрілою (незвичною "
+"для конкретного Користувача). Крім того, Сервіс CryptoChicken залишає за "
+"собою право запитувати у Користувачів актуальні документи, навіть якщо вони "
+"проходили перевірку раніше."
+msgstr ""
+
+#: .\templates\core\aml.html:68
+msgid ""
+"5.5. Інформація про ідентифікацію користувача буде збиратися, зберігатися, "
+"використовуватися і захищатися суворо відповідно до Політики "
+"конфіденційності Сервісу CryptoChicken і відповідних правил."
+msgstr ""
+
+#: .\templates\core\aml.html:69
+msgid ""
+"5.6. Після підтвердження особи користувача Сервіс CryptoChicken може "
+"відмовити у наданні послуг Користувачу у випадку, якщо послуги Сервісу "
+"CryptoChicken використовуються для ведення незаконної діяльності."
+msgstr ""
+
+#: .\templates\core\aml.html:70
+msgid ""
+"5.7. Користувачі, які мають намір використовувати платіжні картки для "
+"отримання послуг, повинні пройти перевірку картки відповідно до інструкцій, "
+"доступних на сайті CryptoChicken."
+msgstr ""
+
+#: .\templates\core\aml.html:71
+msgid ""
+"5.8. Сервіс CryptoChicken має нормативні вимоги щодо перевірки джерела "
+"фінансових коштів чи криптовалюти, щоб знати, що джерела коштів, які "
+"Користувачі використовують для торгівлі, є законними."
+msgstr ""
+
+#: .\templates\core\aml.html:72
+#, python-format
+msgid ""
+"5.9. Заявки старше 30 днів архівуються. Для подальшої роботи з такими "
+"заявками і комунікації між відділами обмінного пункту залучаються додаткові "
+"ресурси. За такими заявками стягується комісія 10%% від суми заявки."
+msgstr ""
+
+#: .\templates\core\aml.html:73
+msgid "6. Відповідальна посадова особа"
+msgstr ""
+
+#: .\templates\core\aml.html:74
+msgid ""
+"Особа, відповідальна за дотримання норм AML, є належним чином уповноваженою "
+"Сервісом CryptoChicken, її обов'язком є забезпечення ефективного "
+"впровадження і дотримання політики AML/KYC."
+msgstr ""
+
+#: .\templates\core\aml.html:75
+msgid ""
+"6.1. Обов'язком такої посадової особи є контроль за всіма аспектами "
+"діяльності CryptoChicken у сфері протидії легалізації доходів, отриманих "
+"злочинним шляхом, включаючи відмивання грошей і фінансування тероризму, "
+"зокрема, але не обмежуючись наступними методами:"
+msgstr ""
+
+#: .\templates\core\aml.html:77
+msgid "збір ідентифікаційної інформації користувачів;"
+msgstr ""
+
+#: .\templates\core\aml.html:78
+msgid ""
+"створення і оновлення внутрішніх політик і процедур для завершення, "
+"розгляду, подання і зберігання всіх звітів і записів, що вимагаються "
+"відповідно до чинного законодавства і правил;"
+msgstr ""
+
+#: .\templates\core\aml.html:79
+msgid ""
+"моніторинг транзакцій і дослідження будь-яких суттєвих відхилень від "
+"нормальної діяльності;"
+msgstr ""
+
+#: .\templates\core\aml.html:80
+msgid ""
+"впровадження системи управління записами для належного зберігання і пошуку "
+"документів, файлів, форм і журналів;"
+msgstr ""
+
+#: .\templates\core\aml.html:81
+msgid "регулярне оновлення оцінки ризику;"
+msgstr ""
+
+#: .\templates\core\aml.html:82
+msgid ""
+"надання правоохоронним органам інформації, необхідної згідно з чинним "
+"законодавством і правилами."
+msgstr ""
+
+#: .\templates\core\aml.html:84
+msgid ""
+"6.2. Посадова особа, відповідальна за дотримання норм AML, має право "
+"взаємодіяти з правоохоронними органами, які беруть участь у запобіганні "
+"відмиванню грошей, фінансуванню тероризму та іншій незаконній діяльності."
+msgstr ""
+
+#: .\templates\core\aml.html:85
+msgid "7. Системні функції"
+msgstr ""
+
+#: .\templates\core\aml.html:86
+msgid ""
+"Сервіс CryptoChicken виконує безліч завдань, пов'язаних із дотриманням норм, "
+"зокрема збір даних, фільтрацію, ведення записів, управління розслідуваннями "
+"та звітність. Системні функції включають:"
+msgstr ""
+
+#: .\templates\core\aml.html:88
+msgid "щоденна перевірка Користувачів на наявність у визнаних \\"
+msgstr ""
+
+#: .\templates\core\aml.html:89
+msgid "управління справами і документами."
+msgstr ""
+
+#: .\templates\core\aml.html:91
+msgid "8. Аналіз поведінки"
+msgstr ""
+
+#: .\templates\core\aml.html:92
+msgid ""
+"Сервіс CryptoChicken перевіряє Користувачів не лише шляхом перевірки їх "
+"особи, а й шляхом аналізу їхньої поведінки у транзакціях. Тому Сервіс "
+"CryptoChicken покладається на аналіз даних як інструмент оцінки ризику і "
+"виявлення підозрілих дій."
+msgstr ""
+
+#: .\templates\core\aml.html:93
+msgid "9. Оцінки ризиків"
+msgstr ""
+
+#: .\templates\core\aml.html:94
+msgid ""
+"CryptoChicken відповідно до міжнародних вимог застосовує практику оцінки "
+"ризиків для боротьби з відмиванням грошей і фінансуванням тероризму. "
+"Застосовуючи практику оцінки ризиків для боротьби з відмиванням грошей, "
+"CryptoChicken забезпечує відповідність заходів щодо запобігання або "
+"зменшення відмивання грошей і фінансування тероризму виявленим ризикам."
+msgstr ""
+
+#: .\templates\core\aml.html:95
+msgid ""
+"Дроблення коштів, створення декількох заявок (3 і більше) з одними "
+"реквізитами у короткий проміжок часу може розцінюватися як підозріла "
+"активність. У такому випадку може знадобитися верифікація користувача."
+msgstr ""
+
+#: .\templates\core\aml.html:96
+msgid ""
+"Сервіс CryptoChicken не взаємодіє з такими санкційними біржами, "
+"майданчиками, платформами: Garantex, Tornado Cash, Hydra, Lazarus Group, "
+"Genesis Market, Hydra.io, ChipMixer, Shinbad, Commex, Capitalist, Rapira, "
+"BitPapa та іншими."
+msgstr ""
+
+#: .\templates\core\aml.html:97
+msgid "10. Проведення перевірок клієнтів"
+msgstr ""
+
+#: .\templates\core\aml.html:98
+msgid ""
+"У разі виникнення обґрунтованих підозр у адміністрації сервісу CryptoChicken "
+"щодо того, що користувач намагається скористатися послугами Сервісу для "
+"відмивання грошей або з метою проведення будь-яких інших незаконних "
+"операцій, адміністрація має право:"
+msgstr ""
+
+#: .\templates\core\aml.html:100
+msgid "призупинити виконання обмінної операції користувача;"
+msgstr ""
+
+#: .\templates\core\aml.html:101
+msgid "запитати у Користувача документи, що ідентифікують особу;"
+msgstr ""
+
+#: .\templates\core\aml.html:102
+msgid ""
+"запитати у Користувача будь-яку додаткову інформацію і документи у випадку "
+"здійснення ними підозрілих транзакцій;"
+msgstr ""
+
+#: .\templates\core\aml.html:103
+msgid ""
+"забезпечити, щоб повідомлення про підозрілий характер операцій передавалися "
+"відповідним правоохоронним органам через посадову особу, відповідальну за "
+"дотримання норм AML."
+msgstr ""
+
+#: .\templates\core\aml.html:105
+msgid "11. Конфіденційність"
+msgstr ""
+
+#: .\templates\core\aml.html:106
+msgid ""
+"Сервіс CryptoChicken гарантує конфіденційність клієнта відповідно до "
+"політики конфіденційності сервісу."
+msgstr ""
+
+#: .\templates\core\aml.html:107
+msgid ""
+"11.1. Сервіс CryptoChicken і його співробітники зобов'язуються зберігати "
+"конфіденційність щодо будь-яких фактів, виявлених у зв'язку з будь-якою "
+"сумнівною операцією. Це зобов'язання також поширюється на користувачів "
+"Сервісу і на третіх осіб, яким передано інформацію про операцію."
+msgstr ""
+
+#: .\templates\core\aml.html:108
+msgid ""
+"11.2. Зобов'язання працівників Сервісу CryptoChicken щодо забезпечення "
+"конфіденційності зберігає силу після припинення їхньої роботи або інших "
+"договірних відносин із Сервісом CryptoChicken, а також при переведенні таких "
+"співробітників на інше місце роботи. Розкриття такої інформації державним, "
+"правоохоронним органам і іншим суб'єктам у випадках, визначених законом, не "
+"є порушенням зобов'язання щодо конфіденційності."
+msgstr ""
+
+#: .\templates\core\aml.html:109
+msgid ""
+"11.3. Зобов'язання щодо забезпечення конфіденційності, за умови, що "
+"використання розкритої інформації обмежується запобіганням легалізації "
+"доходів від злочинів і фінансування тероризму, не застосовується до "
+"розкриття інформації між фінансовими установами, які утворюють консолідовану "
+"групу і співпрацюють із Сервісом CryptoChicken."
+msgstr ""
+
+#: .\templates\core\aml.html:110
+msgid "12. Висновок"
+msgstr ""
+
+#: .\templates\core\aml.html:111
+msgid ""
+"У зв'язку з вищевикладеним сервіс CryptoChicken не несе жодної юридичної "
+"відповідальності за використання його з метою легалізації грошових коштів, "
+"отриманих злочинним шляхом, фінансування тероризму або покупки заборонених "
+"товарів і послуг, але зобов'язується вжити всі можливі і доступні заходи для "
+"запобігання спробам використання Сервісу CryptoChicken з метою легалізації "
+"грошових коштів, отриманих злочинним шляхом, фінансування тероризму або "
+"покупки заборонених товарів і послуг."
+msgstr ""
+
+#: .\templates\core\aml.html:112
+msgid ""
+"Здійснюючи обмін, Користувач відповідно до правил, що діють на "
+"CryptoChicken, погоджується з усіма умовами цих політик і зобов'язується їх "
+"виконувати."
+msgstr ""
+
+#: .\templates\core\cashback-info.html:18 .\templates\index.html:376
+msgid "Здійсни обмін на нашому сайті та отримай кешбек з кожної операції!"
+msgstr "Здійсни обмін на нашому сайті та отримай кешбек з кожної операції!"
+
+#: .\templates\core\cashback-info.html:23
+#, fuzzy, python-format
+#| msgid ""
+#| "Кожен авторизований користувач, здійснюючи обмін на нашому сайті "
+#| "CryptoChicken, отримує кешбек 0,03%% від суми обміну на свій партнерський "
+#| "акаунт."
+msgid ""
+"Кожен авторизований користувач, здійснюючи обмін на нашому сайті "
+"CryptoChicken, отримує кешбек 0,03%% від суми обміну на свій партнерський "
+"акаунт (За 10000USDT обміну повертаємо 3USDT)."
+msgstr ""
+"Кожен авторизований користувач, здійснюючи обмін на нашому сайті "
+"CryptoChicken, отримує кешбек 0,03% від суми обміну на свій партнерський "
+"акаунт."
+
+#: .\templates\core\cashback-info.html:25
+msgid ""
+"Виняток становлять напрямки: Stable-Stable (TRC20/ERC20/USDC/DAI), TRC/ERC20/"
+"USDC/DAI-готівка, готівка-TRC20. За цими напрямками кешбек не нараховується."
+msgstr ""
+
+#: .\templates\core\cashback-info.html:28
+msgid ""
+"Накопичені кошти можна вивести на свій гаманець USDT TRC20. Мінімальна сума "
+"для виведення 10$."
+msgstr ""
+
+#: .\templates\core\cashback-info.html:31
+msgid "Для виведення коштів необхідно у своєму кабінеті на сторінці \\"
+msgstr ""
+
+#: .\templates\core\cashback-info.html:39
+msgid "Особистий кабінет"
+msgstr ""
+
+#: .\templates\core\raffle.html:19 .\templates\index.html:305
+#: .\templates\index.html:332
+msgid "Банк розіграшу"
+msgstr "Банк розіграшу"
+
+#: .\templates\core\raffle.html:27 .\templates\index.html:290
+#: .\templates\index.html:335
+msgid "Переможці червня"
+msgstr "Переможці червня"
+
+#: .\templates\core\raffle.html:63 .\templates\core\raffle.html:81
+#: .\templates\index.html:350
+msgid "Створи заявку"
+msgstr "Створи заявку"
+
+#: .\templates\core\raffle.html:69
+#, fuzzy
+#| msgid "Здійсни обмін на нашому сайті та бери участь у розіграші!"
+msgid ""
+"Кожен користувач сервісу CryptoChicken, здійснюючи обмін на будь-яку суму, "
+"бере участь у розіграші."
+msgstr "Здійсни обмін на нашому сайті та бери участь у розіграші!"
+
+#: .\templates\core\raffle.html:70
+msgid ""
+"З кожного завершеного обміну поповнюється банк конкурсу. Чим більше обмінів "
+"— тим більше шансів."
+msgstr ""
+
+#: .\templates\core\raffle.html:71
+msgid ""
+"У розіграші беруть участь ID заявок. Після закінчення таймера автоматично "
+"буде обрано 5 переможців конкурсу."
+msgstr ""
+
+#: .\templates\core\raffle.html:72
+msgid ""
+"Банк поточного розіграшу буде розділений між переможцями у рівних пропорціях."
+msgstr ""
+
+#: .\templates\core\raffle.html:73
+msgid ""
+"Переможці отримають лист на пошту з інструкціями. Бажаємо всім удачі у "
+"розіграші!"
+msgstr ""
+
+#: .\templates\core\raffle.html:82 .\templates\index.html:351
+msgid "Створи заявку на будь-яку суму"
+msgstr "Створи заявку на будь-яку суму"
+
+#: .\templates\core\raffle.html:88 .\templates\index.html:355
+msgid "Здійсни обмін"
+msgstr "Здійсни обмін"
+
+#: .\templates\core\raffle.html:89 .\templates\index.html:356
+msgid "Здійсни обмін валюти на нашому сайті"
+msgstr "Здійсни обмін валюти на нашому сайті"
+
+#: .\templates\core\raffle.html:95 .\templates\index.html:270
+#: .\templates\index.html:360
+msgid "Бери участь у розіграші"
+msgstr "Бери участь у розіграші"
+
+#: .\templates\core\raffle.html:96 .\templates\index.html:361
+msgid "Розіграш проводиться в останній день місяця автоматично за ID заявки"
+msgstr "Розіграш проводиться в останній день місяця автоматично за ID заявки"
+
+#: .\templates\index.html:31
+msgid "Віддаєте"
+msgstr "Віддаєте"
+
+#: .\templates\index.html:49 .\templates\index.html:99
+msgid "Всі"
+msgstr "Всі"
+
+#: .\templates\index.html:51 .\templates\index.html:101
+msgid "Crypto"
+msgstr "Крипто"
+
+#: .\templates\index.html:53 .\templates\index.html:103
+msgid "Bank"
+msgstr "Банк"
+
+#: .\templates\index.html:59 .\templates\index.html:108
+msgid "Введіть валюту"
+msgstr "Введіть валюту"
+
+#: .\templates\index.html:80
+msgid "Отримаєте"
+msgstr "Отримаєте"
+
+#: .\templates\index.html:81
+msgid "Курс:"
+msgstr "Курс:"
+
+#: .\templates\index.html:81
+msgid "Виберіть токени"
+msgstr "Виберіть токени"
+
+#: .\templates\index.html:91
+msgid "Виберіть токен"
+msgstr "Виберіть токен"
+
+#: .\templates\index.html:125
+msgid "Персональні дані"
+msgstr "Персональні дані"
+
+#: .\templates\index.html:142
+msgid "E-mail*"
+msgstr "Електронна пошта*"
+
+#: .\templates\index.html:142
+msgid ""
+"Введіть вашу дійсну електронну пошту. Всі коригування по заявці приймаються "
+"лише з вашої пошти."
+msgstr ""
+"Введіть вашу дійсну електронну пошту. Всі коригування по заявці приймаються "
+"лише з вашої пошти."
+
+#: .\templates\index.html:148
+msgid "Введіть вашу дійсну електронну пошту."
+msgstr "Введіть вашу дійсну електронну пошту."
+
+#: .\templates\index.html:149
+msgid "Всі коригування по заявці приймаються лише з вашої пошти."
+msgstr "Всі коригування по заявці приймаються лише з вашої пошти."
+
+#: .\templates\index.html:170
+msgid "Дана операція проводиться в автоматичному режимі."
+msgstr "Дана операція проводиться в автоматичному режимі."
+
+#: .\templates\index.html:171
+msgid ""
+"З метою протидії легалізації доходів, отриманих злочинним шляхом, "
+"здійснюється"
+msgstr ""
+"З метою протидії легалізації доходів, отриманих злочинним шляхом, "
+"здійснюється"
+
+#: .\templates\index.html:171
+msgid "AML-перевірка"
+msgstr "AML-перевірка"
+
+#: .\templates\index.html:172
+msgid ""
+"Курс фіксується при досягненні 20 підтверджень у мережі та купівлі монет на "
+"біржі."
+msgstr ""
+"Курс фіксується при досягненні 20 підтверджень у мережі та купівлі монет на "
+"біржі."
+
+#: .\templates\index.html:185
+msgid "Я прочитав і погоджуюсь з"
+msgstr "Я прочитав і погоджуюсь з"
+
+#: .\templates\index.html:185
+msgid "умовами"
+msgstr "умовами"
+
+#: .\templates\index.html:194
+msgid "Погоджуюсь з правилами"
+msgstr "Погоджуюсь з правилами"
+
+#: .\templates\index.html:194
+msgid "AML перевірки"
+msgstr "AML перевірки"
+
+#: .\templates\index.html:203
+msgid "Не запам'ятовувати введені дані"
+msgstr "Не запам'ятовувати введені дані"
+
+#: .\templates\index.html:209
+msgid "Введіть відповідь"
+msgstr "Введіть відповідь"
+
+#: .\templates\index.html:224
+msgid "Оновити капчу"
+msgstr "Оновити капчу"
+
+#: .\templates\index.html:245
+msgid "Обміняти зараз"
+msgstr "Обміняти зараз"
+
+#: .\templates\index.html:250 .\templates\partials\header.html:46
+msgid "Підключити гаманець"
+msgstr "Підключити гаманець"
+
+#: .\templates\index.html:253 .\templates\partials\header.html:68
+msgid "Відключити"
+msgstr "Відключити"
+
+#: .\templates\index.html:272 .\templates\index.html:317
+msgid "Детальніше про розіграш"
+msgstr "Детальніше про розіграш"
+
+#: .\templates\index.html:279
+msgid "Здійсни обмін на нашому сайті та бери участь у розіграші!"
+msgstr "Здійсни обмін на нашому сайті та бери участь у розіграші!"
+
+#: .\templates\index.html:282
+msgid ""
+"Кожен користувач, здійснюючи обмін на CryptoChicken, автоматично стає "
+"учасником розіграшу та має шанс отримати грошову винагороду"
+msgstr ""
+"Кожен користувач, здійснюючи обмін на CryptoChicken, автоматично стає "
+"учасником розіграшу та має шанс отримати грошову винагороду"
+
+#: .\templates\index.html:308
+msgid "До розіграшу залишилось:"
+msgstr "До розіграшу залишилось:"
+
+#: .\templates\index.html:372
+msgid "Отримай кешбек"
+msgstr "Отримай кешбек"
+
+#: .\templates\index.html:379
+#, fuzzy, python-format
+#| msgid ""
+#| "Кожен авторизований користувач, здійснюючи обмін на нашому сайті "
+#| "CryptoChicken, отримує кешбек 0,03%% від суми обміну на свій партнерський "
+#| "акаунт."
+msgid ""
+"Кожен авторизований користувач, здійснюючи обмін на нашому сайті "
+"CryptoChicken, отримує кешбек 0,03%% від суми обміну на свій партнерський "
+"акаунт."
+msgstr ""
+"Кожен авторизований користувач, здійснюючи обмін на нашому сайті "
+"CryptoChicken, отримує кешбек 0,03% від суми обміну на свій партнерський "
+"акаунт."
+
+#: .\templates\index.html:383
+msgid "Детальніше про програму"
+msgstr "Детальніше про програму"
+
+#: .\templates\index.html:393
+msgid "Перевір гаманець"
+msgstr "Перевір гаманець"
+
+#: .\templates\index.html:397
+msgid "Перевір свій гаманець перед відправкою коштів!"
+msgstr "Перевір свій гаманець перед відправкою коштів!"
+
+#: .\templates\index.html:400
+msgid ""
+"За результатами перевірки на основі сигналів гаманця прийдуть дані шкали "
+"ризику, і відповідь зі служби підтримки біржі."
+msgstr ""
+"За результатами перевірки на основі сигналів гаманця прийдуть дані шкали "
+"ризику, і відповідь зі служби підтримки біржі."
+
+#: .\templates\index.html:404
+msgid "Детальніше про AML перевірку"
+msgstr "Детальніше про AML перевірку"
+
+#: .\templates\index.html:420
+msgid "Переваги"
+msgstr "Переваги"
+
+#: .\templates\index.html:421
+msgid "обміну з CryptoСhicken"
+msgstr "обміну з CryptoСhicken"
+
+#: .\templates\index.html:427
+msgid "Швидкі операції"
+msgstr "Швидкі операції"
+
+#: .\templates\index.html:430
+msgid ""
+"Ми забезпечуємо миттєві електронні транзакції, які дозволяють легко та "
+"швидко купувати або продавати криптовалюту прямо з дому."
+msgstr ""
+"Ми забезпечуємо миттєві електронні транзакції, які дозволяють легко та "
+"швидко купувати або продавати криптовалюту прямо з дому."
+
+#: .\templates\index.html:434
+msgid "Простота використання"
+msgstr "Простота використання"
+
+#: .\templates\index.html:437
+msgid ""
+"Сайт має інтуїтивно зрозумілий інтерфейс, який дозволяє користувачам миттєво "
+"створювати акаунти та безпечно проводити операції обміну, отримуючи "
+"криптовалюту на свої гаманці."
+msgstr ""
+"Сайт має інтуїтивно зрозумілий інтерфейс, який дозволяє користувачам миттєво "
+"створювати акаунти та безпечно проводити операції обміну, отримуючи "
+"криптовалюту на свої гаманці."
+
+#: .\templates\index.html:441
+msgid "Високий рівень безпеки"
+msgstr "Високий рівень безпеки"
+
+#: .\templates\index.html:444
+msgid ""
+"Сайт захищений технологіями шифрування, тому забезпечує конфіденційність "
+"особистої інформації (паролі, номери, карти) користувачів, а також ми не "
+"зберігаємо дані на наших серверах."
+msgstr ""
+"Сайт захищений технологіями шифрування, тому забезпечує конфіденційність "
+"особистої інформації (паролі, номери, карти) користувачів, а також ми не "
+"зберігаємо дані на наших серверах."
+
+#: .\templates\index.html:448
+msgid "Вигідний обмінний курс"
+msgstr "Вигідний обмінний курс"
+
+#: .\templates\index.html:451
+msgid ""
+"У нас завжди пропонується найвигідніший обмінний курс для криптовалюти, "
+"забезпечуючи максимальні вигоди для наших клієнтів."
+msgstr ""
+"У нас завжди пропонується найвигідніший обмінний курс для криптовалюти, "
+"забезпечуючи максимальні вигоди для наших клієнтів."
+
+#: .\templates\index.html:455
+msgid "Компетентна підтримка"
+msgstr "Компетентна підтримка"
+
+#: .\templates\index.html:458
+msgid ""
+"Наша команда готова швидко та ефективно вирішувати всі питання і проблеми, з "
+"якими стикаються наші користувачі. Нам важливо, щоб жодне звернення не "
+"залишилось без уваги."
+msgstr ""
+"Наша команда готова швидко та ефективно вирішувати всі питання і проблеми, з "
+"якими стикаються наші користувачі. Нам важливо, щоб жодне звернення не "
+"залишилось без уваги."
+
+#: .\templates\index.html:462
+msgid "Широкий вибір напрямків обміну"
+msgstr "Широкий вибір напрямків обміну"
+
+#: .\templates\index.html:465
+msgid ""
+"На нашій платформі представлено широкий вибір напрямків для обміну більшості "
+"відомих криптовалют, включаючи Bitcoin, Ethereum, Litecoin та багато інших."
+msgstr ""
+"На нашій платформі представлено широкий вибір напрямків для обміну більшості "
+"відомих криптовалют, включаючи Bitcoin, Ethereum, Litecoin та багато інших."
+
+#: .\templates\index.html:474
+msgid "Відгуки клієнтів"
+msgstr "Відгуки клієнтів"
+
+#: .\templates\index.html:476 .\templates\index.html:530
+msgid "Залишити відгук"
+msgstr "Залишити відгук"
+
+#: .\templates\index.html:477
+msgid "Читати всі відгуки"
+msgstr "Читати всі відгуки"
+
+#: .\templates\index.html:487
+msgid "Анастасія"
+msgstr "Анастасія"
+
+#: .\templates\index.html:488 .\templates\index.html:499
+#: .\templates\index.html:510 .\templates\index.html:521
+msgid "BestChange"
+msgstr "BestChange"
+
+#: .\templates\index.html:491
+msgid "Досить швидкий обмінник з приємним курсом, дякую, рекомендую."
+msgstr "Досить швидкий обмінник з приємним курсом, дякую, рекомендую."
+
+#: .\templates\index.html:492
+msgid "15 травня 2024 12:30"
+msgstr "15 травня 2024 12:30"
+
+#: .\templates\index.html:498
+msgid "Алекс"
+msgstr "Алекс"
+
+#: .\templates\index.html:502
+msgid ""
+"Все швидко і чітко. Виявився найзручніший з усіх, чим користувався останнім "
+"часом."
+msgstr ""
+"Все швидко і чітко. Виявився найзручніший з усіх, чим користувався останнім "
+"часом."
+
+#: .\templates\index.html:503
+msgid "13 травня 2024 21:08"
+msgstr "13 травня 2024 21:08"
+
+#: .\templates\index.html:509
+msgid "Максим"
+msgstr "Максим"
+
+#: .\templates\index.html:513
+msgid ""
+"Все пройшло оперативно, без затримок. Дякую. Звертався до підтримки для "
+"уточнення кількох питань — відповіли швидко і по суті. Дякую."
+msgstr ""
+"Все пройшло оперативно, без затримок. Дякую. Звертався до підтримки для "
+"уточнення кількох питань — відповіли швидко і по суті. Дякую."
+
+#: .\templates\index.html:514
+msgid "7 травня 2024 12:53"
+msgstr "7 травня 2024 12:53"
+
+#: .\templates\index.html:520
+msgid "Ar4i"
+msgstr "Ar4i"
+
+#: .\templates\index.html:524
+msgid "Все чудово. Швидкий переказ, без прихованих комісій."
+msgstr "Все чудово. Швидкий переказ, без прихованих комісій."
+
+#: .\templates\index.html:525
+msgid "9 березня 2024 19:34"
+msgstr "9 березня 2024 19:34"
+
+#: .\templates\partials\footer.html:9
+msgid "Графік роботи: 24/7"
+msgstr "Графік роботи: 24/7"
+
+#: .\templates\partials\footer.html:12
+msgid "Графік роботи підтримки:"
+msgstr "Графік роботи підтримки:"
+
+#: .\templates\partials\footer.html:14
+msgid "пн-сб з 9:00 до 19:00 UTC+3"
+msgstr "пн-сб з 9:00 до 19:00 UTC+3"
+
+#: .\templates\partials\footer.html:28 .\templates\partials\header.html:119
+#: .\templates\partials\header.html:191
+msgid "Розіграш"
+msgstr "Розіграш"
+
+#: .\templates\partials\footer.html:31 .\templates\partials\header.html:122
+#: .\templates\partials\header.html:194
+msgid "Kешбек"
+msgstr "Kешбек"
+
+#: .\templates\partials\footer.html:64
+msgid "Сервіс обміну електронних валют."
+msgstr "Сервіс обміну електронних валют."
+
+#: .\templates\partials\header.html:51 .\templates\partials\header.html:76
+msgid "Завантаження..."
+msgstr "Завантаження..."
+
+#: .\templates\partials\header.html:52 .\templates\partials\header.html:59
+msgid "Підключення..."
+msgstr "Підключення..."
+
+#: .\templates\partials\header.html:62
+msgid "Скопіювати адресу"
+msgstr "Скопіювати адресу"
+
+#: .\templates\partials\header.html:65
+msgid "Оновити баланс"
+msgstr "Оновити баланс"
+
+#: .\templates\partials\header.html:75
+msgid "Баланс TON"
+msgstr "Баланс TON"
+
+#: .\templates\partials\header.html:125 .\templates\partials\header.html:151
+#: .\templates\partials\header.html:197
+msgid "Депозити"
+msgstr "Депозити"
+
+#: .\templates\partials\header.html:137
+msgid "Реєстрація"
+msgstr "Реєстрація"
+
+#: .\templates\partials\header.html:141
+msgid "Увійти"
+msgstr "Увійти"
+
+#: .\templates\partials\header.html:149
+msgid "Профіль"
+msgstr "Профіль"
+
+#: .\templates\partials\header.html:150
+msgid "Заявки"
+msgstr "Заявки"
+
+#: .\templates\partials\header.html:152
+msgid "Кешбек"
+msgstr "Кешбек"
+
+#: .\templates\partials\header.html:153
+msgid "AML перевірка гаманця"
+msgstr "AML перевірка гаманця"
+
+#: .\templates\partials\header.html:160
+msgid "Вихід"
+msgstr "Вихід"
+
+#: .\templates\partials\header.html:203
+#, fuzzy
+#| msgid "[email protected]"
+msgid "[email protected]"
+msgstr "[email protected]"
+
+#: .\templates\partials\header.html:205
+msgid "@CryptoChicken_bot"
+msgstr "@CryptoChicken_bot"
+
+#: .\templates\partials\header.html:209
+msgid "Language"
+msgstr ""
+
+#: .\templates\partials\header.html:220
+msgid "Онлайн чат"
+msgstr "Онлайн чат"

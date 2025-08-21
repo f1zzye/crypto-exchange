@@ -2,7 +2,7 @@
     <button class="pauth__close js-pauth-close"></button>
     <div class="login__popup">
         <div class="section__head text--center">
-            <div class="title text--white">Авторизация</div>
+            <div class="title text--white">Авторизація</div>
         </div>
         <form method="post" action="{% url 'accounts:sign-in' %}" id="signinForm" class="ajax_post_form">
             {% csrf_token %}
@@ -34,13 +34,13 @@
             </div>
 
             <div class="form__submit">
-                <button type="submit" class="btn btn--wall"><span>Войти</span></button>
+                <button type="submit" class="btn btn--wall"><span>Увійти</span></button>
             </div>
             <div class="form__submit">
-                <button class="btn btn--bd btn--bdg btn--wall" type="button" data-open-login="reg"><span>Регистрация</span></button>
+                <button class="btn btn--bd btn--bdg btn--wall" type="button" data-open-login="reg"><span>Реєстрація</span></button>
             </div>
             <div class="pauth__links">
-                <a href="https://crypto-chicken.co/lostpass/" class="pauth__link">Забыли пароль?</a>
+                <a href="https://crypto-chicken.co/lostpass/" class="pauth__link">Забули пароль?</a>
             </div>
             <div class="resultgo"></div>
         </form>
