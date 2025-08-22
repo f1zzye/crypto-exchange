@@ -1,4 +1,3 @@
-import logging
 from http import HTTPStatus
 
 import httpx
@@ -6,8 +5,6 @@ from django.conf import settings
 from django.utils import timezone
 
 from exchange.models import Pool
-
-logger = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT: int = 300
 TON_SYMBOL: str = "TON"
@@ -18,9 +15,6 @@ MAX_ERROR_LENGTH: int = 500
 def deploy_pool_contract(pool_instance: Pool, force=False) -> tuple[bool, str]:
     if not force and pool_instance.is_contract_deployed:
         return False, "Contract is already deployed"
-
-    logger.info(f"Starting manual deployment for pool: {pool_instance}")
-
     try:
         payload = prepare_deployment_payload(pool_instance)
         success, result = send_deployment_request(payload)
@@ -28,16 +22,13 @@ def deploy_pool_contract(pool_instance: Pool, force=False) -> tuple[bool, str]:
         if success:
             update_pool_with_deployment_result(pool_instance, result)
             contract_address = result.get("data", {}).get("contractAddress", "Unknown")
-            logger.info(f"Pool {pool_instance} deployed manually: {contract_address}")
             return True, f"Successfully deployed: {contract_address}"
         else:
             handle_deployment_error(pool_instance, result)
-            logger.error(f"Pool {pool_instance} deployment failed: {result}")
             return False, f"Deployment failed: {result}"
 
     except Exception as e:
         handle_deployment_error(pool_instance, str(e))
-        logger.exception(f"Deployment error for pool {pool_instance}")
         return False, f"Deployment error: {str(e)}"
 
 
@@ -116,10 +107,8 @@ def update_pool_with_deployment_result(pool_instance, deployment_result) -> None
                 fields_to_update.append(field)
 
         pool_instance.save(update_fields=fields_to_update)
-        logger.info(f"Pool {pool_instance} deployed and activated successfully")
 
     except Exception as e:
-        logger.error(f"Error updating pool {pool_instance}: {e}")
         pool_instance.deployment_error = f"Update failed: {str(e)}"
         pool_instance.save(update_fields=["deployment_error"])
 
@@ -140,7 +129,6 @@ def handle_deployment_error(pool_instance, error_message) -> None:
                 "pool_activated_at",
             ]
         )
-        logger.error(f"Error recorded for pool {pool_instance}: {error_message}")
 
-    except Exception as e:
-        logger.error(f"Failed to record error for pool {pool_instance}: {e}")
+    except Exception:
+        pass

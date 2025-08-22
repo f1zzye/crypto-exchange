@@ -1,11 +1,13 @@
 from decimal import Decimal
+import csv
+from django.utils import timezone
+from datetime import timezone
 
-from django.contrib import admin, messages
+from django.http import HttpResponse
+
+from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.utils.decorators import method_decorator
-from django.utils.html import format_html
 from unfold.admin import ModelAdmin
 from django.contrib import admin
 from django.utils.html import format_html
@@ -16,6 +18,7 @@ from django.utils.decorators import method_decorator
 import json
 
 from .models import ExchangeOrder, Network, Pool, Token
+from .services.deploy_signals import deploy_pool_contract
 
 
 class TokenInline(admin.TabularInline):
@@ -397,18 +400,15 @@ class PoolAdmin(ModelAdmin):
 
     @method_decorator(csrf_exempt, name="dispatch")
     def custom_action_view(self, request):
-        """Обработчик для кастомной кнопки"""
         if request.method == "POST":
             try:
                 data = json.loads(request.body)
-                pool_id = data.get("pool_id")
+                pool_id = data["pool_id"]
                 action_type = data.get("action_type", "unknown")
 
-                # Выводим print для проверки
                 print(f"КНОПКА НАЖАТА! Pool ID: {pool_id}, Action: {action_type}")
                 print(f"Данные от клиента: {data}")
 
-                # Если есть pool_id, можно получить объект
                 if pool_id and pool_id != "new":
                     try:
                         pool = Pool.objects.get(pk=pool_id)
@@ -434,14 +434,11 @@ class PoolAdmin(ModelAdmin):
         )
 
     def get_liquidity_submit_button(self, obj):
-        """Кнопка для управления ликвидностью"""
         pool_id = obj.pk if obj and obj.pk else "new"
-        # Используем тот же URL что и для деплоя
         action_url = reverse(
             "exchange:pool_custom_action"
-        )  # или "exchange:pool_custom_action" в зависимости от вашего выбора URL
+        )
 
-        # Проверяем статус пула
         if not obj or not obj.is_contract_deployed:
             return format_html(
                 '<span style="color: #6b7280; font-style: italic;">Deploy contract first</span>'
@@ -528,13 +525,10 @@ class PoolAdmin(ModelAdmin):
 
     get_liquidity_submit_button.short_description = "Submit Liquidity"
 
-    # Вторая кнопка - новая
     def get_deploy_contract_button(self, obj):
         pool_id = obj.pk if obj and obj.pk else "new"
-        # Изменил на правильное имя URL
         action_url = reverse("exchange:pool_custom_action")
 
-        # Если контракт уже задеплоен, показываем статус
         if obj and obj.is_contract_deployed:
             contract_addr = obj.contract_address or "Unknown"
             return format_html(
@@ -580,7 +574,6 @@ class PoolAdmin(ModelAdmin):
                     if (data.success) {{
                         btn.innerHTML = '✓ Deployed';
                         btn.style.background = '#10b981';
-                        alert('Contract deployed successfully!\\nAddress: ' + (data.contract_address || 'Unknown'));
                         // Перезагружаем страницу чтобы обновить статус
                         setTimeout(() => location.reload(), 2000);
                     }} else {{
@@ -607,10 +600,8 @@ class PoolAdmin(ModelAdmin):
         if not (obj.token1 and obj.token2):
             return format_html('<span style="color: #f44336;">Incomplete</span>')
 
-        # URL для редактирования этого Pool объекта
         edit_url = reverse("admin:exchange_pool_change", args=[obj.pk])
 
-        # Ссылки на токены
         token1_url = reverse("admin:exchange_token_change", args=[obj.token1.id])
         token2_url = reverse("admin:exchange_token_change", args=[obj.token2.id])
 
@@ -667,7 +658,6 @@ class PoolAdmin(ModelAdmin):
             (obj.token1_amount / total_value * 100) if total_value > 0 else 0
         )
 
-        # Color based on balance (green if well balanced)
         balance_color = (
             "#4caf50"
             if 30 <= balance_ratio <= 70
@@ -723,22 +713,19 @@ class PoolAdmin(ModelAdmin):
     contract_status_badge.short_description = "Contract"
 
     def liquidity_health(self, obj):
-        # Безопасная проверка на None
         if not (obj.token1_amount and obj.token2_amount):
             return format_html('<span style="color: #9e9e9e;">—</span>')
 
         total_liquidity = obj.token1_amount + obj.token2_amount
 
-        # Попытка получить количество заказов (с обработкой ошибок)
         try:
             orders_count = ExchangeOrder.objects.filter(pool=obj).count()
-        except:
+        except :
             orders_count = 0
 
-        # Health calculation based on liquidity and activity
-        if total_liquidity > 100000 and orders_count > 10:
+        if total_liquidity > 10_000_0 and orders_count > 10:
             return format_html('<span style="color: #4caf50;">Excellent</span>')
-        elif total_liquidity > 10000 and orders_count > 5:
+        elif total_liquidity > 10_000 and orders_count > 5:
             return format_html('<span style="color: #8bc34a;">Good</span>')
         elif total_liquidity > 1000:
             return format_html('<span style="color: #ff9800;">Growing</span>')
@@ -748,7 +735,6 @@ class PoolAdmin(ModelAdmin):
     liquidity_health.short_description = "Health"
 
     def volume_24h(self, obj):
-        # Mock 24h volume calculation
         try:
             orders_count = ExchangeOrder.objects.filter(
                 pool=obj, status="completed"
@@ -797,7 +783,6 @@ class PoolAdmin(ModelAdmin):
             (completed_orders / total_orders * 100) if total_orders > 0 else 0
         )
 
-        # Безопасная проверка на None для сумм
         tvl = 0
         k_constant = 0
         exchange_rate = 0
@@ -923,10 +908,8 @@ class PoolAdmin(ModelAdmin):
     ]
 
     def deploy_contracts(self, request, queryset):
-        # Mock deployment action - implement actual deployment logic
         deployed_count = 0
         for pool in queryset.filter(is_contract_deployed=False):
-            # Add your deployment logic here
             deployed_count += 1
 
         self.message_user(
@@ -950,7 +933,6 @@ class PoolAdmin(ModelAdmin):
     activate_pools.short_description = "Activate selected pools"
 
     def sync_from_blockchain(self, request, queryset):
-        # Mock sync action - implement actual blockchain sync
         synced_count = queryset.filter(is_contract_deployed=True).count()
         self.message_user(
             request,
@@ -1120,15 +1102,9 @@ class ExchangeOrderAdmin(ModelAdmin):
         if not obj.pk:
             return "Save to see analytics"
 
-        import datetime
-
-        from django.utils import timezone
-
-        # Time analysis
         processing_time = obj.updated_at - obj.created_at
         time_waiting = timezone.now() - obj.created_at
 
-        # Size analysis
         total_value_usd = float(obj.give_amount)
         size_category = (
             "Large"
@@ -1136,7 +1112,6 @@ class ExchangeOrderAdmin(ModelAdmin):
             else "Medium" if total_value_usd > 1000 else "Small"
         )
 
-        # Rate analysis
         current_pool_rate = (
             obj.pool.exchange_rate_token1_to_token2
             if obj.give_token == obj.pool.token1
@@ -1170,7 +1145,6 @@ class ExchangeOrderAdmin(ModelAdmin):
         if not obj.pk:
             return "Save to see analytics"
 
-        # Revenue calculation
         fee_revenue = obj.give_amount * (obj.fee_percentage / 100)
         operational_cost = Decimal("0.01")
         net_profit = fee_revenue - operational_cost
@@ -1226,9 +1200,6 @@ class ExchangeOrderAdmin(ModelAdmin):
     mark_as_failed.short_description = "Mark selected orders as failed"
 
     def export_selected_orders(self, request, queryset):
-        import csv
-
-        from django.http import HttpResponse
 
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = 'attachment; filename="exchange_orders.csv"'
