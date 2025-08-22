@@ -115,9 +115,7 @@ def send_liquidity_request(payload: dict) -> tuple[bool, dict | str]:
                 return True, result
             else:
                 error_msg = (
-                    result["error"]
-                    or result["message"]
-                    or "Unknown error from API"
+                    result["error"] or result["message"] or "Unknown error from API"
                 )
                 return False, error_msg
         else:

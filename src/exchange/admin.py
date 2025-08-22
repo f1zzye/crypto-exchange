@@ -435,9 +435,7 @@ class PoolAdmin(ModelAdmin):
 
     def get_liquidity_submit_button(self, obj):
         pool_id = obj.pk if obj and obj.pk else "new"
-        action_url = reverse(
-            "exchange:pool_custom_action"
-        )
+        action_url = reverse("exchange:pool_custom_action")
 
         if not obj or not obj.is_contract_deployed:
             return format_html(
@@ -505,6 +503,7 @@ class PoolAdmin(ModelAdmin):
                         btn.innerHTML = '✓ Added';
                         btn.style.background = '#10b981';
                         resultDiv.innerHTML = '<span style="color: #22c55e;">✓ ' + data.message + '</span>';
+                        setTimeout(() => location.reload(), 2000);
                     }} else {{
                         throw new Error(data.message || 'Unknown error');
                     }}
@@ -532,7 +531,7 @@ class PoolAdmin(ModelAdmin):
         if obj and obj.is_contract_deployed:
             contract_addr = obj.contract_address or "Unknown"
             return format_html(
-                f'<span style="color: #10b981; font-weight: bold;">✓ Deployed: {contract_addr[:10]}...</span>'
+                f'<span style="color: #10b981; font-weight: bold;">✓ Deployed: {contract_addr[:4]}...{contract_addr[-4:]}</span>'
             )
 
         return format_html(
@@ -720,7 +719,7 @@ class PoolAdmin(ModelAdmin):
 
         try:
             orders_count = ExchangeOrder.objects.filter(pool=obj).count()
-        except :
+        except:
             orders_count = 0
 
         if total_liquidity > 10_000_0 and orders_count > 10:

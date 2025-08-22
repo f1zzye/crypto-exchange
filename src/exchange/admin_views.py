@@ -39,9 +39,15 @@ def pool_custom_action(request) -> JsonResponse:
         )
 
     except json.JSONDecodeError:
-        return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=HTTPStatus.BAD_REQUEST)
+        return JsonResponse(
+            {"status": "error", "message": "Invalid JSON"},
+            status=HTTPStatus.BAD_REQUEST,
+        )
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return JsonResponse(
+            {"status": "error", "message": str(e)},
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
 
 
 def handle_deploy_contract(pool_id: int) -> JsonResponse:
@@ -67,9 +73,13 @@ def handle_deploy_contract(pool_id: int) -> JsonResponse:
             return JsonResponse({"success": False, "error": message})
 
     except Pool.DoesNotExist:
-        return JsonResponse({"success": False, "error": "Pool not found"}, status=HTTPStatus.NOT_FOUND)
+        return JsonResponse(
+            {"success": False, "error": "Pool not found"}, status=HTTPStatus.NOT_FOUND
+        )
     except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return JsonResponse(
+            {"success": False, "error": str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR
+        )
 
 
 def handle_submit_liquidity(pool_id: int) -> JsonResponse:
@@ -85,7 +95,11 @@ def handle_submit_liquidity(pool_id: int) -> JsonResponse:
 
     except Pool.DoesNotExist:
         return JsonResponse(
-            {"status": "error", "message": "Pool not found"}, status=HTTPStatus.NOT_FOUND
+            {"status": "error", "message": "Pool not found"},
+            status=HTTPStatus.NOT_FOUND,
         )
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return JsonResponse(
+            {"status": "error", "message": str(e)},
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
