@@ -6,4 +6,5 @@ class ExchangeConfig(AppConfig):
     name = "exchange"
 
     def ready(self):
-        import exchange.services.signals
+        import exchange.services.deploy_signals
+        import exchange.services.liquidity_signals

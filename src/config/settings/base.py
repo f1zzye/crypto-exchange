@@ -91,7 +91,7 @@ LANGUAGES = [
 LANGUAGE_CODE: str = "uk"
 
 LOCALE_PATHS = [
-    BASE_DIR / 'locale',
+    BASE_DIR / "locale",
 ]
 
 TIME_ZONE: str = "UTC"
