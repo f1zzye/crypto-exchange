@@ -7,7 +7,7 @@ from accounts.views import (
     activate_account_view,
 )
 
-app_name = "accounts"
+app_name: str = "accounts"
 
 urlpatterns = [
     path("sign-up/", UserRegisterView.as_view(), name="sign-up"),

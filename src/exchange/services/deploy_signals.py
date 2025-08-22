@@ -4,12 +4,13 @@ import httpx
 from django.conf import settings
 from django.utils import timezone
 
-from exchange.models import Pool
-
-DEFAULT_TIMEOUT: int = 300
-TON_SYMBOL: str = "TON"
-USDT_SYMBOL: str = "USDT"
-MAX_ERROR_LENGTH: int = 500
+from constants.constansts import (
+    TON_SYMBOL,
+    USDT_SYMBOL,
+    DEFAULT_TIMEOUT,
+    MAX_ERROR_LENGTH,
+)
+from exchange.models.pool import Pool
 
 
 def deploy_pool_contract(pool_instance: Pool, force=False) -> tuple[bool, str]:
@@ -84,7 +85,7 @@ def update_pool_with_deployment_result(pool_instance, deployment_result) -> None
             raise Exception("Pool deployment not fully initialized")
 
         update_fields = {
-            "contract_address": data.get("contractAddress"),
+            "contract_address": data["contractAddress"],
             "is_contract_deployed": data.get("deployed", True),
             "contract_deployed_at": now,
             "is_pool_activated": True,
@@ -92,11 +93,11 @@ def update_pool_with_deployment_result(pool_instance, deployment_result) -> None
             "last_sync_at": now,
         }
 
-        admin_address = data.get("adminAddress")
+        admin_address = data["adminAddress"]
         if admin_address and not pool_instance.admin_wallet_address:
             update_fields["admin_wallet_address"] = admin_address
 
-        token_master_address = data.get("tokenMasterAddress")
+        token_master_address = data["tokenMasterAddress"]
         if token_master_address and not pool_instance.usdt_master_address:
             update_fields["usdt_master_address"] = token_master_address
 

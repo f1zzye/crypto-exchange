@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.views import LogoutView, PasswordResetConfirmView
+from django.contrib.auth.views import LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
@@ -37,7 +37,7 @@ class UserRegisterView(TitleMixin, SuccessMessageMixin, CreateView):
 
         send_confirmation_email(self.request, self.object)
 
-        username = form.cleaned_data.get("username")
+        username = form.cleaned_data["username"]
         return JsonResponse(
             {
                 "success": True,
@@ -77,8 +77,8 @@ class UserLoginView(TitleMixin, TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+        email = request.POST["email"]
+        password = request.POST["password"]
 
         try:
             user_check = User.objects.get(email=email)

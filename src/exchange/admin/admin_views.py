@@ -1,22 +1,19 @@
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
 from http import HTTPStatus
 
-from exchange.models import Pool
+from constants.constansts import SUBMIT_LIQUIDITY, DEPLOY_CONTRACT
+from exchange.models.pool import Pool
 from exchange.services.deploy_signals import deploy_pool_contract
 from exchange.services.liquidity_signals import add_liquidity_to_pool
 
 
-DEPLOY_CONTRACT: str = "deploy_contract"
-SUBMIT_LIQUIDITY: str = "submit_liquidity"
-
-
 @csrf_exempt
 @require_http_methods(["POST"])
-def pool_custom_action(request) -> JsonResponse:
+def pool_custom_action(request: HttpRequest) -> JsonResponse:
     try:
         data = json.loads(request.body)
         pool_id = data["pool_id"]

@@ -4,10 +4,8 @@ import httpx
 from django.conf import settings
 from django.utils import timezone
 
-from exchange.models import Pool
-
-DEFAULT_TIMEOUT: int = 300
-MAX_ERROR_LENGTH: int = 500
+from constants.constansts import DEFAULT_TIMEOUT, MAX_ERROR_LENGTH
+from exchange.models.pool import Pool
 
 
 def add_liquidity_to_pool(pool_instance: Pool, force=False) -> tuple[bool, str]:

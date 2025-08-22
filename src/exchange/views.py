@@ -6,9 +6,9 @@ from django.http import JsonResponse
 from django.views.generic import TemplateView
 
 from common.mixins import TitleMixin
-from exchange.models import ExchangeOrder, Pool, Token
-
-from .models import Pool, Token
+from exchange.models.exchange_order import ExchangeOrder
+from exchange.models.pool import Pool
+from exchange.models.token import Token
 
 
 class OrderSuccessView(TitleMixin, TemplateView):
@@ -35,8 +35,8 @@ def calculate_exchange_api(request):
 
     try:
         data = json.loads(request.body)
-        give_token_id = data.get("give_token_id")
-        receive_token_id = data.get("receive_token_id")
+        give_token_id = data["give_token_id"]
+        receive_token_id = data["receive_token_id"]
         amount = data.get("amount", 0)
 
         if not give_token_id or not receive_token_id:

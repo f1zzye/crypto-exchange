@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -6,7 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .managers import CustomUserManager
+from accounts.managers import CustomUserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -31,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.BooleanField(
         _("active"),
-        default=True,  # Change to False when email activation is implemented
+        default=True,
         help_text=_("Designates whether this user should be treated as active."),
     )
 
@@ -62,21 +61,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_member_since(self) -> str:
         return f"Member since {self.date_joined.strftime('%B %Y')}"
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    avatar = models.ImageField(
-        _("avatar"),
-        upload_to="avatars/",
-        default="avatars/default-avatar.jpg",
-        blank=True,
-        null=True,
-    )
-
-    def __str__(self):
-        return f"{self.user}"
-
-    class Meta:
-        verbose_name = "User Profile"
-        verbose_name_plural = "User Profiles"

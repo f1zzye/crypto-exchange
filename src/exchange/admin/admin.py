@@ -17,8 +17,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
 
-from .models import ExchangeOrder, Network, Pool, Token
-from .services.deploy_signals import deploy_pool_contract
+from exchange.models import Token, Network, Pool, ExchangeOrder
+from exchange.services.deploy_signals import deploy_pool_contract
 
 
 class TokenInline(admin.TabularInline):
@@ -391,7 +391,8 @@ class PoolAdmin(ModelAdmin):
         ]
         return custom_urls + urls
 
-    def deploy_contract_view(self, request):
+    @staticmethod
+    def deploy_contract_view(request):
         if request.method != "POST":
             return HttpResponseBadRequest("Only POST allowed")
         try:
@@ -412,17 +413,11 @@ class PoolAdmin(ModelAdmin):
                 pool_id = data["pool_id"]
                 action_type = data.get("action_type", "unknown")
 
-                print(f"КНОПКА НАЖАТА! Pool ID: {pool_id}, Action: {action_type}")
-                print(f"Данные от клиента: {data}")
-
                 if pool_id and pool_id != "new":
                     try:
                         pool = Pool.objects.get(pk=pool_id)
-                        print(f"Найден пул: {pool.name}")
                     except Pool.DoesNotExist:
-                        print(f"Пул с ID {pool_id} не найден")
-                else:
-                    print("Новый объект (еще не сохранен)")
+                        pass
 
                 return JsonResponse(
                     {
@@ -432,7 +427,6 @@ class PoolAdmin(ModelAdmin):
                     }
                 )
             except Exception as e:
-                print(f"Ошибка: {e}")
                 return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
         return JsonResponse(
@@ -484,7 +478,6 @@ class PoolAdmin(ModelAdmin):
                 const originalText = btn.innerHTML;
 
                 try {{
-                    // Показываем состояние загрузки
                     btn.innerHTML = 'Adding...';
                     btn.disabled = true;
                     btn.style.background = '#6b7280';
@@ -556,7 +549,6 @@ class PoolAdmin(ModelAdmin):
                 const originalText = btn.innerHTML;
 
                 try {{
-                    // Показываем состояние загрузки
                     btn.innerHTML = 'Deploying...';
                     btn.disabled = true;
                     btn.style.background = '#6b7280';
@@ -579,7 +571,6 @@ class PoolAdmin(ModelAdmin):
                     if (data.success) {{
                         btn.innerHTML = '✓ Deployed';
                         btn.style.background = '#10b981';
-                        // Перезагружаем страницу чтобы обновить статус
                         setTimeout(() => location.reload(), 2000);
                     }} else {{
                         throw new Error(data.error || 'Unknown error');
@@ -1113,7 +1104,7 @@ class ExchangeOrderAdmin(ModelAdmin):
         total_value_usd = float(obj.give_amount)
         size_category = (
             "Large"
-            if total_value_usd > 10000
+            if total_value_usd > 10_000
             else "Medium" if total_value_usd > 1000 else "Small"
         )
 

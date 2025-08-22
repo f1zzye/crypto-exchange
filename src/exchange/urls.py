@@ -1,7 +1,7 @@
 from django.urls import path
 
 from exchange.views import OrderSuccessView, calculate_exchange_api
-from exchange.admin_views import pool_custom_action
+from exchange.admin.admin_views import pool_custom_action
 
 app_name: str = "exchange"
 

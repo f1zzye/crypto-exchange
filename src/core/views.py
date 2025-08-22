@@ -14,7 +14,9 @@ from pytoniq_core import Address
 
 from common.mixins import TitleMixin
 from core.utils.captcha import CaptchaGenerator
-from exchange.models import ExchangeOrder, Pool, Token
+from exchange.models.exchange_order import ExchangeOrder
+from exchange.models.pool import Pool
+from exchange.models.token import Token
 
 
 def tonconnect_manifest(request):
@@ -222,7 +224,8 @@ class IndexView(TitleMixin, TemplateView):
             status="pending",
         )
 
-    def _find_pool(self, give_token, receive_token):
+    @staticmethod
+    def _find_pool(give_token, receive_token):
         return Pool.objects.filter(
             models.Q(token1=give_token, token2=receive_token)
             | models.Q(token1=receive_token, token2=give_token),

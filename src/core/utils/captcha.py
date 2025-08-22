@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 class CaptchaGenerator:
-    def __init__(self, size=50):
+    def __init__(self, size: int = 50):
         self.size = size
         self.patterns = ["rings", "grid", "triangles", "diamonds"]
         self.corner_radius = 12
