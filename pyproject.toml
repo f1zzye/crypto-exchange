@@ -23,6 +23,7 @@ cryptography = "^45.0.6"
 aiohttp = "^3.12.15"
 django-celery-results = "2.5.0"
 django-celery-beat = "^2.8.1"
+django-unfold = "^0.64.2"
 
 
 [build-system]

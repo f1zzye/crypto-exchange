@@ -3,8 +3,16 @@ from decimal import Decimal
 from django.contrib import admin, messages
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.html import format_html
 from unfold.admin import ModelAdmin
+from django.contrib import admin
+from django.utils.html import format_html
+from django.urls import path, reverse
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+import json
 
 from .models import ExchangeOrder, Network, Pool, Token
 
@@ -267,7 +275,7 @@ class PoolAdmin(ModelAdmin):
         "token2__name",
         "token2__short_name",
         "contract_address",
-    )
+        )
     list_filter = (
         "is_active",
         "is_contract_deployed",
@@ -286,6 +294,7 @@ class PoolAdmin(ModelAdmin):
         "get_pool_dashboard",
         "get_contract_dashboard",
         "get_liquidity_submit_button",
+        "get_deploy_contract_button",
     )
 
     fieldsets = (
@@ -302,7 +311,15 @@ class PoolAdmin(ModelAdmin):
         ),
         (
             "Adding Liquidity",
-            {"fields": ("token1_amount", "token2_amount", "get_liquidity_submit_button"), "classes": ("wide",)},
+            {
+                "fields": (
+                    "token1_amount",
+                    "token2_amount",
+                    "get_liquidity_submit_button",
+                    "get_deploy_contract_button",
+                ),
+                "classes": ("wide",),
+            },
         ),
         (
             "Pool Settings",
@@ -353,92 +370,193 @@ class PoolAdmin(ModelAdmin):
             .select_related("token1", "token2", "token1__network", "token2__network")
         )
 
-    def get_liquidity_submit_button(self, obj):
-        if not obj.pk:
-            return format_html(
-                '<div style="color: #666;">Save pool first to add liquidity</div>'
-            )
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                "custom-action/",
+                self.admin_site.admin_view(self.custom_action_view),
+                name="pool_custom_action",
+            ),
+        ]
+        return custom_urls + urls
 
-        if not (obj.token1 and obj.token2):
-            return format_html(
-                '<div style="color: #f44336;">Please configure tokens first</div>'
-            )
+    @method_decorator(csrf_exempt, name="dispatch")
+    def custom_action_view(self, request):
+        """Обработчик для кастомной кнопки"""
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body)
+                pool_id = data.get("pool_id")
+                action_type = data.get("action_type", "unknown")
 
-        # Check if pool has contract deployed and activated
-        can_add_liquidity = obj.is_contract_deployed and obj.is_pool_activated
+                # Выводим print для проверки
+                print(f"КНОПКА НАЖАТА! Pool ID: {pool_id}, Action: {action_type}")
+                print(f"Данные от клиента: {data}")
 
-        if not can_add_liquidity:
-            return format_html(
-                '''
-                <div style="background: #fff3cd; padding: 10px; border-radius: 6px; border: 1px solid #ffeaa7;">
-                    <span style="color: #856404;">⚠️ Pool must be deployed and activated before adding liquidity</span><br>
-                    <small>Current status: {}</small>
-                </div>
-                ''',
-                obj.contract_status_display
-            )
+                # Если есть pool_id, можно получить объект
+                if pool_id and pool_id != "new":
+                    try:
+                        pool = Pool.objects.get(pk=pool_id)
+                        print(f"Найден пул: {pool.name}")
+                    except Pool.DoesNotExist:
+                        print(f"Пул с ID {pool_id} не найден")
+                else:
+                    print("Новый объект (еще не сохранен)")
 
-        token1_name = obj.token1.short_name if obj.token1 else "Token1"
-        token2_name = obj.token2.short_name if obj.token2 else "Token2"
+                return JsonResponse(
+                    {
+                        "status": "success",
+                        "message": "Действие выполнено успешно!",
+                        "pool_id": pool_id,
+                    }
+                )
+            except Exception as e:
+                print(f"Ошибка: {e}")
+                return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
-        return format_html(
-            '''
-            <div style="margin-top: 10px;">
-                <button 
-                    type="button" 
-                    onclick="submitLiquidity('{}', '{}', '{}')"
-                    style="
-                        background: linear-gradient(45deg, #007bff, #0056b3); 
-                        color: white; 
-                        border: none; 
-                        padding: 12px 30px; 
-                        border-radius: 6px; 
-                        font-size: 16px; 
-                        font-weight: bold; 
-                        cursor: pointer; 
-                        width: 100%;
-                        transition: all 0.3s ease;
-                    "
-                    onmouseover="this.style.background='linear-gradient(45deg, #0056b3, #003d82)'"
-                    onmouseout="this.style.background='linear-gradient(45deg, #007bff, #0056b3)'"
-                >
-                     Submit Liquidity
-                </button>
-
-                <script>
-                function submitLiquidity(poolId, token1Name, token2Name) {{
-                    const token1Amount = document.querySelector('input[name="token1_amount"]').value;
-                    const token2Amount = document.querySelector('input[name="token2_amount"]').value;
-
-                    if (!token1Amount || !token2Amount) {{
-                        alert('Please enter amounts for both tokens');
-                        return;
-                    }}
-
-                    if (parseFloat(token1Amount) <= 0 || parseFloat(token2Amount) <= 0) {{
-                        alert('Please enter valid positive amounts');
-                        return;
-                    }}
-
-                    // Show confirmation
-                    if (confirm(`Add liquidity:\\n${{token1Name}}: ${{token1Amount}}\\n${{token2Name}}: ${{token2Amount}}\\n\\nProceed?`)) {{
-                        // Here you would make an AJAX call to your liquidity endpoint
-                        alert('Liquidity addition initiated! The amounts will be saved when you save the pool.');
-
-                        // Optionally trigger form submission or AJAX call here
-                        // Example: 
-                        // fetch('/admin/add-liquidity/', {{...}})
-                    }}
-                }}
-                </script>
-            </div>
-            ''',
-            obj.pk,
-            token1_name,
-            token2_name
+        return JsonResponse(
+            {"status": "error", "message": "Method not allowed"}, status=405
         )
 
-    get_liquidity_submit_button.short_description = ""
+    def get_liquidity_submit_button(self, obj):
+        """Кнопка для управления ликвидностью"""
+        pool_id = obj.pk if obj and obj.pk else "new"
+        action_url = reverse("admin:pool_custom_action")
+
+        return format_html(
+            """
+            <div style="margin: 10px 0;">
+                <button 
+                    type="button" 
+                    onclick="performLiquidityAction('{}', '{}')"
+                    style="
+                        background: #8b5cf6; 
+                        color: white; 
+                        border: none; 
+                        padding: 12px 25px; 
+                        border-radius: 6px; 
+                        font-size: 14px; 
+                        font-weight: bold; 
+                        cursor: pointer; 
+                        transition: all 0.3s ease;
+                        width: 100%;
+                    "
+                    onmouseover="this.style.background='#7c3aed'"
+                    onmouseout="this.style.background='#8b5cf6'"
+                >
+                    Submit Liquidity
+                </button>
+                <div id="liquidity-result-{}" style="margin-top: 10px; font-size: 12px; color: #a1a1aa;"></div>
+            </div>
+
+            <script>
+            async function performLiquidityAction(poolId, actionUrl) {{
+                console.log('Submit Liquidity нажата для Pool ID:', poolId);
+
+                const resultDiv = document.getElementById('liquidity-result-' + poolId);
+                resultDiv.innerHTML = '<span style="color: #f59e0b;">Submit Liquidity выполняется...</span>';
+
+                try {{
+                    const response = await fetch(actionUrl, {{
+                        method: 'POST',
+                        headers: {{'Content-Type': 'application/json'}},
+                        body: JSON.stringify({{
+                            pool_id: poolId,
+                            action_type: 'submit_liquidity',
+                            timestamp: new Date().toISOString()
+                        }})
+                    }});
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {{
+                        resultDiv.innerHTML = '<span style="color: #22c55e;">✓ Submit Liquidity: ' + data.message + '</span>';
+                    }} else {{
+                        resultDiv.innerHTML = '<span style="color: #ef4444;">✗ Submit Liquidity ошибка: ' + data.message + '</span>';
+                    }}
+                }} catch (error) {{
+                    resultDiv.innerHTML = '<span style="color: #ef4444;">✗ Submit Liquidity сетевая ошибка: ' + error.message + '</span>';
+                }}
+            }}
+            </script>
+            """,
+            pool_id,
+            action_url,
+            pool_id,
+        )
+
+    get_liquidity_submit_button.short_description = "Submit Liquidity"
+
+    # Вторая кнопка - новая
+    def get_deploy_contract_button(self, obj):
+        """Кнопка для деплоя контракта"""
+        pool_id = obj.pk if obj and obj.pk else "new"
+        action_url = reverse("admin:pool_custom_action")
+
+        return format_html(
+            """
+            <div style="margin: 10px 0;">
+                <button 
+                    type="button" 
+                    onclick="performDeployContract('{}', '{}')"
+                    style="
+                        background: #a855f7; 
+                        color: white; 
+                        border: none; 
+                        padding: 12px 25px; 
+                        border-radius: 6px; 
+                        font-size: 14px; 
+                        font-weight: bold; 
+                        cursor: pointer; 
+                        transition: all 0.3s ease;
+                        width: 100%;
+                    "
+                    onmouseover="this.style.background='#9333ea'"
+                    onmouseout="this.style.background='#a855f7'"
+                >
+                    Deploy Contract
+                </button>
+                <div id="deploy-result-{}" style="margin-top: 10px; font-size: 12px; color: #a1a1aa;"></div>
+            </div>
+
+            <script>
+            async function performDeployContract(poolId, actionUrl) {{
+                console.log('Deploy Contract нажата для Pool ID:', poolId);
+
+                const resultDiv = document.getElementById('deploy-result-' + poolId);
+                resultDiv.innerHTML = '<span style="color: #f59e0b;">Deploy Contract выполняется...</span>';
+
+                try {{
+                    const response = await fetch(actionUrl, {{
+                        method: 'POST',
+                        headers: {{'Content-Type': 'application/json'}},
+                        body: JSON.stringify({{
+                            pool_id: poolId,
+                            action_type: 'deploy_contract',
+                            timestamp: new Date().toISOString()
+                        }})
+                    }});
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {{
+                        resultDiv.innerHTML = '<span style="color: #22c55e;">✓ Deploy Contract: ' + data.message + '</span>';
+                    }} else {{
+                        resultDiv.innerHTML = '<span style="color: #ef4444;">✗ Deploy Contract ошибка: ' + data.message + '</span>';
+                    }}
+                }} catch (error) {{
+                    resultDiv.innerHTML = '<span style="color: #ef4444;">✗ Deploy Contract сетевая ошибка: ' + error.message + '</span>';
+                }}
+            }}
+            </script>
+            """,
+            pool_id,
+            action_url,
+            pool_id,
+        )
+
+    get_deploy_contract_button.short_description = "Deploy Contract"
 
     def pool_display(self, obj):
         if not (obj.token1 and obj.token2):
