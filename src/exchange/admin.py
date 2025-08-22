@@ -307,8 +307,19 @@ class PoolAdmin(ModelAdmin):
             "Token Configuration",
             {
                 "fields": (
-                    ("token1",),
-                    ("token2",),
+                    "token1",
+                    "token2",
+                ),
+                "classes": ("wide",),
+            },
+        ),
+        (
+            "Pool Settings",
+            {
+                "fields": (
+                    "fee_percentage",
+                    "is_active",
+                    "get_deploy_contract_button",
                 ),
                 "classes": ("wide",),
             },
@@ -320,14 +331,9 @@ class PoolAdmin(ModelAdmin):
                     "token1_amount",
                     "token2_amount",
                     "get_liquidity_submit_button",
-                    "get_deploy_contract_button",
                 ),
                 "classes": ("wide",),
             },
-        ),
-        (
-            "Pool Settings",
-            {"fields": ("fee_percentage", "is_active"), "classes": ("wide",)},
         ),
         (
             "Smart Contract",
