@@ -3,8 +3,6 @@ from http import HTTPStatus
 
 import httpx
 from django.conf import settings
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils import timezone
 
 from exchange.models import Pool
@@ -17,28 +15,30 @@ USDT_SYMBOL: str = "USDT"
 MAX_ERROR_LENGTH: int = 500
 
 
-@receiver(post_save, sender=Pool)
-def auto_deploy_pool_contract(sender, instance, created, **kwargs) -> None:
-    if created and not instance.is_contract_deployed:
-        logger.info(f"Starting auto-deployment for pool: {instance}")
+def deploy_pool_contract(pool_instance: Pool, force=False) -> tuple[bool, str]:
+    if not force and pool_instance.is_contract_deployed:
+        return False, "Contract is already deployed"
 
-        try:
-            payload = prepare_deployment_payload(instance)
-            success, result = send_deployment_request(payload)
+    logger.info(f"Starting manual deployment for pool: {pool_instance}")
 
-            if success:
-                update_pool_with_deployment_result(instance, result)
-                contract_address = result.get("data", {}).get(
-                    "contractAddress", "Unknown"
-                )
-                logger.info(f"Pool {instance} deployed: {contract_address}")
-            else:
-                handle_deployment_error(instance, result)
-                logger.error(f"Pool {instance} deployment failed: {result}")
+    try:
+        payload = prepare_deployment_payload(pool_instance)
+        success, result = send_deployment_request(payload)
 
-        except Exception as e:
-            handle_deployment_error(instance, str(e))
-            logger.exception(f"Deployment error for pool {instance}")
+        if success:
+            update_pool_with_deployment_result(pool_instance, result)
+            contract_address = result.get("data", {}).get("contractAddress", "Unknown")
+            logger.info(f"Pool {pool_instance} deployed manually: {contract_address}")
+            return True, f"Successfully deployed: {contract_address}"
+        else:
+            handle_deployment_error(pool_instance, result)
+            logger.error(f"Pool {pool_instance} deployment failed: {result}")
+            return False, f"Deployment failed: {result}"
+
+    except Exception as e:
+        handle_deployment_error(pool_instance, str(e))
+        logger.exception(f"Deployment error for pool {pool_instance}")
+        return False, f"Deployment error: {str(e)}"
 
 
 def prepare_deployment_payload(pool_instance: Pool) -> dict[str, str | float]:
