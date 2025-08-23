@@ -18,17 +18,15 @@ def add_liquidity_to_pool(pool_instance: Pool, force=False) -> tuple[bool, str]:
     if pool_instance.token1_amount <= 0 or pool_instance.token2_amount <= 0:
         return False, "Token amounts must be greater than zero"
 
-    if not force and pool_instance.is_liquidity_added:
-        return False, "Liquidity already added"
-
     try:
         payload = prepare_liquidity_payload(pool_instance)
-
         success, result = send_liquidity_request(payload)
 
         if success:
-            update_pool_with_liquidity_result(pool_instance, result)
+            update_pool_liquidity_stats(pool_instance)
 
+            if not pool_instance.is_liquidity_added:
+                update_pool_with_liquidity_result(pool_instance, result)
             pool_instance.refresh_from_db()
 
             success_msg = (
@@ -49,6 +47,40 @@ def add_liquidity_to_pool(pool_instance: Pool, force=False) -> tuple[bool, str]:
         error_msg = f"Неожиданная ошибка: {str(e)}"
         handle_liquidity_error(pool_instance, str(e))
         return False, error_msg
+
+
+def update_pool_liquidity_stats(pool_instance):
+    try:
+        now = timezone.now()
+
+        pool_instance.total_liquidity_additions += 1
+
+        pool_instance.total_token1_added += pool_instance.token1_amount
+        pool_instance.total_token2_added += pool_instance.token2_amount
+
+        if not pool_instance.first_liquidity_added_at:
+            pool_instance.first_liquidity_added_at = now
+
+        pool_instance.liquidity_added_at = now
+        pool_instance.last_sync_at = now
+
+        if not pool_instance.is_liquidity_added:
+            pool_instance.is_liquidity_added = True
+
+        pool_instance.save(
+            update_fields=[
+                "total_liquidity_additions",
+                "total_token1_added",
+                "total_token2_added",
+                "first_liquidity_added_at",
+                "liquidity_added_at",
+                "last_sync_at",
+                "is_liquidity_added",
+            ]
+        )
+
+    except Exception as e:
+        print(f"Failed to update liquidity stats: {e}")
 
 
 def prepare_liquidity_payload(pool_instance: Pool) -> dict:
@@ -138,11 +170,7 @@ def update_pool_with_liquidity_result(pool_instance, liquidity_result) -> None:
         update_fields = {
             "last_sync_at": now,
             "is_liquidity_added": True,
-            "liquidity_added_at": now,
         }
-
-        if hasattr(pool_instance, "has_liquidity"):
-            update_fields["has_liquidity"] = True
 
         fields_to_update = []
         for field, value in update_fields.items():
@@ -154,10 +182,7 @@ def update_pool_with_liquidity_result(pool_instance, liquidity_result) -> None:
             pool_instance.save(update_fields=fields_to_update)
 
     except Exception as e:
-        if hasattr(pool_instance, "liquidity_error"):
-            pool_instance.liquidity_error = f"Update failed: {str(e)}"
-            pool_instance.save(update_fields=["liquidity_error"])
-        else:
+        if hasattr(pool_instance, "deployment_error"):
             pool_instance.deployment_error = f"Liquidity update failed: {str(e)}"
             pool_instance.save(update_fields=["deployment_error"])
 
