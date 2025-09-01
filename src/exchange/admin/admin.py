@@ -779,52 +779,53 @@ class PoolAdmin(ModelAdmin):
             (completed_orders / total_orders * 100) if total_orders > 0 else 0
         )
 
+        tvl = 0
+        k_constant = 0
+        exchange_rate = 0
+
+        if obj.token1_amount and obj.token2_amount:
+            tvl = obj.token1_amount + obj.token2_amount
+            k_constant = obj.token1_amount * obj.token2_amount
+            exchange_rate = obj.exchange_rate_token1_to_token2
+
         return format_html(
             """
             <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
                 <h3 style="margin-top: 0; color: #333;">Pool Analytics Dashboard</h3>
 
-                <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                     <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #4caf50;">
                         <strong style="color: #4caf50;">Trading Stats</strong><br>
                         Total Orders: {}<br>
                         Completed: {}<br>
                         Success Rate: {}%
                     </div>
-                </div>
 
-                <div style="margin-top: 15px; background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #9c27b0;">
-                    <strong style="color: #9c27b0;">Liquidity History Summary:</strong><br>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
-                        <div style="font-size: 14px;">
-                            📈 <strong>Total {} Added:</strong> {}<br>
-                            📈 <strong>Total {} Added:</strong> {}
-                        </div>
-                        <div style="font-size: 14px;">
-                            🔄 <strong>Operations:</strong> {}<br>
-                            📊 <strong>Avg per Operation:</strong> ${}
-                        </div>
+                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #2196f3;">
+                        <strong style="color: #2196f3;">Liquidity</strong><br>
+                        TVL: ${}<br>
+                        Fee Rate: {}%<br>
+                        K Constant: {}
+                    </div>
+
+                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #ff9800;">
+                        <strong style="color: #ff9800;">Performance</strong><br>
+                        Exchange Rate: {}<br>
+                        Pool Health: {}<br>
+                        Volume Rank: {}
                     </div>
                 </div>
             </div>
-            """,
+        """,
             total_orders,
             completed_orders,
             "{:.1f}".format(success_rate),
-            obj.token1.short_name if obj.token1 else "TOKEN1",
-            "{:,.2f}".format(obj.total_token1_added or 0),
-            obj.token2.short_name if obj.token2 else "TOKEN2",
-            "{:,.2f}".format(obj.total_token2_added or 0),
-            obj.total_liquidity_additions or 0,
-            "{:,.0f}".format(
-                (
-                    (
-                        float(obj.total_token1_added or 0)
-                        + float(obj.total_token2_added or 0)
-                    )
-                    / (obj.total_liquidity_additions or 1)
-                )
-            ),
+            "{:,.0f}".format(tvl),
+            obj.fee_percentage or 0,
+            "{:,.0f}".format(k_constant),
+            "{:.4f}".format(exchange_rate),
+            "Good" if success_rate > 80 else "Average" if success_rate > 50 else "Poor",
+            "High" if total_orders > 100 else "Medium" if total_orders > 10 else "Low",
         )
 
     get_pool_dashboard.short_description = "Pool Dashboard"

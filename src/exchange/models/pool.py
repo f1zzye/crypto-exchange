@@ -40,35 +40,6 @@ class Pool(BaseModel):
         verbose_name="Token B reserve",
     )
 
-    total_liquidity_additions = models.PositiveIntegerField(
-        default=0,
-        verbose_name="Total Liquidity Additions",
-        help_text="Total number of times liquidity was added to this pool",
-    )
-
-    total_token1_added = models.DecimalField(
-        max_digits=20,
-        decimal_places=8,
-        default=Decimal("0"),
-        verbose_name="Total Token A Added",
-        help_text="Total amount of Token A added to pool across all operations",
-    )
-
-    total_token2_added = models.DecimalField(
-        max_digits=20,
-        decimal_places=8,
-        default=Decimal("0"),
-        verbose_name="Total Token B Added",
-        help_text="Total amount of Token B added to pool across all operations",
-    )
-
-    first_liquidity_added_at = models.DateTimeField(
-        blank=True,
-        null=True,
-        verbose_name="First Liquidity Added At",
-        help_text="Timestamp when liquidity was first added to this pool",
-    )
-
     fee_percentage = models.DecimalField(
         max_digits=5,
         decimal_places=3,
