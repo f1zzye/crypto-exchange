@@ -157,7 +157,7 @@ class IndexView(TitleMixin, TemplateView):
         try:
             order = self._create_exchange_order(request)
             request.session["order_id"] = str(order.id)
-            return redirect("exchange:order_success")
+            return redirect("orders:order_success")
         except Exception as e:
             return self._render_with_error(f"Ошибка создания заявки: {str(e)}")
 
