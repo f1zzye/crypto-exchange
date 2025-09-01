@@ -14,7 +14,7 @@ from pytoniq_core import Address
 
 from common.mixins import TitleMixin
 from core.utils.captcha import CaptchaGenerator
-from exchange.models.exchange_order import ExchangeOrder
+from orders.models import ExchangeOrder
 from exchange.models.pool import Pool
 from exchange.models.token import Token
 
@@ -157,7 +157,7 @@ class IndexView(TitleMixin, TemplateView):
         try:
             order = self._create_exchange_order(request)
             request.session["order_id"] = str(order.id)
-            return redirect("exchange:order_success")
+            return redirect("orders:order_success")
         except Exception as e:
             return self._render_with_error(f"Ошибка создания заявки: {str(e)}")
 

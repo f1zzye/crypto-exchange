@@ -3,30 +3,10 @@ from decimal import Decimal
 
 from django.db import models
 from django.http import JsonResponse
-from django.views.generic import TemplateView
 
 from common.mixins import TitleMixin
-from exchange.models.exchange_order import ExchangeOrder
 from exchange.models.pool import Pool
 from exchange.models.token import Token
-
-
-class OrderSuccessView(TitleMixin, TemplateView):
-    template_name: str = "exchange/order_success.html"
-    title: str = "Заявка создана - CryptoChicken"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        order_id = self.request.session.get("order_id")
-        if order_id:
-            try:
-                order = ExchangeOrder.objects.get(id=order_id)
-                context["order"] = order
-            except ExchangeOrder.DoesNotExist:
-                pass
-
-        return context
 
 
 def calculate_exchange_api(request):
