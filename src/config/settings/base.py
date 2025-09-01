@@ -27,6 +27,7 @@ INSTALLED_APPS: list[str] = [
     "core",
     "accounts",
     "exchange",
+    "orders",
 ]
 
 MIDDLEWARE: list[str] = [
@@ -167,7 +168,7 @@ UNFOLD = {
                     {
                         "title": _("Exchange Orders "),
                         "icon": "swap_horiz",
-                        "link": reverse_lazy("admin:exchange_exchangeorder_changelist"),
+                        "link": reverse_lazy("admin:orders_exchangeorder_changelist"),
                     },
                 ],
             },

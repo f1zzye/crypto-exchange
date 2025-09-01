@@ -14,7 +14,7 @@ from pytoniq_core import Address
 
 from common.mixins import TitleMixin
 from core.utils.captcha import CaptchaGenerator
-from exchange.models.exchange_order import ExchangeOrder
+from orders.models import ExchangeOrder
 from exchange.models.pool import Pool
 from exchange.models.token import Token
 

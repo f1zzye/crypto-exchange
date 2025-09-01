@@ -1,1 +1,1 @@
-from .admin import NetworkAdmin, TokenAdmin, PoolAdmin, ExchangeOrderAdmin
+from .admin import NetworkAdmin, TokenAdmin, PoolAdmin

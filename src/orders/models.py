@@ -2,6 +2,8 @@ import uuid
 from decimal import Decimal
 from django.core.validators import MinValueValidator
 from django.db import models
+from exchange.models.token import Token
+from exchange.models.pool import Pool
 
 from core.models.basemodel import BaseModel
 
@@ -20,7 +22,7 @@ class ExchangeOrder(BaseModel):
     email = models.EmailField(max_length=100, verbose_name="User Email")
 
     give_token = models.ForeignKey(
-        "Token",
+        Token,
         on_delete=models.CASCADE,
         related_name="orders_as_give_token",
         verbose_name="Token Given",
@@ -33,7 +35,7 @@ class ExchangeOrder(BaseModel):
     )
 
     receive_token = models.ForeignKey(
-        "Token",
+        Token,
         on_delete=models.CASCADE,
         related_name="orders_as_receive_token",
         verbose_name="Token Received",
@@ -64,7 +66,7 @@ class ExchangeOrder(BaseModel):
     )
 
     pool = models.ForeignKey(
-        "Pool",
+        Pool,
         on_delete=models.CASCADE,
         related_name="orders",
         verbose_name="Exchange Pool",

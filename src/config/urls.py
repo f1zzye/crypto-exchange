@@ -11,6 +11,7 @@ urlpatterns = i18n_patterns(
     path("", include("core.urls", namespace="core")),
     path("exchange/", include("exchange.urls", namespace="exchange")),
     path("user/", include("accounts.urls", namespace="account")),
+    path("orders/", include("orders.urls", namespace="orders")),
     prefix_default_language=False,
 )
 
