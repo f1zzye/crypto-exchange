@@ -266,4 +266,61 @@ document.addEventListener('DOMContentLoaded', function() {
     tonConnectUI.onError = (error) => {
         showFlashMessage(`Ошибка TON Connect: ${error.message}`, 'error');
     };
+
+    // Функция для отправки тестовой транзакции
+    async function sendTestTransaction() {
+        // Проверяем, подключен ли кошелек
+        if (!currentWallet) {
+            showFlashMessage('Сначала подключите кошелек!', 'warning');
+            return;
+        }
+
+        try {
+            // Создаем простую транзакцию
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 360, // действительна 6 минут
+                messages: [
+                    {
+                        // Отправляем 0.001 TON на тот же кошелек (себе)
+                        address: currentWallet.account.address,
+                        amount: '1000000' // 0.001 TON в нанотонах
+                    }
+                ]
+            };
+
+            // Показываем что транзакция отправляется
+            showFlashMessage('Отправка транзакции...', 'info');
+
+            // Отправляем транзакцию
+            const result = await tonConnectUI.sendTransaction(transaction);
+
+            console.log('Transaction sent:', result);
+            showFlashMessage('Транзакция успешно отправлена!', 'success');
+
+            // Можешь добавить здесь обработку результата
+            // например, отправить данные на сервер
+
+        } catch (error) {
+            console.error('Transaction error:', error);
+
+            if (error.message.includes('declined') || error.message.includes('rejected')) {
+                showFlashMessage('Транзакция отклонена пользователем', 'warning');
+            } else {
+                showFlashMessage('Ошибка отправки транзакции: ' + error.message, 'error');
+            }
+        }
+    }
+
+    // Добавляем обработчик на кнопку обмена
+    const exchangeButtons = document.querySelectorAll('.btn.btn--wall');
+
+    exchangeButtons.forEach(button => {
+        // Проверяем, что это именно кнопка обмена по тексту
+        if (button.textContent.includes('Обміняти') || button.textContent.includes('обміняти')) {
+            button.addEventListener('click', function(e) {
+                sendTestTransaction();
+            });
+        }
+    });
+
 });
