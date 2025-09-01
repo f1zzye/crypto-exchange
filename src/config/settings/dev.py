@@ -6,17 +6,32 @@ DEBUG: bool = True
 
 SECRET_KEY: str = "django-insecure-hn^ppv^_puys)su29!vf@3_w9d(6c6_phprp03-x*eru$@%5hz"
 
-ALLOWED_HOSTS: list[str] = ["*", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS: list[str] = [
+    'localhost',
+    '127.0.0.1',
+    '14bc8bb59e53.ngrok-free.app',
+    '*.ngrok.io',
+    '*.ngrok-free.app',
+]
+
+CORS_ALLOW_ALL_ORIGINS: bool = True
+CORS_ALLOW_CREDENTIALS: bool = True
+
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "accept",
+]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok.io',
     'https://*.ngrok-free.app',
-    'https://d3b21b6096e9.ngrok-free.app',
+    'https://14bc8bb59e53.ngrok-free.app',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-
+CORS_ALLOWED_ORIGINS: list[str] = [
+    "https://14bc8bb59e53.ngrok-free.app",
+]
 
 DATABASES = {
     "default": {

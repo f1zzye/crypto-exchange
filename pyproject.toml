@@ -24,6 +24,7 @@ aiohttp = "^3.12.15"
 django-celery-results = "2.5.0"
 django-celery-beat = "^2.8.1"
 django-unfold = "^0.64.2"
+django-cors-headers = "^4.7.0"
 
 
 [build-system]

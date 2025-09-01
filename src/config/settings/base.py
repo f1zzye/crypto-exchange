@@ -23,6 +23,7 @@ INSTALLED_APPS: list[str] = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Custom apps
+    "corsheaders",
     # My apps
     "core",
     "accounts",
@@ -34,6 +35,7 @@ MIDDLEWARE: list[str] = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",

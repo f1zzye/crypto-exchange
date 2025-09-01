@@ -4,7 +4,6 @@ from decimal import Decimal
 from django.db import models
 from django.http import JsonResponse
 
-from common.mixins import TitleMixin
 from exchange.models.pool import Pool
 from exchange.models.token import Token
 

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const config = {
         manifestUrl: `${window.location.origin}/tonconnect-manifest.json`,
         buttonRootId: 'ton-connect-header',
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    window.copyWalletAddress = async function() {
+    window.copyWalletAddress = async function () {
         if (!currentWallet?.userFriendlyAddress) {
             showFlashMessage('Нет адреса кошелька для копирования', 'error');
             return;
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    window.refreshWalletBalance = async function() {
+    window.refreshWalletBalance = async function () {
         if (!currentWallet) {
             showFlashMessage('Кошелек не подключен', 'error');
             return;
@@ -267,38 +267,32 @@ document.addEventListener('DOMContentLoaded', function() {
         showFlashMessage(`Ошибка TON Connect: ${error.message}`, 'error');
     };
 
-    // Функция для отправки тестовой транзакции
     async function sendTestTransaction() {
         // Проверяем, подключен ли кошелек
         if (!currentWallet) {
             showFlashMessage('Сначала подключите кошелек!', 'warning');
-            return;
+            throw new Error('Wallet not connected');
         }
 
         try {
-            // Создаем простую транзакцию
             const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 360, // действительна 6 минут
+                validUntil: Math.floor(Date.now() / 1000) + 360,
                 messages: [
                     {
-                        // Отправляем 0.001 TON на тот же кошелек (себе)
                         address: currentWallet.account.address,
-                        amount: '1000000' // 0.001 TON в нанотонах
+                        amount: '1000000'
                     }
                 ]
             };
 
-            // Показываем что транзакция отправляется
             showFlashMessage('Отправка транзакции...', 'info');
 
-            // Отправляем транзакцию
             const result = await tonConnectUI.sendTransaction(transaction);
 
             console.log('Transaction sent:', result);
             showFlashMessage('Транзакция успешно отправлена!', 'success');
 
-            // Можешь добавить здесь обработку результата
-            // например, отправить данные на сервер
+            return result; // Возвращаем результат
 
         } catch (error) {
             console.error('Transaction error:', error);
@@ -308,19 +302,31 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showFlashMessage('Ошибка отправки транзакции: ' + error.message, 'error');
             }
+
+            throw error; // Пробрасываем ошибку
         }
     }
 
-    // Добавляем обработчик на кнопку обмена
-    const exchangeButtons = document.querySelectorAll('.btn.btn--wall');
+    const exchangeButton = document.getElementById('exchange-btn');
+    if (exchangeButton) {
+        exchangeButton.addEventListener('click', async function (e) {
+            e.preventDefault();
 
-    exchangeButtons.forEach(button => {
-        // Проверяем, что это именно кнопка обмена по тексту
-        if (button.textContent.includes('Обміняти') || button.textContent.includes('обміняти')) {
-            button.addEventListener('click', function(e) {
-                sendTestTransaction();
-            });
-        }
-    });
+            try {
+                console.log('Starting transaction...');
+                await sendTestTransaction();
+                console.log('Transaction completed, submitting form...');
+
+                const form = e.target.closest('form');
+                if (form) {
+                    form.submit();
+                }
+
+            } catch (error) {
+                console.error('Ошибка при отправке тестовой транзакции:', error);
+                showFlashMessage('Транзакция не была завершена. Форма не отправлена.', 'error');
+            }
+        });
+    }
 
 });

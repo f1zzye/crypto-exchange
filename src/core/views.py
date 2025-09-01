@@ -1,11 +1,12 @@
 from decimal import Decimal
 from http import HTTPStatus
+from django.contrib import messages
 
 import httpx
 from django.conf import settings
 from django.db import models
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -30,11 +31,6 @@ def tonconnect_manifest(request):
     }
 
     response = JsonResponse(manifest)
-    response["Access-Control-Allow-Origin"] = "*"
-    response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-    response["Access-Control-Allow-Headers"] = "Content-Type"
-    response["Content-Type"] = "application/json"
-
     return response
 
 
@@ -139,7 +135,7 @@ class IndexView(TitleMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return self._handle_ajax_captcha(request)
 
         return self._handle_form_submission(request)
@@ -157,16 +153,21 @@ class IndexView(TitleMixin, TemplateView):
         try:
             order = self._create_exchange_order(request)
             request.session["order_id"] = str(order.id)
-            return redirect("orders:order_success")
+            messages.success(
+                request,
+                f'Заявка #{order.id} успешно создана! Мы свяжемся с вами по email {order.email}'
+            )
+            return self._render_with_success()
         except Exception as e:
             return self._render_with_error(f"Ошибка создания заявки: {str(e)}")
 
-    def _validate_form(self, request):
-        if not all([request.POST.get("check_rule"), request.POST.get("add_rules")]):
+    @staticmethod
+    def _validate_form(request):
+        if not all([request.POST["check_rule"], request.POST["add_rules"]]):
             return "Необходимо согласиться с условиями"
 
-        user_answer = request.POST.get("number")
-        correct_answer = request.session.get("captcha_answer")
+        user_answer = request.POST["number"]
+        correct_answer = request.session["captcha_answer"]
 
         try:
             if not user_answer or int(user_answer) != correct_answer:
@@ -188,11 +189,11 @@ class IndexView(TitleMixin, TemplateView):
 
     def _create_exchange_order(self, request):
         form_data = {
-            "give_token_id": request.POST.get("give_token_id"),
-            "receive_token_id": request.POST.get("receive_token_id"),
-            "give_amount": request.POST.get("sum1"),
-            "receive_amount": request.POST.get("sum2"),
-            "email": request.POST.get("cf6"),
+            "give_token_id": request.POST["give_token_id"],
+            "receive_token_id": request.POST["receive_token_id"],
+            "give_amount": request.POST["sum1"],
+            "receive_amount": request.POST["sum2"],
+            "email": request.POST["cf6"],
         }
 
         give_token = Token.objects.get(id=form_data["give_token_id"], is_active=True)
@@ -232,6 +233,24 @@ class IndexView(TitleMixin, TemplateView):
             is_active=True,
         ).first()
 
+
+    def _render_with_success(self):
+        captcha_data = self.captcha.generate()
+        self.request.session["captcha_answer"] = captcha_data["result"]
+
+        tokens = (
+            Token.objects.filter(is_active=True)
+            .select_related("network")
+            .order_by("name")
+        )
+
+        context = {
+            "captcha": captcha_data,
+            "tokens": tokens,
+            "success": True
+        }
+        return render(self.request, self.template_name, context)
+
     def _render_with_error(self, error_message):
         captcha_data = self.captcha.generate()
         self.request.session["captcha_answer"] = captcha_data["result"]
@@ -244,6 +263,7 @@ class IndexView(TitleMixin, TemplateView):
 
         context = {"captcha": captcha_data, "tokens": tokens, "error": error_message}
         return render(self.request, self.template_name, context)
+
 
 
 class AMLRulesView(TitleMixin, TemplateView):
