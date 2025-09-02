@@ -127,6 +127,28 @@ class Pool(BaseModel):
         help_text="Address of the USDT jetton master contract",
     )
 
+    total_liquidity_additions = models.IntegerField(
+        default=0, verbose_name="Total Liquidity Operations"
+    )
+
+    total_token1_added = models.DecimalField(
+        max_digits=20,
+        decimal_places=8,
+        default=Decimal("0"),
+        verbose_name="Total Token1 Added",
+    )
+
+    total_token2_added = models.DecimalField(
+        max_digits=20,
+        decimal_places=8,
+        default=Decimal("0"),
+        verbose_name="Total Token2 Added",
+    )
+
+    first_liquidity_added_at = models.DateTimeField(
+        blank=True, null=True, verbose_name="First Liquidity Added At"
+    )
+
     admin_notes = models.TextField(blank=True, null=True, verbose_name="Admin notes")
 
     is_active = models.BooleanField(default=True, verbose_name="Is active")

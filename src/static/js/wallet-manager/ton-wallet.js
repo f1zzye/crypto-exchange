@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let currentWallet = null;
     let isDropdownOpen = false;
+    let isInitialLoad = true;
+    let isManualConnection = false;
 
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: config.manifestUrl,
@@ -138,6 +140,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function connectWallet() {
         try {
+            isManualConnection = true;
+
             if (headerElements.connectBtn) {
                 headerElements.connectBtn.disabled = true;
                 headerElements.connectBtn.querySelector('span').textContent = 'Connecting...';
@@ -150,6 +154,8 @@ document.addEventListener('DOMContentLoaded', function () {
             await tonConnectUI.connectWallet();
 
         } catch (error) {
+            isManualConnection = false;
+
             if (error.message.includes('User rejected')) {
                 showFlashMessage('Подключение отклонено пользователем', 'warning');
             } else if (error.message.includes('timeout')) {
@@ -240,7 +246,11 @@ document.addEventListener('DOMContentLoaded', function () {
         currentWallet = wallet;
 
         if (wallet) {
-            showFlashMessage('Кошелек успешно подключен!', 'success');
+            if (isManualConnection && !isInitialLoad) {
+                showFlashMessage('Кошелек успешно подключен!', 'success');
+            }
+
+            isManualConnection = false;
             updateAllButtons(true);
 
             try {
@@ -249,12 +259,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 displayWallet(walletData.balance, walletData.shortAddress);
             } catch (error) {
                 displayWallet("0.00 TON", wallet.account.address);
-                showFlashMessage('Данные кошелька загружены частично', 'warning');
+                if (!isInitialLoad) {
+                    showFlashMessage('Данные кошелька загружены частично', 'warning');
+                }
             }
         } else {
             updateAllButtons(false);
             displayWallet("0$", "");
             closeWalletDropdown();
+        }
+
+        if (isInitialLoad) {
+            isInitialLoad = false;
         }
     });
 
@@ -268,7 +284,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     async function sendTestTransaction() {
-        // Проверяем, подключен ли кошелек
         if (!currentWallet) {
             showFlashMessage('Сначала подключите кошелек!', 'warning');
             throw new Error('Wallet not connected');
@@ -292,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Transaction sent:', result);
             showFlashMessage('Транзакция успешно отправлена!', 'success');
 
-            return result; // Возвращаем результат
+            return result;
 
         } catch (error) {
             console.error('Transaction error:', error);
@@ -303,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 showFlashMessage('Ошибка отправки транзакции: ' + error.message, 'error');
             }
 
-            throw error; // Пробрасываем ошибку
+            throw error;
         }
     }
 
