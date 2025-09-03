@@ -56,7 +56,6 @@ jQuery(function($) {
         }
     }
 
-    // События
     $(document)
         .on('click', '.calc__item.js-calc-item', function(e) {
             e.preventDefault();
