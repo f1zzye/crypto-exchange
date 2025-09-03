@@ -1,6 +1,5 @@
 from decimal import Decimal
 from http import HTTPStatus
-from django.contrib import messages
 
 import httpx
 from django.conf import settings
@@ -25,7 +24,7 @@ def tonconnect_manifest(request):
     manifest = {
         "url": settings.NGROK_URL,
         "name": "CryptoChicken Exchange",
-        "iconUrl": f"{settings.NGROK_URL}/static/img/logo.png",
+        "iconUrl": f"{settings.NGROK_URL}/static/img/ton-connect/logo.png",
         "termsOfUseUrl": f"{settings.NGROK_URL}/tos/",
         "privacyPolicyUrl": f"{settings.NGROK_URL}/privacy/",
     }
@@ -153,10 +152,6 @@ class IndexView(TitleMixin, TemplateView):
         try:
             order = self._create_exchange_order(request)
             request.session["order_id"] = str(order.id)
-            messages.success(
-                request,
-                f'Заявка #{order.id} успешно создана! Мы свяжемся с вами по email {order.email}'
-            )
             return self._render_with_success()
         except Exception as e:
             return self._render_with_error(f"Ошибка создания заявки: {str(e)}")
@@ -233,7 +228,6 @@ class IndexView(TitleMixin, TemplateView):
             is_active=True,
         ).first()
 
-
     def _render_with_success(self):
         captcha_data = self.captcha.generate()
         self.request.session["captcha_answer"] = captcha_data["result"]
@@ -244,11 +238,7 @@ class IndexView(TitleMixin, TemplateView):
             .order_by("name")
         )
 
-        context = {
-            "captcha": captcha_data,
-            "tokens": tokens,
-            "success": True
-        }
+        context = {"captcha": captcha_data, "tokens": tokens, "success": True}
         return render(self.request, self.template_name, context)
 
     def _render_with_error(self, error_message):
@@ -263,7 +253,6 @@ class IndexView(TitleMixin, TemplateView):
 
         context = {"captcha": captcha_data, "tokens": tokens, "error": error_message}
         return render(self.request, self.template_name, context)
-
 
 
 class AMLRulesView(TitleMixin, TemplateView):
