@@ -221,12 +221,15 @@ class Pool(BaseModel):
     def get_output_amount(self, input_token, input_amount):
         input_amount = Decimal(str(input_amount))
 
+        total_token1_liquidity = self.get_total_token1_liquidity()
+        total_token2_liquidity = self.get_total_token2_liquidity()
+
         if input_token == self.token1:
-            input_reserve = self.token1_amount
-            output_reserve = self.token2_amount
+            input_reserve = total_token1_liquidity
+            output_reserve = total_token2_liquidity
         elif input_token == self.token2:
-            input_reserve = self.token2_amount
-            output_reserve = self.token1_amount
+            input_reserve = total_token2_liquidity
+            output_reserve = total_token1_liquidity
         else:
             raise ValueError("Токен не принадлежит этому пулу")
 
@@ -241,6 +244,29 @@ class Pool(BaseModel):
             return Decimal("0")
 
         return numerator / denominator
+
+    def get_total_token1_liquidity(self):
+        return self.total_token1_added or Decimal("0")
+
+    def get_total_token2_liquidity(self):
+        return self.total_token2_added or Decimal("0")
+
+    def add_liquidity(self, token1_amount, token2_amount):
+        token1_amount = Decimal(str(token1_amount))
+        token2_amount = Decimal(str(token2_amount))
+
+        self.token1_amount = token1_amount
+        self.token2_amount = token2_amount
+
+        self.total_token1_added = (
+            self.total_token1_added or Decimal("0")
+        ) + token1_amount
+        self.total_token2_added = (self.total_token2_added or Decimal("0")) + token2_amount
+        self.total_liquidity_additions = (self.total_liquidity_additions or 0) + 1
+
+        self.save()
+
+        return True
 
     def mark_contract_deployed(self, contract_address):
         self.contract_address = contract_address

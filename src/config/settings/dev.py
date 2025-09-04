@@ -22,11 +22,11 @@ CORS_ALLOW_HEADERS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok.io",
     "https://*.ngrok-free.app",
-    "https://d8e4e6c4b12c.ngrok-free.app",
+    "https://efdc06d832c9.ngrok-free.app",
 ]
 
 CORS_ALLOWED_ORIGINS: list[str] = [
-    "https://d8e4e6c4b12c.ngrok-free.app",
+    "https://efdc06d832c9.ngrok-free.app",
 ]
 
 DATABASES = {
