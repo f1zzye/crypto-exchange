@@ -12,6 +12,7 @@ import json
 
 from exchange.models import Token, Network, Pool
 from exchange.services.deploy_signals import deploy_pool_contract
+from orders.models import ExchangeOrder
 
 
 class TokenInline(admin.TabularInline):
@@ -774,11 +775,11 @@ class PoolAdmin(ModelAdmin):
 
         return format_html(
             """
-            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                <h3 style="margin-top: 0; color: #333;">Pool Analytics Dashboard</h3>
+            <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <h3 style="margin-top: 0; color: #f1f5f9;">Pool Analytics Dashboard</h3>
 
                 <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
-                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #4caf50;">
+                    <div style="background: #0f172a; padding: 12px; border-radius: 6px; border-left: 4px solid #4caf50; color: #e2e8f0;">
                         <strong style="color: #4caf50;">Trading Stats</strong><br>
                         Total Orders: {}<br>
                         Completed: {}<br>
@@ -786,8 +787,8 @@ class PoolAdmin(ModelAdmin):
                     </div>
                 </div>
 
-                <div style="margin-top: 15px; background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #9c27b0;">
-                    <strong style="color: #9c27b0;">Liquidity History Summary:</strong><br>
+                <div style="margin-top: 15px; background: #0f172a; padding: 12px; border-radius: 6px; border-left: 4px solid #9c27b0; color: #e2e8f0;">
+                    <strong style="color: #ba68c8;">Liquidity History Summary:</strong><br>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
                         <div style="font-size: 14px;">
                             📈 <strong>Total {} Added:</strong> {}<br>
@@ -820,6 +821,7 @@ class PoolAdmin(ModelAdmin):
             ),
         )
 
+
     get_pool_dashboard.short_description = "Pool Dashboard"
 
     def get_contract_dashboard(self, obj):
@@ -847,26 +849,24 @@ class PoolAdmin(ModelAdmin):
                 <strong style="color: #f44336;">Deployment Error:</strong><br>
                 <code>{}</code>
             </div>
-            """.format(
-                obj.deployment_error
-            )
+            """.format(obj.deployment_error)
 
         return format_html(
             """
-            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                <h3 style="margin-top: 0; color: #333;">Smart Contract Dashboard</h3>
+            <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <h3 style="margin-top: 0; color: #f1f5f9;">Smart Contract Dashboard</h3>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #673ab7;">
-                        <strong style="color: #673ab7;">Contract Status</strong><br>
+                    <div style="background: #0f172a; padding: 12px; border-radius: 6px; border-left: 4px solid #673ab7; color: #e2e8f0;">
+                        <strong style="color: #c4b5fd;">Contract Status</strong><br>
                         Deployed: {}<br>
                         Activated: {}<br>
                         Liquidity: {}<br>
                         Overall: {}
                     </div>
 
-                    <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #e91e63;">
-                        <strong style="color: #e91e63;">Technical</strong><br>
+                    <div style="background: #0f172a; padding: 12px; border-radius: 6px; border-left: 4px solid #e91e63; color: #e2e8f0;">
+                        <strong style="color: #f472b6;">Technical</strong><br>
                         Address: {}<br>
                         Last Sync: {}<br>
                         Admin: {}
@@ -885,6 +885,7 @@ class PoolAdmin(ModelAdmin):
             admin_addr,
             error_section,
         )
+
 
     get_contract_dashboard.short_description = "Contract Dashboard"
 
