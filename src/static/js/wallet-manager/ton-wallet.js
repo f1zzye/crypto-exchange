@@ -392,50 +392,53 @@ document.addEventListener('DOMContentLoaded', function () {
             const { beginCell, Address } = window.toncore;
 
             const recipientAddress = Address.parse("0QA4zetLZHxQQJbcj5zvw_lgFRYxk3i2V0Ve4gE6sY6emB4G");
+
             const poolAddress = Address.parse("kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1");
 
-            const swapPayload = beginCell()
-                .storeUint(0x4, 32)
-                .storeCoins(100000000)
-                .storeAddress(recipientAddress)
-                .endCell();
-
-            const transferBody = beginCell()
-                .storeUint(0xf8a7ea5, 32)
-                .storeUint(0, 64)
-                .storeCoins(2000000000)
-                .storeAddress(poolAddress)
-                .storeAddress(recipientAddress)
-                .storeUint(0, 1)
-                .storeCoins(100000000)
-                .storeUint(1, 1)
-                .storeRef(swapPayload)
-                .endCell();
-
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 360,
-                messages: [{
-                    address: "kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1",
-                    amount: '200000000',
-                    payload: transferBody.toBoc().toString("base64")
-                }]
-            };
-
-            // const body = beginCell()
-            //     .storeUint(0x3, 32)
-            //     .storeUint(0, 64)
-            //     .storeCoins(1000000000)
+            // const swapPayload = beginCell()
+            //     .storeUint(0x4, 32)
+            //     .storeCoins(100000000)
             //     .storeAddress(recipientAddress)
+            //     .endCell();
+            //
+            // const transferBody = beginCell()
+            //     .storeUint(0xf8a7ea5, 32)
+            //     .storeUint(0, 64)
+            //     .storeCoins(2000000000)
+            //     .storeAddress(poolAddress)
+            //     .storeAddress(recipientAddress)
+            //     .storeUint(0, 1)
+            //     .storeCoins(100000000)
+            //     .storeUint(1, 1)
+            //     .storeRef(swapPayload)
             //     .endCell();
             //
             // const transaction = {
             //     validUntil: Math.floor(Date.now() / 1000) + 360,
             //     messages: [{
-            //         address: "kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1",   // тон кошелек пула
-            //         amount: '500000000',
-            //         payload: body.toBoc().toString("base64")
+            //         address: state.currentWallet.account.address,
+            //         amount: '1000000',
+            //         address: "kQCWLfvLT5E9Jj-uD3hCucyeBNOsqAUGVdVYc-Fyft3cfpbq",
+            //         amount: '200000000',
+            //         payload: transferBody.toBoc().toString("base64")
             //     }]
             // };
+
+            const body = beginCell()
+                .storeUint(0x3, 32)
+                .storeUint(0, 64)
+                .storeCoins(1000000000)
+                .storeAddress(recipientAddress)
+                .endCell();
+
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 360,
+                messages: [{
+                    address: "kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1",   // тон кошелек пула
+                    amount: '500000000',
+                    payload: body.toBoc().toString("base64")
+                }]
+            };
 
             if (typeof showFlashMessage === 'function') {
                 showFlashMessage('Отправка транзакции...', 'info');

@@ -821,7 +821,6 @@ class PoolAdmin(ModelAdmin):
             ),
         )
 
-
     get_pool_dashboard.short_description = "Pool Dashboard"
 
     def get_contract_dashboard(self, obj):
@@ -849,7 +848,9 @@ class PoolAdmin(ModelAdmin):
                 <strong style="color: #f44336;">Deployment Error:</strong><br>
                 <code>{}</code>
             </div>
-            """.format(obj.deployment_error)
+            """.format(
+                obj.deployment_error
+            )
 
         return format_html(
             """
@@ -885,7 +886,6 @@ class PoolAdmin(ModelAdmin):
             admin_addr,
             error_section,
         )
-
 
     get_contract_dashboard.short_description = "Contract Dashboard"
 

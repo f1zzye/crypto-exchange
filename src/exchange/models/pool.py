@@ -261,7 +261,9 @@ class Pool(BaseModel):
         self.total_token1_added = (
             self.total_token1_added or Decimal("0")
         ) + token1_amount
-        self.total_token2_added = (self.total_token2_added or Decimal("0")) + token2_amount
+        self.total_token2_added = (
+            self.total_token2_added or Decimal("0")
+        ) + token2_amount
         self.total_liquidity_additions = (self.total_liquidity_additions or 0) + 1
 
         self.save()
