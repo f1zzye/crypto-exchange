@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from pytoniq_core import Address
 
+from decouple import config
 from common.mixins import TitleMixin
 from core.utils.captcha import CaptchaGenerator
 from orders.models import ExchangeOrder
@@ -33,81 +34,109 @@ def tonconnect_manifest(request):
     return response
 
 
+class NetworkConfig:
+    MAINNET = "mainnet"
+    TESTNET = "testnet"
+
+    CURRENT_NETWORK = config("TON_NETWORK", TESTNET)
+
+    API_URLS = {
+        MAINNET: config("TON_MAINNET_API_URL", "https://toncenter.com/api/v2"),
+        TESTNET: config("TON_TESTNET_API_URL", "https://testnet.toncenter.com/api/v2"),
+    }
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 class WalletTonService(View):
-
     def get(self, request) -> JsonResponse:
-        address = request.GET["address"]
+        address = request.GET.get("address")
+        network = request.GET.get("network", NetworkConfig.CURRENT_NETWORK)
+
         if not address:
             return JsonResponse(
                 {"error": "No address provided"}, status=HTTPStatus.BAD_REQUEST
             )
 
         try:
-            address_data = self._process_address(address)
-            balance = self._get_balance(address_data["user_friendly"])
+            formatted_address = self._format_address(address, network)
+            short_address = self._make_short_address(formatted_address)
+            balance = self._get_balance(formatted_address, network)
 
             return JsonResponse(
                 {
                     "balance": balance,
-                    "userFriendlyAddress": address_data["user_friendly"],
-                    "shortAddress": address_data["short"],
+                    "address": formatted_address,
+                    "shortAddress": short_address,
                 }
             )
 
-        except ValueError:
+        except Exception as e:
+            print(f"Error processing wallet: {e}")
             return JsonResponse(
                 {
-                    "balance": "0.00 TON",
-                    "userFriendlyAddress": address,
-                    "shortAddress": address,
+                    "balance": "0 TON",
+                    "address": address,
+                    "shortAddress": self._make_short_address(address),
                 }
             )
 
     @staticmethod
-    def _process_address(address: str) -> dict:
-        addr_obj = Address(address)
-        user_friendly = addr_obj.to_str(
-            is_user_friendly=True, is_bounceable=True, is_url_safe=True
-        )
+    def _format_address(address: str, network: str) -> str:
+        try:
+            addr_obj = Address(address)
 
-        short = (
-            f"{user_friendly[:4]}...{user_friendly[-4:]}"
-            if len(user_friendly) > 8
-            else user_friendly
-        )
+            formatted = addr_obj.to_str(
+                is_user_friendly=True,
+                is_bounceable=False,
+                is_url_safe=True,
+                is_test_only=(network == NetworkConfig.TESTNET),
+            )
 
-        return {"user_friendly": user_friendly, "short": short}
+            return formatted
+
+        except Exception as e:
+            print(f"Address formatting error: {e}")
+            return address
+
+    @staticmethod
+    def _make_short_address(address: str) -> str:
+        if len(address) <= 8:
+            return address
+        return f"{address[:4]}...{address[-4:]}"
 
     @staticmethod
     def _format_balance(balance_nano: int) -> str:
         balance_ton = balance_nano / 1e9
 
         if balance_ton == 0:
-            return "0$"
+            return "0 TON"
         elif balance_ton < 0.01:
-            return "< 0.01"
+            return "< 0.01 TON"
         else:
             return f"{balance_ton:.2f} TON"
 
-    @staticmethod
-    def _get_balance(user_friendly_address: str) -> str:
+    def _get_balance(self, address: str, network: str) -> str:
         try:
-            url = f"https://toncenter.com/api/v2/getAddressBalance?address={user_friendly_address}"
+            base_url = NetworkConfig.API_URLS.get(
+                network, NetworkConfig.API_URLS[NetworkConfig.CURRENT_NETWORK]
+            )
+
+            url = f"{base_url}/getAddressBalance?address={address}"
 
             with httpx.Client(timeout=10.0) as client:
                 response = client.get(url)
                 response.raise_for_status()
                 data = response.json()
 
-            if data["ok"]:
-                balance_nano = int(data["result"])
-                return WalletTonService._format_balance(balance_nano)
-            else:
-                return "0$"
+            if data.get("ok"):
+                balance_nano = int(data.get("result", 0))
+                return self._format_balance(balance_nano)
 
-        except (httpx.RequestError, KeyError, ValueError):
-            return "0$"
+            return "0 TON"
+
+        except Exception as e:
+            print(f"Balance fetch error: {e}")
+            return "0 TON"
 
 
 class IndexView(TitleMixin, TemplateView):
@@ -135,9 +164,24 @@ class IndexView(TitleMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
-            return self._handle_ajax_captcha(request)
+            action = request.POST.get("action")
+            if action == "validate_captcha":
+                return self._handle_ajax_captcha_validation(request)
+            else:
+                return self._handle_ajax_captcha(request)
 
         return self._handle_form_submission(request)
+
+    def _handle_ajax_captcha_validation(self, request):
+        user_answer = request.POST.get("captcha_answer")
+        correct_answer = request.session.get("captcha_answer")
+
+        try:
+            is_valid = user_answer and int(user_answer) == correct_answer
+        except (ValueError, TypeError):
+            is_valid = False
+
+        return JsonResponse({"is_valid": is_valid})
 
     def _handle_ajax_captcha(self, request):
         captcha_data = self.captcha.generate()
@@ -158,11 +202,11 @@ class IndexView(TitleMixin, TemplateView):
 
     @staticmethod
     def _validate_form(request):
-        if not all([request.POST["check_rule"], request.POST["add_rules"]]):
+        if not all([request.POST.get("check_rule"), request.POST.get("add_rules")]):
             return "Необходимо согласиться с условиями"
 
-        user_answer = request.POST["number"]
-        correct_answer = request.session["captcha_answer"]
+        user_answer = request.POST.get("number")
+        correct_answer = request.session.get("captcha_answer")
 
         try:
             if not user_answer or int(user_answer) != correct_answer:
