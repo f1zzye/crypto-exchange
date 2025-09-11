@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.headerTonConnectUI = tonConnectUI;
 
-    // ВАЛИДАЦИЯ КАПЧИ ЧЕРЕЗ AJAX
     async function validateCaptcha() {
         const captchaInput = document.querySelector('#captcha-input');
         if (!captchaInput || !captchaInput.value.trim()) {
@@ -75,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
             state.isCaptchaValid = data.is_valid;
 
-            // Визуальная обратная связь
             if (captchaInput.parentElement) {
                 captchaInput.parentElement.classList.toggle('captcha-valid', data.is_valid);
                 captchaInput.parentElement.classList.toggle('captcha-invalid', !data.is_valid);
@@ -83,31 +81,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return data.is_valid;
         } catch (error) {
-            console.error('Ошибка проверки капчи:', error);
             state.isCaptchaValid = false;
             return false;
         }
     }
 
-    // ПРОСТАЯ ВАЛИДАЦИЯ ФОРМЫ
     function isFormValid() {
-        // Проверяем сумму
         const sum1 = document.querySelector('input[name="sum1"]')?.value;
         if (!sum1 || parseFloat(sum1) <= 0) return false;
 
-        // Проверяем email
         const email = document.querySelector('#cf6')?.value;
         if (!email || !email.includes('@')) return false;
 
-        // Проверяем капчу - теперь используем состояние
         const captcha = document.querySelector('#captcha-input')?.value;
         if (!captcha || captcha.trim() === '' || !state.isCaptchaValid) return false;
 
-        // Проверяем чекбоксы
         const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked[required]');
         if (checkedBoxes.length < 2) return false;
 
-        // Проверяем селекты токенов
         const giveSelect = document.querySelector('#select_give')?.value;
         const receiveSelect = document.querySelector('#select_get')?.value;
         if (!giveSelect || !receiveSelect || giveSelect === receiveSelect) return false;
@@ -115,15 +106,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 
-    // ОБНОВЛЕНИЕ КНОПКИ С ВАЛИДАЦИЕЙ
     function updateUnifiedButton(connected) {
         const { unifiedBtn, btnText } = elements.index;
         if (!unifiedBtn || !btnText) return;
 
         const hasWallet = !!state.currentWallet;
         const formValid = connected ? isFormValid() : false;
-
-        console.log('Button update:', { hasWallet, connected, formValid, isCaptchaValid: state.isCaptchaValid });
 
         if (!hasWallet) {
             btnText.textContent = 'Підключити гаманець';
@@ -147,18 +135,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function handleCaptchaChange() {
         const captchaInput = document.querySelector('#captcha-input');
         if (captchaInput) {
-            // Сбрасываем состояние при изменении
             state.isCaptchaValid = false;
 
-            // Убираем визуальные классы
             if (captchaInput.parentElement) {
                 captchaInput.parentElement.classList.remove('captcha-valid', 'captcha-invalid');
             }
 
-            // Обновляем кнопку сразу
             if (state.currentWallet) updateUnifiedButton(true);
 
-            // Валидируем с задержкой
             if (state.captchaValidationTimeout) {
                 clearTimeout(state.captchaValidationTimeout);
             }
@@ -170,14 +154,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ЗАПУСК ВАЛИДАЦИИ КАЖДЫЕ 500ms
     setInterval(() => {
         if (state.currentWallet) {
             updateUnifiedButton(true);
         }
     }, 500);
 
-    // ОБРАБОТЧИКИ СОБЫТИЙ ДЛЯ МГНОВЕННОЙ РЕАКЦИИ
     document.addEventListener('input', (e) => {
         if (e.target.id === 'captcha-input') {
             handleCaptchaChange();
@@ -234,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
             return {
                 balance: data.balance || "0.00 TON",
-                userFriendlyAddress: data.userFriendlyAddress || address,
+                userFriendlyAddress: data.address || address,
                 shortAddress: data.shortAddress || address
             };
         } catch (error) {
@@ -529,7 +511,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const form = e.target.closest('form');
                     if (form) {
-                        console.log('Submitting form after successful transaction...');
                         form.submit();
                     }
                 } catch (error) {
@@ -538,7 +519,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             } else {
-                console.log('Form validation failed');
                 if (!state.isCaptchaValid) {
                     if (typeof showFlashMessage === 'function') {
                         showFlashMessage('Неверный ответ на капчу', 'error');
@@ -560,12 +540,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.switchNetwork = function(network) {
         if (network !== 'mainnet' && network !== 'testnet') {
-            console.error('Network must be "mainnet" or "testnet"');
             return;
         }
 
         config.network = network;
-        console.log(`Switched to ${network}`);
 
         if (state.currentWallet) {
             window.refreshWalletBalance();

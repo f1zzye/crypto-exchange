@@ -4,6 +4,20 @@ function reloadCaptcha(event) {
     const reloadBtn = event.target;
     const originalText = reloadBtn.innerHTML;
 
+    if (window.state) {
+        window.state.isCaptchaValid = false;
+
+        if (window.state.captchaValidationTimeout) {
+            clearTimeout(window.state.captchaValidationTimeout);
+            window.state.captchaValidationTimeout = null;
+        }
+    }
+
+    const captchaInput = document.getElementById('captcha-input');
+    if (captchaInput && captchaInput.parentElement) {
+        captchaInput.parentElement.classList.remove('captcha-valid', 'captcha-invalid');
+    }
+
     fetch(window.location.href, {
             method: 'POST',
             headers: {
@@ -28,19 +42,20 @@ function reloadCaptcha(event) {
             if (img1) img1.src = data.img1;
             if (img2) img2.src = data.img2;
             if (operation) operation.textContent = data.operation;
-            if (input) input.value = '';
+            if (input) {
+                input.value = '';
+                input.blur();
+                setTimeout(() => input.focus(), 100);
+            }
 
-            reloadBtn.innerHTML = originalText;
-            reloadBtn.style.animation = '';
+            if (window.state && window.state.currentWallet && typeof window.updateUnifiedButton === 'function') {
+                window.updateUnifiedButton(true);
+            }
 
             console.log('Капча успешно обновлена');
         })
         .catch(error => {
             console.error('Ошибка при обновлении капчи:', error);
-
-            reloadBtn.innerHTML = originalText;
-            reloadBtn.style.animation = '';
-
             alert('Не удалось обновить капчу. Попробуйте еще раз.');
         });
 }
