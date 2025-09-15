@@ -131,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ОБРАБОТЧИК ИЗМЕНЕНИЯ КАПЧИ
     function handleCaptchaChange() {
         const captchaInput = document.querySelector('#captcha-input');
         if (captchaInput) {
@@ -360,91 +359,177 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function sendTestTransaction() {
-        if (!state.currentWallet) {
-            if (typeof showFlashMessage === 'function') {
-                showFlashMessage('Сначала подключите кошелек!', 'warning');
-            }
-            throw new Error('Wallet not connected');
-        }
+    // Конфигурация токенов - без дублирования
+const TOKEN_CONFIG = {
+    'usdt': {
+        type: 'usdt',
+        aliases: ['usdt', 'tether']
+    },
+    'ton': {
+        type: 'ton',
+        aliases: ['ton', 'toncoin']
+    },
+    // Легко добавить новые токены:
+    // 'btc': { type: 'bitcoin', aliases: ['btc', 'bitcoin'] },
+    // 'eth': { type: 'ethereum', aliases: ['eth', 'ethereum'] }
+};
 
-        try {
-            setButtonLoading(true, 'Відправка...');
+// Поддерживаемые пары для свапа
+const SUPPORTED_SWAP_PAIRS = {
+    'usdt-ton': {
+        give: 'usdt',
+        receive: 'ton',
+        handler: 'usdtToTon'
+    },
+    'ton-usdt': {
+        give: 'ton',
+        receive: 'usdt',
+        handler: 'tonToUsdt'
+    }
+    // Легко добавить новые пары:
+    // 'btc-ton': { give: 'bitcoin', receive: 'ton', handler: 'btcToTon' }
+};
 
-            const { beginCell, Address } = window.toncore;
+function getTokenType(tokenName) {
+    if (!tokenName) return null;
 
-            const recipientAddress = Address.parse("0QA4zetLZHxQQJbcj5zvw_lgFRYxk3i2V0Ve4gE6sY6emB4G");
+    const normalizedName = tokenName.toLowerCase().trim();
 
-            const poolAddress = Address.parse("kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1");
-
-            // const swapPayload = beginCell()
-            //     .storeUint(0x4, 32)
-            //     .storeCoins(100000000)
-            //     .storeAddress(recipientAddress)
-            //     .endCell();
-            //
-            // const transferBody = beginCell()
-            //     .storeUint(0xf8a7ea5, 32)
-            //     .storeUint(0, 64)
-            //     .storeCoins(2000000000)
-            //     .storeAddress(poolAddress)
-            //     .storeAddress(recipientAddress)
-            //     .storeUint(0, 1)
-            //     .storeCoins(100000000)
-            //     .storeUint(1, 1)
-            //     .storeRef(swapPayload)
-            //     .endCell();
-            //
-            // const transaction = {
-            //     validUntil: Math.floor(Date.now() / 1000) + 360,
-            //     messages: [{
-            //         address: state.currentWallet.account.address,
-            //         amount: '1000000',
-            //         address: "kQCWLfvLT5E9Jj-uD3hCucyeBNOsqAUGVdVYc-Fyft3cfpbq",
-            //         amount: '200000000',
-            //         payload: transferBody.toBoc().toString("base64")
-            //     }]
-            // };
-
-            const body = beginCell()
-                .storeUint(0x3, 32)
-                .storeUint(0, 64)
-                .storeCoins(1000000000)
-                .storeAddress(recipientAddress)
-                .endCell();
-
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 360,
-                messages: [{
-                    address: "kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1",   // тон кошелек пула
-                    amount: '500000000',
-                    payload: body.toBoc().toString("base64")
-                }]
-            };
-
-            if (typeof showFlashMessage === 'function') {
-                showFlashMessage('Отправка транзакции...', 'info');
-            }
-            const result = await tonConnectUI.sendTransaction(transaction);
-            if (typeof showFlashMessage === 'function') {
-                showFlashMessage('Транзакция успешно отправлена!', 'success');
-            }
-
-            return result;
-        } catch (error) {
-            const isUserRejection = error.message.includes('declined') || error.message.includes('rejected');
-            const message = isUserRejection
-                ? 'Транзакция отклонена пользователем'
-                : `Ошибка отправки транзакции: ${error.message}`;
-
-            if (typeof showFlashMessage === 'function') {
-                showFlashMessage(message, isUserRejection ? 'warning' : 'error');
-            }
-            throw error;
-        } finally {
-            setButtonLoading(false);
+    for (const config of Object.values(TOKEN_CONFIG)) {
+        if (config.aliases.some(alias => normalizedName.includes(alias))) {
+            return config.type;
         }
     }
+    return null;
+}
+
+function getSwapPair(giveTokenType, receiveTokenType) {
+    const pairKey = `${giveTokenType}-${receiveTokenType}`;
+    return SUPPORTED_SWAP_PAIRS[pairKey] || null;
+}
+
+function createUsdtToTonTransaction(beginCell, poolAddress, recipientAddress) {
+    const swapPayload = beginCell()
+        .storeUint(0x4, 32)
+        .storeCoins(100000000)
+        .storeAddress(recipientAddress)
+        .endCell();
+
+    const transferBody = beginCell()
+        .storeUint(0xf8a7ea5, 32)
+        .storeUint(0, 64)
+        .storeCoins(2000000000)
+        .storeAddress(poolAddress)
+        .storeAddress(recipientAddress)
+        .storeUint(0, 1)
+        .storeCoins(100000000)
+        .storeUint(1, 1)
+        .storeRef(swapPayload)
+        .endCell();
+
+    return {
+        validUntil: Math.floor(Date.now() / 1000) + 360,
+        messages: [{
+            address: "kQCWLfvLT5E9Jj-uD3hCucyeBNOsqAUGVdVYc-Fyft3cfpbq",
+            amount: '200000000',
+            payload: transferBody.toBoc().toString("base64")
+        }]
+    };
+}
+
+function createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress) {
+    const body = beginCell()
+        .storeUint(0x3, 32)
+        .storeUint(0, 64)
+        .storeCoins(1000000000)
+        .storeAddress(recipientAddress)
+        .endCell();
+
+    return {
+        validUntil: Math.floor(Date.now() / 1000) + 360,
+        messages: [{
+            address: "kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1",
+            amount: '500000000',
+            payload: body.toBoc().toString("base64")
+        }]
+    };
+}
+
+async function sendTestTransaction() {
+    if (!state.currentWallet) {
+        if (typeof showFlashMessage === 'function') {
+            showFlashMessage('Сначала подключите кошелек!', 'warning');
+        }
+        throw new Error('Wallet not connected');
+    }
+
+    try {
+        setButtonLoading(true, 'Відправка...');
+
+        const { beginCell, Address } = window.toncore;
+        const recipientAddress = Address.parse("0QA4zetLZHxQQJbcj5zvw_lgFRYxk3i2V0Ve4gE6sY6emB4G");
+        const poolAddress = Address.parse("kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1");
+
+        const giveTokenName = document.querySelector('#select_give option:checked')?.textContent?.trim() || '';
+        const receiveTokenName = document.querySelector('#select_get option:checked')?.textContent?.trim() || '';
+
+        const giveTokenType = getTokenType(giveTokenName);
+        const receiveTokenType = getTokenType(receiveTokenName);
+
+        if (!giveTokenType || !receiveTokenType) {
+            throw new Error('Unsupported token selected');
+        }
+
+        // Определяем пару для свапа
+        const swapPair = getSwapPair(giveTokenType, receiveTokenType);
+
+        if (!swapPair) {
+            throw new Error(`Swap pair ${giveTokenType}-${receiveTokenType} is not supported`);
+        }
+
+        let transaction;
+
+        // Обработчики для разных пар
+        switch (swapPair.handler) {
+            case 'usdtToTon':
+                transaction = createUsdtToTonTransaction(beginCell, poolAddress, recipientAddress);
+                break;
+            case 'tonToUsdt':
+                transaction = createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress);
+                break;
+            // Легко добавить новые обработчики:
+            // case 'btcToTon':
+            //     transaction = createBtcToTonTransaction(beginCell, poolAddress, recipientAddress);
+            //     break;
+            default:
+                throw new Error(`Handler ${swapPair.handler} not implemented`);
+        }
+
+        if (typeof showFlashMessage === 'function') {
+            showFlashMessage('Отправка транзакции...', 'info');
+        }
+
+        const result = await tonConnectUI.sendTransaction(transaction);
+
+        if (typeof showFlashMessage === 'function') {
+            showFlashMessage('Транзакция успешно отправлена!', 'success');
+        }
+
+        return result;
+    } catch (error) {
+        const isUserRejection = error.message.includes('declined') || error.message.includes('rejected');
+        const message = isUserRejection
+            ? 'Транзакция отклонена пользователем'
+            : `Ошибка отправки транзакции: ${error.message}`;
+
+        if (typeof showFlashMessage === 'function') {
+            showFlashMessage(message, isUserRejection ? 'warning' : 'error');
+        }
+        throw error;
+    } finally {
+        setButtonLoading(false);
+    }
+}
 
     async function handleWalletConnection(wallet) {
         state.currentWallet = wallet;
