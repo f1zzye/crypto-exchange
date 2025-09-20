@@ -40,6 +40,15 @@ class Pool(BaseModel):
         verbose_name="Token B reserve",
     )
 
+    jetton_address = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        unique=True,
+        verbose_name="Jetton Address",
+        help_text="Address of the liquidity provider token (jetton) contract",
+    )
+
     fee_percentage = models.DecimalField(
         max_digits=5,
         decimal_places=3,

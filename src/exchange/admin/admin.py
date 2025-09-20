@@ -324,6 +324,7 @@ class PoolAdmin(ModelAdmin):
                 "fields": (
                     "token1_amount",
                     "token2_amount",
+                    "jetton_address",
                     "get_liquidity_submit_button",
                 ),
                 "classes": ("wide",),

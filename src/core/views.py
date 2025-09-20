@@ -158,8 +158,18 @@ class IndexView(TitleMixin, TemplateView):
             .select_related("network")
             .order_by("name")
         )
+        pool = Pool.objects.filter(
+            is_active=True, contract_address__isnull=False
+        ).first()
+        contract_address = pool.contract_address if pool else ""
 
-        context.update({"captcha": captcha_data, "tokens": tokens})
+        context.update(
+            {
+                "captcha": captcha_data,
+                "tokens": tokens,
+                "contract_address": contract_address,
+            }
+        )
         return context
 
     def post(self, request, *args, **kwargs):

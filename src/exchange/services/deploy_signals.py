@@ -5,8 +5,6 @@ from django.conf import settings
 from django.utils import timezone
 
 from constants.constansts import (
-    TON_SYMBOL,
-    USDT_SYMBOL,
     DEFAULT_TIMEOUT,
     MAX_ERROR_LENGTH,
 )
@@ -34,15 +32,10 @@ def deploy_pool_contract(pool_instance: Pool, force=False) -> tuple[bool, str]:
 
 
 def prepare_deployment_payload(pool_instance: Pool) -> dict[str, str | float]:
-    token1_symbol = getattr(pool_instance.token1, "short_name", TON_SYMBOL)
-    token2_symbol = getattr(pool_instance.token2, "short_name", USDT_SYMBOL)
-
-    if token1_symbol != TON_SYMBOL and token2_symbol == TON_SYMBOL:
-        token1_symbol, token2_symbol = token2_symbol, token1_symbol
-
     return {
-        "token1": token1_symbol,
-        "token2": token2_symbol,
+        "token1": pool_instance.token1.short_name,
+        "token2": pool_instance.token2.short_name,
+        "token2_address": pool_instance.jetton_address or "",
         "fee_percentage": float(pool_instance.fee_percentage),
         "admin_address": pool_instance.admin_wallet_address
         or getattr(settings, "DEFAULT_ADMIN_WALLET", None),
