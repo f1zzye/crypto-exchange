@@ -8,6 +8,7 @@ from core.views import (
     RaffleView,
     WalletTonService,
     tonconnect_manifest,
+    get_pool_contract_address,
 )
 
 app_name: str = "core"
@@ -20,4 +21,5 @@ urlpatterns = [
     path("deposit/", DepositView.as_view(), name="deposit"),
     path("tonconnect-manifest.json", tonconnect_manifest, name="tonconnect_manifest"),
     path("api/wallet-balance/", WalletTonService.as_view(), name="wallet_balance"),
+    path("pool-contract-address/", get_pool_contract_address, name="pool_contract_address"),
 ]

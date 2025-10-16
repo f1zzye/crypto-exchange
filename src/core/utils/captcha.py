@@ -1,160 +1,51 @@
-import base64
-import io
-import random
+from PIL import Image, ImageDraw
 
-from PIL import Image, ImageDraw, ImageFont
+from .font_loader import FontLoader
+from .image_processor import ImageProcessor
+from .math_operations import MathOperationGenerator
+from .patters import PatternDrawer
 
 
 class CaptchaGenerator:
-    def __init__(self, size: int = 50):
+
+    DEFAULT_SIZE: int = 50
+    FONT_SIZE_RATIO: int = 0.6
+    TEXT_MARGIN: int = 3
+
+    DEFAULT_BG_COLOR: str = "#E0E0E0"
+    DEFAULT_LINE_COLOR: str = "#555555"
+    TEXT_COLOR: str = "#000"
+    SHADOW_COLOR : str = "#555"
+
+    DEFAULT_ELLIPSE_WIDTH: int = 2
+    DEFAULT_LINE_WIDTH: int = 1
+    DEFAULT_CORNER_RADIUS: int= 12
+
+    def __init__(
+        self,
+        size: int = DEFAULT_SIZE,
+        corner_radius: int = DEFAULT_CORNER_RADIUS,
+        bg_color: str = DEFAULT_BG_COLOR,
+        line_color: str = DEFAULT_LINE_COLOR,
+        ellipse_width: int = DEFAULT_ELLIPSE_WIDTH,
+        line_width: int = DEFAULT_LINE_WIDTH
+    ):
+
         self.size = size
-        self.patterns = ["rings", "grid", "triangles", "diamonds"]
-        self.corner_radius = 12
-        self.bg_color = "#E0E0E0"
-        self.line_color = "#555555"
-        self.ellipse_width = 2
-        self.line_width = 1
+        self.corner_radius = corner_radius
+        self.bg_color = bg_color
+        self.line_color = line_color
+        self.ellipse_width = ellipse_width
+        self.line_width = line_width
 
-    @staticmethod
-    def _rounded_rect(img, radius):
-        mask = Image.new("L", img.size, 0)
-        draw = ImageDraw.Draw(mask)
-        draw.rounded_rectangle(
-            [0, 0, img.size[0], img.size[1]], radius=radius, fill=255
-        )
-        img.putalpha(mask)
-        return img
+        self.font_loader = FontLoader()
+        self.math_generator = MathOperationGenerator()
+        self.pattern_drawer = PatternDrawer(size, line_color)
+        self.image_processor = ImageProcessor()
 
-    def _draw_pattern(self, draw, pattern):
-        if pattern == "rings":
-            self._draw_rings(draw)
-        elif pattern == "grid":
-            self._draw_grid(draw)
-        elif pattern == "triangles":
-            self._draw_triangles(draw)
-        elif pattern == "diamonds":
-            self._draw_diamonds(draw)
-
-    def _draw_rings(self, draw):
-        for i in range(0, self.size, 16):
-            for j in range(0, self.size, 16):
-                draw.ellipse(
-                    [i, j, i + 12, j + 12],
-                    outline=self.line_color,
-                    width=self.ellipse_width,
-                )
-
-    def _draw_grid(self, draw):
-        step = 8
-        for x in range(0, self.size, step):
-            draw.line(
-                [(x, 0), (x, self.size)], fill=self.line_color, width=self.line_width
-            )
-        for y in range(0, self.size, step):
-            draw.line(
-                [(0, y), (self.size, y)], fill=self.line_color, width=self.line_width
-            )
-
-    def _draw_triangles(self, draw):
-        step = 16
-        for x in range(0, self.size, step):
-            for y in range(0, self.size, step):
-                points = [(x + step // 2, y), (x, y + step), (x + step, y + step)]
-                draw.polygon(
-                    points, outline=self.line_color, fill=None, width=self.line_width
-                )
-
-    def _draw_diamonds(self, draw):
-        step = 16
-        for x in range(0, self.size, step):
-            for y in range(0, self.size, step):
-                points = [
-                    (x + step // 2, y),
-                    (x, y + step // 2),
-                    (x + step // 2, y + step),
-                    (x + step, y + step // 2),
-                ]
-                draw.polygon(
-                    points, outline=self.line_color, fill=None, width=self.line_width
-                )
-
-    def _get_font(self):
-        try:
-            return ImageFont.truetype("arial.ttf", int(self.size * 0.6))
-        except (IOError, OSError):
-            return ImageFont.load_default()
-
-    def _get_random_text_position(self, text_bbox):
-        text_width = text_bbox[2] - text_bbox[0]
-        text_height = text_bbox[3] - text_bbox[1]
-        margin = 3
-        max_x = self.size - text_width - margin
-        max_y = self.size - text_height - margin
-        mix_x, mix_y = margin, margin
-
-        if max_x < mix_x:
-            x = (self.size - text_width) // 2
-        else:
-            x = random.randint(mix_x, max_x)
-
-        if max_y < mix_y:
-            y = (self.size - text_height) // 2
-        else:
-            y = random.randint(mix_y, max_y)
-
-        return x, y
-
-    def _create_number_image(self, number, pattern):
-        img = Image.new("RGBA", (self.size, self.size), self.bg_color)
-        draw = ImageDraw.Draw(img)
-
-        self._draw_pattern(draw, pattern)
-        img = self._rounded_rect(img, self.corner_radius)
-
-        draw = ImageDraw.Draw(img)
-        font = self._get_font()
-        text = str(number)
-        bbox = draw.textbbox((0, 0), text, font=font)
-
-        x, y = self._get_random_text_position(bbox)
-
-        draw.text((x + 1, y + 1), text, font=font, fill="#555")
-        draw.text((x, y), text, font=font, fill="#000")
-
-        buffer = io.BytesIO()
-        img.save(buffer, format="PNG")
-        return base64.b64encode(buffer.getvalue()).decode("utf-8")
-
-    @staticmethod
-    def _generate_math_operation():
-        operations = ["+", "-", "x"]
-        operation = random.choice(operations)
-
-        if operation == "+":
-            num_1 = random.randint(1, 9)
-            num_2 = random.randint(1, 9)
-            result = num_1 + num_2
-        elif operation == "-":
-            num_1 = random.randint(2, 9)
-            num_2 = random.randint(1, num_1)
-            result = num_1 - num_2
-        else:
-            num_1 = random.randint(2, 5)
-            num_2 = random.randint(2, 4)
-            result = num_1 * num_2
-
-        return num_1, num_2, operation, result
-
-    def _get_different_patterns(self):
-        pattern_1 = random.choice(self.patterns)
-        pattern_2 = random.choice([p for p in self.patterns if p != pattern_1])
-
-        return pattern_1, pattern_2
-
-    def generate(self):
-        num_1, num_2, operation, result = self._generate_math_operation()
-
-        pattern_1, pattern_2 = self._get_different_patterns()
+    def generate(self) -> dict[str, str | int]:
+        num_1, num_2, operation, result = self.math_generator.generate()
+        pattern_1, pattern_2 = self.pattern_drawer.get_different_patterns()
 
         img1_b64 = self._create_number_image(num_1, pattern_1)
         img2_b64 = self._create_number_image(num_2, pattern_2)
@@ -165,3 +56,27 @@ class CaptchaGenerator:
             "operation": operation,
             "result": result,
         }
+
+    def _create_number_image(self, number: int, pattern: str) -> str:
+        img = Image.new("RGBA", (self.size, self.size), self.bg_color)
+        draw = ImageDraw.Draw(img)
+
+        width = self.ellipse_width if pattern == "rings" else self.line_width
+        self.pattern_drawer.draw(draw, pattern, width)
+
+        img = self.image_processor.apply_rounded_corners(img, self.corner_radius)
+
+        draw = ImageDraw.Draw(img)
+        font = self.font_loader.load(int(self.size * self.FONT_SIZE_RATIO))
+        text = str(number)
+        bbox = draw.textbbox((0, 0), text, font=font)
+
+        position = self.image_processor.get_random_text_position(
+            self.size, bbox, self.TEXT_MARGIN
+        )
+
+        self.image_processor.render_text_with_shadow(
+            draw, text, position, font, self.TEXT_COLOR, self.SHADOW_COLOR
+        )
+
+        return self.image_processor.image_to_base64(img)
