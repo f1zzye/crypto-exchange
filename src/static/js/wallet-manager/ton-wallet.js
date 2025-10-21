@@ -448,7 +448,7 @@ function createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress) {
     return {
         validUntil: Math.floor(Date.now() / 1000) + 360,
         messages: [{
-            address: "kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1",
+            address: "kQBqpBSrTxhGiWBuUeVRqu-4eXjAKT_-CxWtF2A3bvfxtIFP",
             amount: '500000000',
             payload: body.toBoc().toString("base64")
         }]
@@ -468,7 +468,7 @@ async function sendTestTransaction() {
 
         const { beginCell, Address } = window.toncore;
         const recipientAddress = Address.parse("0QA4zetLZHxQQJbcj5zvw_lgFRYxk3i2V0Ve4gE6sY6emB4G");
-        const poolAddress = Address.parse("kQDLq_k0OwtTsFHUHjzHfNim8o8hjAvPDR0kMxsbVgvHTLO1");
+        const poolAddress = Address.parse("kQBqpBSrTxhGiWBuUeVRqu-4eXjAKT_-CxWtF2A3bvfxtIFP");
 
         const giveTokenName = document.querySelector('#select_give option:checked')?.textContent?.trim() || '';
         const receiveTokenName = document.querySelector('#select_get option:checked')?.textContent?.trim() || '';
