@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Конфигурация токенов - без дублирования
 const TOKEN_CONFIG = {
-    'usdt': {
+        'usdt': {
         type: 'usdt',
         aliases: ['usdt', 'tether']
     },
@@ -479,8 +479,7 @@ async function sendTestTransaction() {
         if (!giveTokenType || !receiveTokenType) {
             throw new Error('Unsupported token selected');
         }
-
-        // Определяем пару для свапа
+        
         const swapPair = getSwapPair(giveTokenType, receiveTokenType);
 
         if (!swapPair) {
