@@ -15,11 +15,11 @@ class CaptchaGenerator:
     DEFAULT_BG_COLOR: str = "#E0E0E0"
     DEFAULT_LINE_COLOR: str = "#555555"
     TEXT_COLOR: str = "#000"
-    SHADOW_COLOR : str = "#555"
+    SHADOW_COLOR: str = "#555"
 
     DEFAULT_ELLIPSE_WIDTH: int = 2
     DEFAULT_LINE_WIDTH: int = 1
-    DEFAULT_CORNER_RADIUS: int= 12
+    DEFAULT_CORNER_RADIUS: int = 12
 
     def __init__(
         self,
@@ -28,7 +28,7 @@ class CaptchaGenerator:
         bg_color: str = DEFAULT_BG_COLOR,
         line_color: str = DEFAULT_LINE_COLOR,
         ellipse_width: int = DEFAULT_ELLIPSE_WIDTH,
-        line_width: int = DEFAULT_LINE_WIDTH
+        line_width: int = DEFAULT_LINE_WIDTH,
     ):
 
         self.size = size

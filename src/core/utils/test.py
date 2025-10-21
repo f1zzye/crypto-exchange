@@ -12,13 +12,9 @@ class NetworkConfig:
     CURRENT_NETWORK = config("TON_NETWORK", default=TESTNET)
 
     API_URLS = {
-        MAINNET: config(
-            "TON_MAINNET_API_URL",
-            default="https://toncenter.com/api/v2"
-        ),
+        MAINNET: config("TON_MAINNET_API_URL", default="https://toncenter.com/api/v2"),
         TESTNET: config(
-            "TON_TESTNET_API_URL",
-            default="https://testnet.toncenter.com/api/v2"
+            "TON_TESTNET_API_URL", default="https://testnet.toncenter.com/api/v2"
         ),
     }
 
@@ -129,7 +125,6 @@ class AddressService:
 
             logger = logging.getLogger(__name__)
 
-
             class BalanceService:
                 """Получение и форматирование балансов TON"""
 
@@ -155,11 +150,15 @@ class AddressService:
                         return cls.format_balance(balance_nano)
 
                     except Exception as e:
-                        logger.error(f"Balance fetch error for {address}: {e}", exc_info=True)
+                        logger.error(
+                            f"Balance fetch error for {address}: {e}", exc_info=True
+                        )
                         return "0 TON"
 
                 @classmethod
-                def _fetch_balance_from_api(cls, address: str, network: str | None) -> int:
+                def _fetch_balance_from_api(
+                    cls, address: str, network: str | None
+                ) -> int:
                     """
                     Запрашивает баланс из API.
 
@@ -206,7 +205,9 @@ class AddressService:
                         return f"< {cls.MIN_DISPLAY_BALANCE} TON"
                     else:
                         return f"{balance_ton:.2f} TON"
+
             return False
+
 
 import logging
 from http import HTTPStatus
@@ -242,14 +243,12 @@ class WalletTonService(View):
         # Валидация
         if not address:
             return JsonResponse(
-                {"error": "No address provided"},
-                status=HTTPStatus.BAD_REQUEST
+                {"error": "No address provided"}, status=HTTPStatus.BAD_REQUEST
             )
 
         if not AddressService.validate_address(address):
             return JsonResponse(
-                {"error": "Invalid TON address"},
-                status=HTTPStatus.BAD_REQUEST
+                {"error": "Invalid TON address"}, status=HTTPStatus.BAD_REQUEST
             )
 
         try:
@@ -273,8 +272,5 @@ class WalletTonService(View):
             logger.error(f"Error processing wallet {address}: {e}", exc_info=True)
             return JsonResponse(
                 {"error": "Failed to fetch wallet data"},
-                status=HTTPStatus.INTERNAL_SERVER_ERROR
+                status=HTTPStatus.INTERNAL_SERVER_ERROR,
             )
-
-
-

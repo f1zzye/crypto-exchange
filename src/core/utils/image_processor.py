@@ -12,15 +12,15 @@ class ImageProcessor:
 
         mask = Image.new("L", img.size, 0)
         draw = ImageDraw.Draw(mask)
-        draw.rounded_rectangle([0, 0, img.size[0], img.size[1]], radius=radius, fill=255)
+        draw.rounded_rectangle(
+            [0, 0, img.size[0], img.size[1]], radius=radius, fill=255
+        )
         img.putalpha(mask)
         return img
 
     @staticmethod
     def get_random_text_position(
-        image_size: int,
-        text_bbox: tuple[int, int, int, int],
-        margin: int = 3
+        image_size: int, text_bbox: tuple[int, int, int, int], margin: int = 3
     ) -> tuple[int, int]:
 
         text_width = text_bbox[2] - text_bbox[0]
@@ -48,7 +48,7 @@ class ImageProcessor:
         position: tuple[int, int],
         font: ImageFont.FreeTypeFont,
         text_color: str = "#000",
-        shadow_color: str = "#555"
+        shadow_color: str = "#555",
     ) -> None:
 
         x, y = position

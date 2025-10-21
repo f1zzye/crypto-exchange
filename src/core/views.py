@@ -302,22 +302,28 @@ class IndexView(TitleMixin, TemplateView):
         context = {"captcha": captcha_data, "tokens": tokens, "error": error_message}
         return render(self.request, self.template_name, context)
 
+
 def get_pool_contract_address(request):
-    token1_id = request.GET.get('token1')
-    token2_id = request.GET.get('token2')
+    token1_id = request.GET.get("token1")
+    token2_id = request.GET.get("token2")
 
     if not token1_id or not token2_id:
-        return JsonResponse({'contract_address': ''})
+        return JsonResponse({"contract_address": ""})
 
     pool = Pool.objects.filter(
-        models.Q(token1_id=token1_id, token2_id=token2_id) |
-        models.Q(token1_id=token2_id, token2_id=token1_id),
-        is_active=True
+        models.Q(token1_id=token1_id, token2_id=token2_id)
+        | models.Q(token1_id=token2_id, token2_id=token1_id),
+        is_active=True,
     ).first()
 
-    return JsonResponse({
-        'contract_address': pool.contract_address if pool and pool.contract_address else ''
-    })
+    return JsonResponse(
+        {
+            "contract_address": (
+                pool.contract_address if pool and pool.contract_address else ""
+            )
+        }
+    )
+
 
 class AMLRulesView(TitleMixin, TemplateView):
     template_name: str = "core/aml.html"

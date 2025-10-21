@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
         isInitialLoad: true,
         isManualConnection: false,
         isCaptchaValid: false,
-        captchaValidationTimeout: null
+        captchaValidationTimeout: null,
+        userJettonWallet: null
     };
 
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
@@ -361,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Конфигурация токенов - без дублирования
 const TOKEN_CONFIG = {
-        'usdt': {
+    'usdt': {
         type: 'usdt',
         aliases: ['usdt', 'tether']
     },
@@ -437,18 +438,21 @@ function createUsdtToTonTransaction(beginCell, poolAddress, recipientAddress) {
     };
 }
 
-function createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress) {
+
+function createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress, minUsdtOut) {
+    const minUsdtOutValue = typeof minUsdtOut === 'bigint' ? minUsdtOut : BigInt(minUsdtOut || 1);
+
     const body = beginCell()
         .storeUint(0x3, 32)
         .storeUint(0, 64)
-        .storeCoins(1000000000)
+        .storeCoins(minUsdtOutValue)
         .storeAddress(recipientAddress)
         .endCell();
 
     return {
         validUntil: Math.floor(Date.now() / 1000) + 360,
         messages: [{
-            address: "kQBqpBSrTxhGiWBuUeVRqu-4eXjAKT_-CxWtF2A3bvfxtIFP",
+            address: poolAddress.toString(),
             amount: '500000000',
             payload: body.toBoc().toString("base64")
         }]
@@ -467,8 +471,9 @@ async function sendTestTransaction() {
         setButtonLoading(true, 'Відправка...');
 
         const { beginCell, Address } = window.toncore;
-        const recipientAddress = Address.parse("0QA4zetLZHxQQJbcj5zvw_lgFRYxk3i2V0Ve4gE6sY6emB4G");
-        const poolAddress = Address.parse("kQBqpBSrTxhGiWBuUeVRqu-4eXjAKT_-CxWtF2A3bvfxtIFP");
+        const recipientAddress = Address.parse(state.currentWallet.account.address);
+        const poolAddressValue = document.querySelector('#pool-contract-address')?.value;
+        const poolAddress = Address.parse(poolAddressValue);
 
         const giveTokenName = document.querySelector('#select_give option:checked')?.textContent?.trim() || '';
         const receiveTokenName = document.querySelector('#select_get option:checked')?.textContent?.trim() || '';

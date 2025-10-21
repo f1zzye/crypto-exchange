@@ -1,5 +1,6 @@
 from PIL import ImageFont
 
+
 class FontLoader:
 
     FONT_TYPES: set[str] = {

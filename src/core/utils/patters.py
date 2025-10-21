@@ -48,11 +48,7 @@ class PatternDrawer:
 
         for x in range(0, self.size, step):
             for y in range(0, self.size, step):
-                points = [
-                    (x + step // 2, y),
-                    (x, y + step),
-                    (x + step, y + step)
-                ]
+                points = [(x + step // 2, y), (x, y + step), (x + step, y + step)]
                 draw.polygon(points, outline=self.line_color, fill=None, width=width)
 
     def _draw_diamonds(self, draw: ImageDraw.ImageDraw, width: int) -> None:
@@ -71,5 +67,7 @@ class PatternDrawer:
     @classmethod
     def get_different_patterns(cls) -> tuple[str, str]:
         pattern_1 = secrets.choice(cls.AVAILABLE_PATTERNS)
-        pattern_2 = secrets.choice([p for p in cls.AVAILABLE_PATTERNS if p != pattern_1])
+        pattern_2 = secrets.choice(
+            [p for p in cls.AVAILABLE_PATTERNS if p != pattern_1]
+        )
         return pattern_1, pattern_2
