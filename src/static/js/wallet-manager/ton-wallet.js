@@ -360,20 +360,88 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Конфигурация токенов - без дублирования
 const TOKEN_CONFIG = {
     'usdt': {
         type: 'usdt',
-        aliases: ['usdt', 'tether']
+        aliases: ['usdt', 'tether'],
+        isJetton: true,
+        masterAddress: {
+            testnet: 'kQDF65L0_qkmjO-KMSGoLhfakB3xpRf-AVy8aMjB2u-emUiJ',
+            mainnet: 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs'
+        }
     },
     'ton': {
         type: 'ton',
-        aliases: ['ton', 'toncoin']
+        aliases: ['ton', 'toncoin'],
+        isJetton: false
     },
     // Легко добавить новые токены:
     // 'btc': { type: 'bitcoin', aliases: ['btc', 'bitcoin'] },
     // 'eth': { type: 'ethereum', aliases: ['eth', 'ethereum'] }
 };
+
+async function convertRawToUserFriendly(rawAddress, isBounceable = true) {
+    try {
+        // Если адрес уже в user-friendly формате
+        if (!rawAddress.startsWith('0:') && !rawAddress.startsWith('-1:')) {
+            return rawAddress;
+        }
+
+        const network = config.network === 'mainnet' ? '' : 'testnet.';
+        const apiUrl = `https://${network}tonapi.io/v2/address/${encodeURIComponent(rawAddress)}/parse`;
+
+        const response = await fetch(apiUrl, {
+            headers: {
+                'Authorization': 'Bearer AG2WEUQF7NEZWJQAAAACHFOAPKCD6QL5PJV6KPQI7NDGPRFL6GDW56KFKLGRUM7ONXVUJ3A'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`TonAPI Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Возвращаем bounceable версию для jetton-транзакций
+        return isBounceable ? data.bounceable.b64url : data.non_bounceable.b64url;
+
+    } catch (error) {
+        console.error('Error converting address:', error);
+        return rawAddress;
+    }
+}
+
+async function getJettonWalletAddressSimple(ownerAddress, jettonMasterAddress) {
+    try {
+        const network = config.network === 'mainnet' ? '' : 'testnet.';
+        const apiUrl = `https://${network}tonapi.io/v2/accounts/${ownerAddress}/jettons/${jettonMasterAddress}`;
+
+        const response = await fetch(apiUrl, {
+            headers: {
+                'Authorization': 'Bearer AG2WEUQF7NEZWJQAAAACHFOAPKCD6QL5PJV6KPQI7NDGPRFL6GDW56KFKLGRUM7ONXVUJ3A'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`TonAPI Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data && data.wallet_address && data.wallet_address.address) {
+            const rawAddress = data.wallet_address.address;
+
+            // Конвертируем в user-friendly формат
+            const userFriendlyAddress = await convertRawToUserFriendly(rawAddress, true);
+
+            return userFriendlyAddress;
+        }
+
+        throw new Error('Invalid response from TonAPI');
+    } catch (error) {
+        throw error;
+    }
+}
 
 // Поддерживаемые пары для свапа
 const SUPPORTED_SWAP_PAIRS = {
@@ -409,7 +477,10 @@ function getSwapPair(giveTokenType, receiveTokenType) {
     return SUPPORTED_SWAP_PAIRS[pairKey] || null;
 }
 
-function createUsdtToTonTransaction(beginCell, poolAddress, recipientAddress) {
+function createUsdtToTonTransaction(beginCell, poolAddress, recipientAddress, userJettonWalletAddress, usdtAmount) {
+
+    const usdtAmountValue = BigInt(Math.floor(parseFloat(usdtAmount) * 1e9));
+
     const swapPayload = beginCell()
         .storeUint(0x4, 32)
         .storeCoins(100000000)
@@ -419,7 +490,7 @@ function createUsdtToTonTransaction(beginCell, poolAddress, recipientAddress) {
     const transferBody = beginCell()
         .storeUint(0xf8a7ea5, 32)
         .storeUint(0, 64)
-        .storeCoins(2000000000)
+        .storeCoins(usdtAmountValue)
         .storeAddress(poolAddress)
         .storeAddress(recipientAddress)
         .storeUint(0, 1)
@@ -431,21 +502,22 @@ function createUsdtToTonTransaction(beginCell, poolAddress, recipientAddress) {
     return {
         validUntil: Math.floor(Date.now() / 1000) + 360,
         messages: [{
-            address: "kQCWLfvLT5E9Jj-uD3hCucyeBNOsqAUGVdVYc-Fyft3cfpbq",
+            address: userJettonWalletAddress,
             amount: '200000000',
             payload: transferBody.toBoc().toString("base64")
         }]
     };
 }
 
-
-function createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress, minUsdtOut) {
-    const minUsdtOutValue = typeof minUsdtOut === 'bigint' ? minUsdtOut : BigInt(minUsdtOut || 1);
+function createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress, tonAmount, minUsdtOut) {
+    // Конвертируем значения в нужный формат
+    const tonAmountValue = typeof tonAmount === 'bigint' ? tonAmount : BigInt(Math.floor(parseFloat(tonAmount) * 1e9)); // 9 decimals для TON
+    const minUsdtOutValue = typeof minUsdtOut === 'bigint' ? minUsdtOut : BigInt(Math.floor(parseFloat(minUsdtOut) * 1e9)); // 9 decimals для USDT
 
     const body = beginCell()
         .storeUint(0x3, 32)
         .storeUint(0, 64)
-        .storeCoins(minUsdtOutValue)
+        .storeCoins(minUsdtOutValue)  // ✅ Используем реальное значение минимального USDT
         .storeAddress(recipientAddress)
         .endCell();
 
@@ -453,7 +525,7 @@ function createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress, mi
         validUntil: Math.floor(Date.now() / 1000) + 360,
         messages: [{
             address: poolAddress.toString(),
-            amount: '500000000',
+            amount: (tonAmountValue + BigInt(50000000)).toString(),  // ✅ Добавляем tonAmount + 0.05 TON для комиссии
             payload: body.toBoc().toString("base64")
         }]
     };
@@ -478,13 +550,21 @@ async function sendTestTransaction() {
         const giveTokenName = document.querySelector('#select_give option:checked')?.textContent?.trim() || '';
         const receiveTokenName = document.querySelector('#select_get option:checked')?.textContent?.trim() || '';
 
+        // ✅ Получаем значения из полей ввода
+        const giveAmount = document.querySelector('input[name="sum1"]')?.value;
+        const receiveAmount = document.querySelector('input[name="sum2"]')?.value;
+
+        if (!giveAmount || !receiveAmount) {
+            throw new Error('Amount values are missing');
+        }
+
         const giveTokenType = getTokenType(giveTokenName);
         const receiveTokenType = getTokenType(receiveTokenName);
 
         if (!giveTokenType || !receiveTokenType) {
             throw new Error('Unsupported token selected');
         }
-        
+
         const swapPair = getSwapPair(giveTokenType, receiveTokenType);
 
         if (!swapPair) {
@@ -493,18 +573,34 @@ async function sendTestTransaction() {
 
         let transaction;
 
-        // Обработчики для разных пар
         switch (swapPair.handler) {
             case 'usdtToTon':
-                transaction = createUsdtToTonTransaction(beginCell, poolAddress, recipientAddress);
+                if (!state.userJettonWallet) {
+                    throw new Error('Jetton wallet address not found. Please reconnect your wallet.');
+                }
+
+                // ✅ Передаем реальные значения из формы
+                transaction = createUsdtToTonTransaction(
+                    beginCell,
+                    poolAddress,
+                    recipientAddress,
+                    state.userJettonWallet,
+                    giveAmount,      // количество USDT которое отдаем
+                    receiveAmount    // минимальное количество TON которое получаем
+                );
                 break;
+
             case 'tonToUsdt':
-                transaction = createTonToUsdtTransaction(beginCell, poolAddress, recipientAddress);
+                // ✅ Передаем реальные значения из формы
+                transaction = createTonToUsdtTransaction(
+                    beginCell,
+                    poolAddress,
+                    recipientAddress,
+                    giveAmount,      // количество TON которое отдаем
+                    receiveAmount    // минимальное количество USDT которое получаем
+                );
                 break;
-            // Легко добавить новые обработчики:
-            // case 'btcToTon':
-            //     transaction = createBtcToTonTransaction(beginCell, poolAddress, recipientAddress);
-            //     break;
+
             default:
                 throw new Error(`Handler ${swapPair.handler} not implemented`);
         }
@@ -535,39 +631,56 @@ async function sendTestTransaction() {
     }
 }
 
-    async function handleWalletConnection(wallet) {
-        state.currentWallet = wallet;
+async function handleWalletConnection(wallet) {
+    state.currentWallet = wallet;
 
-        if (wallet) {
-            if (state.isManualConnection && !state.isInitialLoad) {
-                if (typeof showFlashMessage === 'function') {
-                    showFlashMessage('Кошелек успешно подключен!', 'success');
-                }
+    if (wallet) {
+        if (state.isManualConnection && !state.isInitialLoad) {
+            if (typeof showFlashMessage === 'function') {
+                showFlashMessage('Кошелек успешно подключен!', 'success');
             }
-
-            state.isManualConnection = false;
-            updateAllButtons(true);
-
-            try {
-                const walletData = await fetchWalletData(wallet.account.address);
-                Object.assign(state.currentWallet, walletData);
-                displayWallet(walletData.balance, walletData.shortAddress);
-            } catch (error) {
-                displayWallet("0.00 TON", wallet.account.address);
-                if (!state.isInitialLoad) {
-                    if (typeof showFlashMessage === 'function') {
-                        showFlashMessage('Данные кошелька загружены частично', 'warning');
-                    }
-                }
-            }
-        } else {
-            updateAllButtons(false);
-            displayWallet("0$", "");
-            closeWalletDropdown();
         }
 
-        if (state.isInitialLoad) state.isInitialLoad = false;
+        state.isManualConnection = false;
+        updateAllButtons(true);
+
+        try {
+            const walletData = await fetchWalletData(wallet.account.address);
+            Object.assign(state.currentWallet, walletData);
+            displayWallet(walletData.balance, walletData.shortAddress);
+
+            try {
+                const userWalletAddress = wallet.account.address;
+                const usdtMasterAddress = TOKEN_CONFIG.usdt.masterAddress[config.network];
+
+                const jettonWalletAddress = await getJettonWalletAddressSimple(
+                    userWalletAddress,
+                    usdtMasterAddress
+                );
+
+                state.userJettonWallet = jettonWalletAddress;
+
+            } catch (jettonError) {
+                console.error('Error fetching jetton wallet:', jettonError);
+            }
+
+        } catch (error) {
+            displayWallet("0.00 TON", wallet.account.address);
+            if (!state.isInitialLoad) {
+                if (typeof showFlashMessage === 'function') {
+                    showFlashMessage('Данные кошелька загружены частично', 'warning');
+                }
+            }
+        }
+    } else {
+        updateAllButtons(false);
+        displayWallet("0$", "");
+        closeWalletDropdown();
+        state.userJettonWallet = null;
     }
+
+    if (state.isInitialLoad) state.isInitialLoad = false;
+}
 
     function initEventListeners() {
         elements.header.connectBtn?.addEventListener('click', connectWallet);
